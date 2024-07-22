@@ -4,6 +4,8 @@
 #include "handling_CSV_file.h"
 
 
+
+
 int main() {
     //std::string napis = "^8A2aaaaaaaaa";
     //std::cout << pass_check(napis) << std::endl;
@@ -16,14 +18,22 @@ int main() {
         std::string email, user, password, password_repeat;
         bool pass = false;
         std::cout << "Tworzenie nowego konta\n";
+        //do {
+        //    std::cin.clear();
+        //    std::cin.ignore(1024, '\n');
+        //    std::cout << "Podaj E-mail: ";
+        //    std::cin >> email;
+        //    pass = email_check(email);
+        //} while (std::cin.fail() || !pass);
+        pass = false;
         do {
             std::cin.clear();
             std::cin.ignore(1024, '\n');
-            std::cout << "Podaj E-mail: ";
-            std::cin >> email;
-            pass = email_check(email);
+            std::cout << "Podaj nazwe uzytkownika: ";
+            std::cin >> user;
+            pass = user_check(user);
         } while (std::cin.fail() || !pass);
-
+        std::cout << "end!\n";
     }
     //if (WriteLogsToFile("dataset.csv", "user@gmail.com", "user", "password")) {
     //    std::cout << "Log entry written successfully." << std::endl;

@@ -3,7 +3,7 @@
 
 using std::cout; using std::endl;
 
-bool pass_check(std::string& password) {
+bool pass_check(std::string password) {
     std::regex wzorzec_nalfa("[^a-zA-Z0-9\\s]"); // znak specjalny
     std::regex wzorzec_liczba("[0-9]");         // cyfra
     std::regex wzorzec_AZ("[A-Z]");             // du¿a litera
@@ -45,11 +45,21 @@ bool pass_check(std::string& password) {
 }
 
 bool email_check(std::string email) {
-    std::regex email_regex("([0-9a-zA-Z]+@[0-9a-z]+\\.[a-z]{2})");
-    if (std::regex_search(email, email_regex)) {
+    std::regex email_regex("[0-9a-zA-Z]+@[0-9a-z]+\\.[a-z]{2}");
+    if (std::regex_match(email, email_regex)) {
         return true;
     }
-    std::cout << "Bledny adres E-mail!\n";
+    std::cout << "Bledny adres E-mail!\nEmail musi musi byc w postaci np. example@gmail.pl!\n";
     return false;
 	
 } 
+
+bool user_check(std::string user) {
+    std::regex user_regex("^[0-9a-zA-Z]{4,30}$");
+    if (std::regex_match(user, user_regex)) {
+        return true;
+    }
+    std::cout << "Bledna nazwa uzytkownika!\nNazwa uzytkownika nie moze zawieracznakow specjalnych\ni miec dlugosc od 4 do 30 znakow!\n";
+    return false;
+
+}
