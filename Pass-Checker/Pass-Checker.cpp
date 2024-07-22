@@ -17,17 +17,21 @@ int main() {
         bool pass = false;
         std::cout << "Tworzenie nowego konta\n";
         do {
-	        
+            std::cin.clear();
+            std::cin.ignore(1024, '\n');
+            std::cout << "Podaj E-mail: ";
+            std::cin >> email;
+            pass = email_check(email);
         } while (std::cin.fail() || !pass);
 
     }
-    if (WriteLogsToFile("dataset.csv", "user@gmail.com", "user", "password")) {
-        std::cout << "Log entry written successfully." << std::endl;
-    }
-    else {
-        std::cout << "Failed to write log entry." << std::endl;
-    }
+    //if (WriteLogsToFile("dataset.csv", "user@gmail.com", "user", "password")) {
+    //    std::cout << "Log entry written successfully." << std::endl;
+    //}
+    //else {
+    //    std::cout << "Failed to write log entry." << std::endl;
+    //}
 
-    return 0;
+    //return 0;
 
 }

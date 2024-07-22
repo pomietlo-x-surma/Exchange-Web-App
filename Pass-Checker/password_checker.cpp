@@ -43,3 +43,13 @@ bool pass_check(std::string& password) {
     }
     return false;
 }
+
+bool email_check(std::string email) {
+    std::regex email_regex("([0-9a-zA-Z]+@[0-9a-z]+\\.[a-z]{2})");
+    if (std::regex_search(email, email_regex)) {
+        return true;
+    }
+    std::cout << "Bledny adres E-mail!\n";
+    return false;
+	
+} 
