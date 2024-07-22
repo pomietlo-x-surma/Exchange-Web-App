@@ -18,13 +18,18 @@ int main() {
         std::string email, user, password, password_repeat;
         bool pass = false;
         std::cout << "Tworzenie nowego konta\n";
-        //do {
-        //    std::cin.clear();
-        //    std::cin.ignore(1024, '\n');
-        //    std::cout << "Podaj E-mail: ";
-        //    std::cin >> email;
-        //    pass = email_check(email);
-        //} while (std::cin.fail() || !pass);
+
+
+        do {
+            std::cin.clear();
+            std::cin.ignore(1024, '\n');
+            std::cout << "Podaj E-mail: ";
+            std::cin >> email;
+            pass = email_check(email);
+        } while (std::cin.fail() || !pass);
+
+
+
         pass = false;
         do {
             std::cin.clear();
@@ -33,7 +38,43 @@ int main() {
             std::cin >> user;
             pass = user_check(user);
         } while (std::cin.fail() || !pass);
-        std::cout << "end!\n";
+        pass = false;
+
+
+        bool rep=true;
+        do {
+
+
+            bool rep = false;
+            do {
+                std::cin.clear();
+                std::cin.ignore(1024, '\n');
+                std::cout << "Podaj haslo: ";
+                std::cin >> password;
+                pass = pass_check(password);
+            } while (std::cin.fail() || !pass);
+            std::cout << "end!\n";
+            pass = false;
+
+
+            do {
+                std::cin.clear();
+                std::cin.ignore(1024, '\n');
+                std::cout << "Powtorz haslo: ";
+                std::cin >> password_repeat;
+                if (password_repeat == "!rep") {
+                    rep = true;
+                    break;
+                }
+                else if (password == password_repeat) {
+                    pass = true;
+                }
+                else {
+                    std::cout << "Hasla sa rozne!\n";
+                    std::cout << "Jesli chcesz poprawic haslo wpisz '!rep'\n";
+                }
+            } while (std::cin.fail() || !pass);
+        } while (rep);
     }
     //if (WriteLogsToFile("dataset.csv", "user@gmail.com", "user", "password")) {
     //    std::cout << "Log entry written successfully." << std::endl;

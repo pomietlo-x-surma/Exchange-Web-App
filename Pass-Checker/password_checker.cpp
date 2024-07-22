@@ -49,7 +49,7 @@ bool email_check(std::string email) {
     if (std::regex_match(email, email_regex)) {
         return true;
     }
-    std::cout << "Bledny adres E-mail!\nEmail musi musi byc w postaci np. example@gmail.pl!\n";
+    std::cout << "Bledny adres E-mail!\nEmail musi musi byc w postaci np. example123@gmail.pl!\n";
     return false;
 	
 } 
