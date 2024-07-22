@@ -20,27 +20,24 @@ bool pass_check(std::string& password) {
         std::cout << "Haslo jest poprawne!" << std::endl;
         return true;
     }
-    else {
-        if (!std::regex_search(password, wzorzec_nalfa)) {
-            std::cout << "Haslo musi zawierac przynajmniej jeden znak specjalny (np. !,@,#,$,%,^)!" << std::endl;
+    if (!std::regex_search(password, wzorzec_nalfa)) {
+        std::cout << "Haslo musi zawierac przynajmniej jeden znak specjalny (np. !,@,#,$,%,^)!" << std::endl;
+    }
+    if (!std::regex_search(password, wzorzec_liczba)) {
+        std::cout << "Haslo musi zawierac przynajmniej jedna liczbe!" << std::endl;
+    }
+    if (!std::regex_search(password, wzorzec_AZ)) {
+        std::cout << "Haslo musi zawierac przynajmniej jedna wielka litere!" << std::endl;
+    }
+    if (!std::regex_search(password, wzorzec_az)) {
+        std::cout << "Haslo musi zawierac przynajmniej jedna mala litere!" << std::endl;
+    }
+    if (!std::regex_search(password, wzorzec_rozmiar)) {
+        if (password.length() < 8) {
+            std::cout << "Haslo musi miec dlugosc przynajmniej 8 znakow!" << std::endl;
         }
-        if (!std::regex_search(password, wzorzec_liczba)) {
-            std::cout << "Haslo musi zawierac przynajmniej jedna liczbe!" << std::endl;
-        }
-        if (!std::regex_search(password, wzorzec_AZ)) {
-            std::cout << "Haslo musi zawierac przynajmniej jedna wielka litere!" << std::endl;
-        }
-        if (!std::regex_search(password, wzorzec_az)) {
-            std::cout << "Haslo musi zawierac przynajmniej jedna mala litere!" << std::endl;
-        }
-        if (!std::regex_search(password, wzorzec_rozmiar)) {
-            if (password.length() < 8) {
-                std::cout << "Haslo musi miec dlugosc przynajmniej 8 znakow!" << std::endl;
-            }
-            else {
-                std::cout << "Zbyt dlugie haslo!" << std::endl;
-            }
-
+        else {
+            std::cout << "Zbyt dlugie haslo!" << std::endl;
         }
 
     }

@@ -1,5 +1,2 @@
-﻿  handling_CSV_file.cpp
-  Pass-Checker.cpp
-  password_checker.cpp
-  Generowanie kodu...
-C:\Users\Ciapat\source\repos\Pass-Checker\Pass-Checker\password_checker.cpp(1,10): error C1083: Nie można otworzyć pliku dołącz: 'password_check.h': No such file or directory
+﻿  Pass-Checker.cpp
+  Pass-Checker.vcxproj -> C:\Users\Ciapat\Source\Repos\pomietlo-x-surma\Pass-Checker\x64\Debug\Pass-Checker.exe

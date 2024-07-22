@@ -5,10 +5,22 @@
 
 
 int main() {
-    std::string napis = "^8A2aaaaaaaaa";
-    std::cout << pass_check(napis) << std::endl;
+    //std::string napis = "^8A2aaaaaaaaa";
+    //std::cout << pass_check(napis) << std::endl;
+    bool mode = true;
+    std::cout << "Jesli chcesz sie zalogowac wpisz 0\n";
+    std::cout << "Jesli chcesz stworzyc nowe konto wpisz 1\n";
+    std::cout << "Wybor: ";
+    std::cin >> mode;
+    if (mode) {
+        std::string email, user, password, password_repeat;
+        bool pass = false;
+        std::cout << "Tworzenie nowego konta\n";
+        do {
+	        
+        } while (std::cin.fail() || !pass);
 
-        // Example 
+    }
     if (WriteLogsToFile("dataset.csv", "user@gmail.com", "user", "password")) {
         std::cout << "Log entry written successfully." << std::endl;
     }
@@ -17,5 +29,5 @@ int main() {
     }
 
     return 0;
-    return 0;
+
 }

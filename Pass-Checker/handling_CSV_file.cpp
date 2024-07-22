@@ -31,4 +31,3 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& server_nam
 
     return true;
 }
-
