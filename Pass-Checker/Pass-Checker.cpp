@@ -1,12 +1,20 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include "password_checker.h"
 #include "handling_CSV_file.h"
+#include "test1.cpp"
 
-
+using std::cout;
 
 
 int main() {
+	std::string currency1 = "zloty";
+    std::string currency2 = "euro";
+
+    std::string command = "MoneyExchange.exe " + currency1 + " " + currency2;
+    std::string result = exec(command.c_str());
+
+    std::cout << result << '\n';
     //std::string napis = "^8A2aaaaaaaaa";
     //std::cout << pass_check(napis) << std::endl;
     bool mode = true;
