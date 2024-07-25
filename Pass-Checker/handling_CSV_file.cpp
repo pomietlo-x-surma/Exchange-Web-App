@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 
-bool WriteLogsToFile(const std::string& file_path, const std::string& server_name, const std::string& login, const std::string& password) {
+bool WriteLogsToFile(const std::string& file_path, const std::string& email_name, const std::string& login, const std::string& password) {
 
     std::ofstream file;
 
@@ -13,8 +13,8 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& server_nam
         return false;
     }
 
-    // Write the logs to the file
-    file << server_name << ',' << login << ',' << password << std::endl;
+    // Writing the logs to the file
+    file << email_name << ',' << login << ',' << password << std::endl;
 
     // Check for any errors during write operation
     if (file.fail()) {
