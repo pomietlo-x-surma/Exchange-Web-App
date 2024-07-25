@@ -1,6 +1,7 @@
-#include <iostream>
+﻿#include <sstream>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 bool WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password) {
 
@@ -30,4 +31,38 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& email, con
     }
 
     return true;
+}
+
+bool correct_password_check(const std::string& file_path, const std::string& email, const std::string& input_login, const std::string& input_pass) {
+    std::ifstream file(file_path);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << file_path << " for reading." << std::endl;
+        return false;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string stored_email, stored_login, stored_pass;
+
+        std::getline(ss, stored_email, ',');
+        std::getline(ss, stored_login, ',');
+        std::getline(ss, stored_pass, ',');
+
+        if (stored_login == input_login || stored_email == email) {
+            if ( stored_pass != input_pass) {
+                std::cout << "Podany email/login lub haslo jest niepoprawne" << std::endl;
+                file.close();
+                return false;
+            }
+            else {
+                std::cout << "Uzytkownik z podanym loginem/emailem nie istnieje";
+                file.close();
+                return true;
+            }
+        }
+    }
+
+    file.close();
+    return false;
 }

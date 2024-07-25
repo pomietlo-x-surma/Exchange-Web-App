@@ -1,2 +1,5 @@
-﻿  Pass-Checker.cpp
-  Pass-Checker.vcxproj -> C:\Users\Ciapat\Source\Repos\pomietlo-x-surma\Pass-Checker\x64\Debug\Pass-Checker.exe
+﻿  handling_CSV_file.cpp
+  Pass-Checker.cpp
+C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\Pass-Checker\handling_CSV_file.cpp(4,10): error C1083: Nie można otworzyć pliku dołącz: 'stream': No such file or directory
+  password_checker.cpp
+  Generowanie kodu...
