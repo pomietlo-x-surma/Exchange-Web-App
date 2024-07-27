@@ -127,13 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CurrencyTransaction.cpp" />
     <ClCompile Include="handling_CSV_file.cpp" />
     <ClCompile Include="Pass-Checker.cpp" />
     <ClCompile Include="password_checker.cpp" />
+    <ClCompile Include="User_info_balance.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CurrencyTransaction.h" />
     <ClInclude Include="handling_CSV_file.h" />
     <ClInclude Include="password_checker.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

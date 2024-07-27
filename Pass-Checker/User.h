@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 class User {
-private:
     std::string email;
     std::string login;
     std::unordered_map<std::string, double> balances;

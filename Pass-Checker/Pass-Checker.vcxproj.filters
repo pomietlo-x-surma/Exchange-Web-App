@@ -24,12 +24,24 @@
     <ClCompile Include="handling_CSV_file.cpp">
       <Filter>Pliki zasobów</Filter>
     </ClCompile>
+    <ClCompile Include="CurrencyTransaction.cpp">
+      <Filter>Pliki zasobów</Filter>
+    </ClCompile>
+    <ClCompile Include="User_info_balance.cpp">
+      <Filter>Pliki zasobów</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="password_checker.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="handling_CSV_file.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrencyTransaction.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
