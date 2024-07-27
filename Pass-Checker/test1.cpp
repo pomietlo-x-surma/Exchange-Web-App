@@ -30,13 +30,14 @@ std::string exec(const char* cmd) {
     return result;
 }
 
-int main(int argc, char* argv[]) {
+
+//function saving currencies requested by user
+std::string currency_comparison(int argc, char* argv[]) {
     std::string currency1 = "zloty";
     std::string currency2 = "euro";
 
     std::string command = "MoneyExchange.exe " + currency1 + " " + currency2;
     std::string result = exec(command.c_str());
 
-    std::cout << result << '\n';
-    return 0;
+    return result;
 }
