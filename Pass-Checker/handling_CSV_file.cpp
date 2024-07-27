@@ -4,21 +4,35 @@
 #include <iostream>
 #include "handling_CSV_file.h"
 
+
+
+bool EnsureFileExists(const std::string& file_path) {
+    std::ifstream file(file_path);
+    if (!file) {
+        // Plik nie istnieje, więc go utwórz
+        std::ofstream create_file(file_path);
+        if (!create_file) {
+            std::cerr << "Error: Could not create file " << file_path << std::endl;
+            return false;
+        }
+        create_file.close();
+    }
+    return true;
+}
+
 bool WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password) {
+    if (!EnsureFileExists(file_path)) {
+        return false;
+    }
 
-    std::ofstream file;
-
-    // Attempt to open the file in append mode
-    file.open(file_path, std::ios_base::app);
+    std::ofstream file(file_path, std::ios_base::app);
     if (!file.is_open()) {
         std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
         return false;
     }
 
-    // Writing the logs to the file
     file << email << ',' << login << ',' << password << std::endl;
 
-    // Check for any errors during write operation
     if (file.fail()) {
         std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
         file.close();
@@ -35,6 +49,10 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& email, con
 }
 
 bool correct_password_check(const std::string& file_path, const std::string& email, const std::string& input_login, const std::string& input_pass) {
+    if (!EnsureFileExists(file_path)) {
+        return false;
+    }
+
     std::ifstream file(file_path);
     if (!file.is_open()) {
         std::cerr << "Error: Could not open file " << file_path << " for reading." << std::endl;
@@ -51,13 +69,13 @@ bool correct_password_check(const std::string& file_path, const std::string& ema
         std::getline(ss, stored_pass, ',');
 
         if (stored_login == input_login || stored_email == email) {
-            if ( stored_pass != input_pass) {
-                std::cout << "Podany email/login lub haslo jest niepoprawne" << std::endl;
+            if (stored_pass != input_pass) {
+                std::cout << "Podany email/login lub hasło jest niepoprawne" << std::endl;
                 file.close();
                 return false;
             }
             else {
-                std::cout << "Uzytkownik z podanym loginem/emailem nie istnieje";
+                std::cout << "Użytkownik z podanym loginem/emailem istnieje" << std::endl;
                 file.close();
                 return true;
             }
