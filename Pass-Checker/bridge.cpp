@@ -5,7 +5,7 @@
 #include <array>
 #include <iostream>
 #include <unordered_map>
-
+#include "money_converter.h"
 
 //std::unordered_map<std::string, std::string> waluty = {
 //    {"zloty", "zl"},
