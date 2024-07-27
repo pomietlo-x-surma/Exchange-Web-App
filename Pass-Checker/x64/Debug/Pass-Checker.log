@@ -1,5 +1,6 @@
-﻿  handling_CSV_file.cpp
-  Pass-Checker.cpp
-C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\Pass-Checker\handling_CSV_file.cpp(4,10): error C1083: Nie można otworzyć pliku dołącz: 'stream': No such file or directory
+﻿  Pass-Checker.cpp
+C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\Pass-Checker\bridge.cpp(27,44): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
   password_checker.cpp
   Generowanie kodu...
+  LINK : nie znaleziono elementu C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\x64\Debug\Pass-Checker.exe ani nie został on skompilowany podczas ostatniego konsolidowania przyrostowego; zostanie wykonana pełna konsolidacja
+  Pass-Checker.vcxproj -> C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\x64\Debug\Pass-Checker.exe

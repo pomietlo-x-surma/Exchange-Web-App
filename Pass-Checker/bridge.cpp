@@ -32,13 +32,7 @@ std::string exec(const char* cmd) {
 
 
 //function saving currencies requested by user
-std::string currency_comparison(int argc, char* argv[]) {
-    if (argc < 3) {
-        throw std::invalid_argument("Należy podać dwie waluty do porównania.");
-    }
-
-    std::string currency1 = argv[1];
-    std::string currency2 = argv[2];
+std::string currency_comparison(std::string currency1, std::string currency2) {
 
     std::string command = "MoneyExchange.exe " + currency1 + " " + currency2;
     std::string result = exec(command.c_str());
