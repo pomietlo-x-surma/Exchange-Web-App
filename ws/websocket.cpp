@@ -6,8 +6,12 @@
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
-void receive_text(std::string wiad) {
-	std::cout << wiad << std::endl;
+void receive_text(const std::string& wiad) {
+	unsigned char split = wiad.find(" ");
+	std::string login = wiad.substr(0, split);
+	std::string pass = wiad.substr(split + 1, wiad.length());
+	std::cout << login << " " << pass << '\n';
+
 }
 
 
@@ -20,11 +24,14 @@ void serwer111() {
 		while (true) {
 			tcp::socket socket{ ioc };
 			acceptor.accept(socket);
-			std::thread{ [socket = std::move(socket)]() mutable {
+			std::thread{ [socket = std::move(socket)]() mutable { //musi byc mutalbe xd
 				try {
 					websocket::stream<tcp::socket> ws{std::move(socket)};
 					ws.accept();
 
+
+
+					//petla glowna
 					while (1) {
 						boost::beast::multi_buffer buffer;
 						ws.read(buffer);
@@ -43,7 +50,7 @@ void serwer111() {
 						std::cerr << "Error: " << se.code().message() << "\n";
 					}
 				}
-			}}.detach();
+			} }.detach();
 		}
 	}
 	catch (std::exception const& e) {
