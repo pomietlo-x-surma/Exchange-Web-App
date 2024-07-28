@@ -1,0 +1,59 @@
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
+#include <iostream>
+#include <thread>
+
+using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+namespace websocket = boost::beast::websocket; // from <boost/beast/websocket.hpp>
+
+void receive_text(std::string wiad) {
+	std::cout << wiad << std::endl;
+}
+
+
+
+void serwer111() {
+	std::cout << "sziamag" << std::endl;
+	try {
+		boost::asio::io_context ioc;
+		tcp::acceptor acceptor{ ioc, {tcp::v4(), 8080} };
+
+		while (true) {
+			tcp::socket socket{ ioc };
+			acceptor.accept(socket);
+			std::thread{ [socket = std::move(socket)]() mutable {
+				try {
+					websocket::stream<tcp::socket> ws{std::move(socket)};
+					ws.accept();
+
+					for (;;) {
+						boost::beast::multi_buffer buffer;
+						ws.read(buffer);
+
+						//tekst odebrany
+						std::string odebrana_wiad = boost::beast::buffers_to_string(buffer.data());
+						receive_text(odebrana_wiad);
+
+						//tekst zwrotny
+						ws.text(ws.got_text());
+						ws.write(buffer.data());
+					}
+				}
+ catch (boost::system::system_error const& se) {
+  if (se.code() != websocket::error::closed) {
+	  std::cerr << "Error: " << se.code().message() << "\n";
+  }
+}
+} }.detach();
+		}
+	}
+	catch (std::exception const& e) {
+		std::cerr << "Error: " << e.what() << "\n";
+	}
+}
+
+
+int main() {
+	serwer111();
+	std::cout << "sziu" << std::endl;
+}
