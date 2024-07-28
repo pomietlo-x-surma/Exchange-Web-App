@@ -1,0 +1,76 @@
+import React, { useState, useEffect } from "react";
+import { w3cwebsocket as W3CWebSocket, IMessageEvent } from "websocket";
+
+const client = new W3CWebSocket("ws://localhost:8080");
+
+const App: React.FC = () => {
+  const [message1, setMessage1] = useState<string>("");
+  const [message2, setMessage2] = useState<string>("");
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [response, setResponse] = useState<string>("");
+
+  useEffect(() => {
+    client.onopen = () => {
+      console.log("WebSocket Client Connected");
+      setIsConnected(true);
+    };
+
+    client.onclose = () => {
+      console.log("WebSocket Client Disconnected");
+      setIsConnected(false);
+    };
+
+    client.onmessage = (message: IMessageEvent) => {
+      if (typeof message.data === "string") {
+        // Log received data for debugging
+        console.log("Received Data:", message.data);
+        setResponse(message.data); // Directly display the received message
+      } else {
+        console.log("Received non-string message:", message.data);
+        setResponse("Received non-string message");
+      }
+    };
+
+    client.onerror = (error) => {
+      console.error("WebSocket Error: ", error);
+      setResponse("WebSocket Error");
+    };
+  }, []);
+
+  const handleSend = () => {
+    if (isConnected) {
+      // Combine messages into a single string with a space in between
+      const combinedMessage = `${message1} ${message2}`;
+      client.send(combinedMessage); // Send the combined message
+      setResponse(`Wysłano: ${combinedMessage}`); // Update UI
+    } else {
+      console.log("WebSocket not connected");
+      setResponse("WebSocket not connected");
+    }
+  };
+
+  return (
+    <div>
+      <div>
+        <input
+          type="text"
+          value={message1}
+          onChange={(e) => setMessage1(e.target.value)}
+          placeholder="Wpisz pierwszą wiadomość"
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          value={message2}
+          onChange={(e) => setMessage2(e.target.value)}
+          placeholder="Wpisz drugą wiadomość"
+        />
+      </div>
+      <button onClick={handleSend}>Wyślij wiadomości</button>
+      <p>{response}</p>
+    </div>
+  );
+};
+
+export default App;
