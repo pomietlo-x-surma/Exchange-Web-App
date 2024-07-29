@@ -2,7 +2,7 @@
 #include <boost/beast.hpp>
 #include <iostream>
 #include <thread>
-#include "szym.h"
+#include "baza_danych.h"
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
@@ -27,7 +27,7 @@ std::string receive_text(const std::string& wiad) {
 
 
 
-void serwer111() {
+void serwer() {
 	try {
 		boost::asio::io_context ioc;
 		tcp::acceptor acceptor{ ioc, {tcp::v4(), 8080} };
@@ -70,5 +70,5 @@ void serwer111() {
 }
 
 int main() {
-	serwer111();
+	serwer();
 }
