@@ -21,7 +21,7 @@ std::string receive_text(const std::string& wiad) {
 	std::string pass = wiad.substr(split + 1, wiad.length());   //rozdzielanie stringa
 	std::cout << login << " " << pass << '\n';
 	std::unordered_map<std::string, std::string>::iterator it = logging.find(login); //tworzenie iteratora do loginu 
-	if (it != logging.end() && (logging[login] == pass)) { //jesli login isnieje, przyrównaj je z hasłem w bazie
+	if (it != logging.end() && (logging[login] == pass)) { //jesli login isnieje (istnieje iterator), przyrównaj go z hasłem w bazie
 		return process_message("istnieje");
 	}
 	return process_message("nie istnieje");
