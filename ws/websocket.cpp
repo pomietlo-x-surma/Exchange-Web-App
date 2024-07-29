@@ -8,20 +8,23 @@ namespace websocket = boost::beast::websocket;
 
 
 
-
+//funkcja wysylajaca do klienta
 std::string process_message(const std::string& received_message) {
 	return "Echo: " + received_message;
 }
+
+
+//funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
 	unsigned char split = wiad.find(" ");
 	std::string login = wiad.substr(0, split);
-	std::string pass = wiad.substr(split + 1, wiad.length());
+	std::string pass = wiad.substr(split + 1, wiad.length());   //rozdzielanie stringa
 	std::cout << login << " " << pass << '\n';
-	std::unordered_map<std::string, std::string>::iterator it = logging.find(login);
-	if (it != logging.end() && (logging[login] == pass)) {
+	std::unordered_map<std::string, std::string>::iterator it = logging.find(login); //tworzenie iteratora do loginu 
+	if (it != logging.end() && (logging[login] == pass)) { //jesli login isnieje, przyrównaj je z hasłem w bazie
 		return process_message("istnieje");
 	}
-	return process_message("potezny szym");
+	return process_message("nie istnieje");
 }
 
 
@@ -42,12 +45,12 @@ void serwer() {
 
 					//petla glowna
 					while (1) {
-						boost::beast::multi_buffer buffer;
+						boost::beast::multi_buffer buffer; //tworzenie bufora
 						ws.read(buffer);
 
 						//tekst odebrany
 						std::string odebrana_wiad = boost::beast::buffers_to_string(buffer.data());
-						/*receive_text(odebrana_wiad);*/
+						//receive_text(odebrana_wiad); //wyswietlenie odebranej wiadomosci
 
 						std::string response_message = receive_text(odebrana_wiad);
 
