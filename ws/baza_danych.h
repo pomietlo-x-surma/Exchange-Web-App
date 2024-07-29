@@ -1,9 +1,8 @@
 #pragma once
-#include "Projekt1.cpp"
 #include <unordered_map>
 
 
-static std::unordered_map<std::string, std::string> login = {
+static std::unordered_map<std::string, std::string> logging = {
 	{"bart", "szimszim"},
 	{"pojuzlo","adamus123"}
 };
