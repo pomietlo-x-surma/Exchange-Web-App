@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { w3cwebsocket as W3CWebSocket, IMessageEvent } from "websocket";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 
 const client = new W3CWebSocket("ws://localhost:8080");
 
 const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/new-page" element={<NewPage />} />
+      </Routes>
+    </Router>
+  );
+};
+
+const Login: React.FC = () => {
   const [message1, setMessage1] = useState<string>("");
   const [message2, setMessage2] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [response, setResponse] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     client.onopen = () => {
@@ -22,32 +40,24 @@ const App: React.FC = () => {
 
     client.onmessage = (message: IMessageEvent) => {
       if (typeof message.data === "string") {
-        // Log received data for debugging
         console.log("Received Data:", message.data);
-        setResponse(message.data); // Directly display the received message
-      } else {
-        console.log("Received non-string message:", message.data);
-        setResponse("Received non-string message");
+        setResponse(message.data);
+        if (message.data === "0") {
+          console.log("Received non-string message:", message.data);
+          setResponse("Zly login lub haslo!");
+        } else {
+          navigate("/new-page");
+        }
       }
     };
-
-    // client.onerror = (error) => {
-    //   console.error("WebSocket Error: ", error);
-    //   setResponse("WebSocket Error");
-    // };
-  }, []);
+  }, [navigate]);
 
   const handleSend = () => {
     if (isConnected) {
-      // Combine messages into a single string with a space in between
       const combinedMessage = `${message1} ${message2}`;
-      client.send(combinedMessage); // Send the combined message
-      setResponse(`Wysłano: ${combinedMessage}`); // Update UI
+      client.send(combinedMessage);
+      setResponse(`Wysłano: ${combinedMessage}`);
     }
-    // else {
-    //   console.log("WebSocket not connected");
-    //   setResponse("WebSocket not connected");
-    // }
   };
 
   return (
@@ -95,6 +105,10 @@ const App: React.FC = () => {
       </h1>
     </div>
   );
+};
+
+const NewPage: React.FC = () => {
+  return <div>Witamy na nowej stronie!</div>;
 };
 
 export default App;
