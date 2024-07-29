@@ -1,5 +1,5 @@
-#include <iostream>
-#include <string>
+#include <iostream>             
+#include <string>                
 #include "password_checker.h"
 #include "handling_CSV_file.h"
 #include "money_converter.cpp"
@@ -14,6 +14,10 @@ int main() {
     std::string command = "MoneyExchange.exe " + currency1 + " " + currency2;
     std::string result = exec(command.c_str());
 
+
+    //NIE RUSZAĆ ODTĄD
+
+    
     std::cout << result << '\n';
     //std::string napis = "^8A2aaaaaaaaa";
     //std::cout << pass_check(napis) << std::endl;
@@ -83,6 +87,7 @@ int main() {
                 }
             } while (std::cin.fail() || !pass);
         } while (rep);
+        //DOTĄD
     }
     //if (WriteLogsToFile("dataset.csv", "user@gmail.com", "user", "password")) {
     //    std::cout << "Log entry written successfully." << std::endl;
