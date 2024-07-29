@@ -2,17 +2,28 @@
 #include <boost/beast.hpp>
 #include <iostream>
 #include <thread>
-
+#include "szym.h"
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
-void receive_text(const std::string& wiad) {
+
+
+
+std::string process_message(const std::string& received_message) {
+	return "Echo: " + received_message;
+}
+std::string receive_text(const std::string& wiad) {
 	unsigned char split = wiad.find(" ");
 	std::string login = wiad.substr(0, split);
 	std::string pass = wiad.substr(split + 1, wiad.length());
 	std::cout << login << " " << pass << '\n';
-
+	std::unordered_map<std::string, std::string>::iterator it = logging.find(login);
+	if (it != logging.end() && (logging[login] == pass)) {
+		return process_message("istnieje");
+	}
+	return process_message("potezny szym");
 }
+
 
 
 
@@ -24,12 +35,10 @@ void serwer111() {
 		while (true) {
 			tcp::socket socket{ ioc };
 			acceptor.accept(socket);
-			std::thread{ [socket = std::move(socket)]() mutable { //musi byc mutalbe xd
+			std::thread{ [socket = std::move(socket)]() mutable { //musi byc mutable xd
 				try {
-					websocket::stream<tcp::socket> ws{std::move(socket)};
+					websocket::stream<tcp::socket> ws{ std::move(socket) };
 					ws.accept();
-
-
 
 					//petla glowna
 					while (1) {
@@ -38,11 +47,13 @@ void serwer111() {
 
 						//tekst odebrany
 						std::string odebrana_wiad = boost::beast::buffers_to_string(buffer.data());
-						receive_text(odebrana_wiad);
+						/*receive_text(odebrana_wiad);*/
+
+						std::string response_message = receive_text(odebrana_wiad);
 
 						//tekst zwrotny
 						ws.text(ws.got_text());
-						ws.write(buffer.data());
+						ws.write(boost::asio::buffer(response_message));
 					}
 				}
 				catch (boost::system::system_error const& se) {
@@ -57,7 +68,6 @@ void serwer111() {
 		std::cerr << "Error: " << e.what() << "\n";
 	}
 }
-
 
 int main() {
 	serwer111();
