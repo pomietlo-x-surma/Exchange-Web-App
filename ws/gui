@@ -11,12 +11,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     client.onopen = () => {
-      console.log("WebSocket Client Connected");
+      console.log("Polaczono");
       setIsConnected(true);
     };
 
     client.onclose = () => {
-      console.log("WebSocket Client Disconnected");
+      console.log("Brak polaczenia");
       setIsConnected(false);
     };
 
@@ -31,10 +31,10 @@ const App: React.FC = () => {
       }
     };
 
-    client.onerror = (error) => {
-      console.error("WebSocket Error: ", error);
-      setResponse("WebSocket Error");
-    };
+    // client.onerror = (error) => {
+    //   console.error("WebSocket Error: ", error);
+    //   setResponse("WebSocket Error");
+    // };
   }, []);
 
   const handleSend = () => {
@@ -43,32 +43,56 @@ const App: React.FC = () => {
       const combinedMessage = `${message1} ${message2}`;
       client.send(combinedMessage); // Send the combined message
       setResponse(`Wysłano: ${combinedMessage}`); // Update UI
-    } else {
-      console.log("WebSocket not connected");
-      setResponse("WebSocket not connected");
     }
+    // else {
+    //   console.log("WebSocket not connected");
+    //   setResponse("WebSocket not connected");
+    // }
   };
 
   return (
     <div>
+      <style>
+        {`
+        h1 { font-size: px;
+            margin: auto;
+            width: 30%;
+            padding: 10px;
+                 }
+
+         h2{
+          margin: auto;
+          width: 50%;
+         }
+      `}
+      </style>
+      <h1>Login:</h1>
       <div>
-        <input
-          type="text"
-          value={message1}
-          onChange={(e) => setMessage1(e.target.value)}
-          placeholder="Wpisz pierwszą wiadomość"
-        />
+        <h2>
+          <input
+            type="text"
+            value={message1}
+            onChange={(e) => setMessage1(e.target.value)}
+            placeholder="Wpisz pierwszą wiadomość"
+          />
+        </h2>
       </div>
       <div>
-        <input
-          type="text"
-          value={message2}
-          onChange={(e) => setMessage2(e.target.value)}
-          placeholder="Wpisz drugą wiadomość"
-        />
+        <br></br>
+        <h1>Haslo:</h1>
+        <h2>
+          <input
+            type="text"
+            value={message2}
+            onChange={(e) => setMessage2(e.target.value)}
+            placeholder="Wpisz drugą wiadomość"
+          />{" "}
+        </h2>
       </div>
-      <button onClick={handleSend}>Wyślij wiadomości</button>
-      <p>{response}</p>
+      <h1>
+        <button onClick={handleSend}>Zaloguj</button>
+        <p>{response}</p>
+      </h1>
     </div>
   );
 };
