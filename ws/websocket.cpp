@@ -2,7 +2,8 @@
 #include <boost/beast.hpp>
 #include <iostream>
 #include <thread>
-#include "baza_danych.h"
+#include "handling_CSV_file.h"
+
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
@@ -10,7 +11,7 @@ namespace websocket = boost::beast::websocket;
 
 //funkcja wysylajaca do klienta
 std::string process_message(const std::string& received_message) {
-	return "Echo: " + received_message;
+	return received_message;
 }
 
 
@@ -20,11 +21,11 @@ std::string receive_text(const std::string& wiad) {
 	std::string login = wiad.substr(0, split);
 	std::string pass = wiad.substr(split + 1, wiad.length());   //rozdzielanie stringa
 	std::cout << login << " " << pass << '\n';
-	std::unordered_map<std::string, std::string>::iterator it = logging.find(login); //tworzenie iteratora do loginu 
-	if (it != logging.end() && (logging[login] == pass)) { //jesli login isnieje (istnieje iterator), przyrównaj go z hasłem w bazie
-		return process_message("istnieje");
+	if (correct_password_check(login, pass)) {
+		std::cout << "hut" << std::endl;
+		return process_message(wiad);
 	}
-	return process_message("nie istnieje");
+	return process_message("0");
 }
 
 
@@ -61,14 +62,14 @@ void serwer() {
 				}
 				catch (boost::system::system_error const& se) {
 					if (se.code() != websocket::error::closed) {
-						std::cerr << "Error: " << se.code().message() << "\n";
+						std::cerr << "Error1: " << se.code().message() << "\n";
 					}
 				}
 			} }.detach();
 		}
 	}
 	catch (std::exception const& e) {
-		std::cerr << "Error: " << e.what() << "\n";
+		std::cerr << "Error2: " << e.what() << "\n";
 	}
 }
 
