@@ -6,6 +6,8 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
+import './App.css';
+
 
 const client = new W3CWebSocket("ws://localhost:8080");
 
@@ -62,42 +64,28 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <style>
-        {`
-        h1 { font-size: px;
-            margin: auto;
-            width: 30%;
-            padding: 10px;
-                 }
-
-         h2{
-          margin: auto;
-          width: 50%;
-         }
-      `}
-      </style>
       <h1>Login:</h1>
       <div>
-        <h2>
+        <h1>
           <input
             type="text"
             value={message1}
             onChange={(e) => setMessage1(e.target.value)}
-            placeholder="Wpisz pierwszą wiadomość"
+            placeholder="Login"
           />
-        </h2>
+        </h1>
       </div>
       <div>
         <br></br>
         <h1>Haslo:</h1>
-        <h2>
+        <h1>
           <input
             type="text"
             value={message2}
             onChange={(e) => setMessage2(e.target.value)}
-            placeholder="Wpisz drugą wiadomość"
+            placeholder="Haslo"
           />{" "}
-        </h2>
+        </h1>
       </div>
       <h1>
         <button onClick={handleSend}>Zaloguj</button>
