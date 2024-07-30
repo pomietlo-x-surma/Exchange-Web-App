@@ -66,26 +66,26 @@ const Login: React.FC = () => {
     <div>
       <h1>Login:</h1>
       <div>
-        <h1>
+        <h2>
           <input
             type="text"
             value={message1}
             onChange={(e) => setMessage1(e.target.value)}
-            placeholder="Login"
+            placeholder="Wpisz login"
           />
-        </h1>
+        </h2>
       </div>
       <div>
         <br></br>
         <h1>Haslo:</h1>
-        <h1>
+        <h2>
           <input
             type="text"
             value={message2}
             onChange={(e) => setMessage2(e.target.value)}
             placeholder="Haslo"
           />{" "}
-        </h1>
+        </h2>
       </div>
       <h1>
         <button onClick={handleSend}>Zaloguj</button>
