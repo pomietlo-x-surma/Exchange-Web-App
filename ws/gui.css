@@ -1,14 +1,24 @@
-h1 { font-size: 50px;
+.container {
+  display: flex;
+  justify-content: center; /* Wyśrodkowuje poziomo */
+  align-items: center; /* Wyśrodkowuje pionowo */
+  height: 100vh; /* Wysokość kontenera na 100% wysokości okna przeglądarki */
+}
+input {
+  position: relative;
+  width: 300px;
+  height: 40px;
+  padding: 10px;
+  font-size: 16px; /* Możesz dostosować wartość według potrzeb, np. 30px */
+  left: 100%; /* To przesuwa element w poziomie */
+  transform: translateX(-50%); /* To centrowanie elementu */
+}
+  h1 { font-size: 50px;
     position: relative;
       margin: auto;
-      width: 50%;
+      width: 300px;
       padding: 20px;
       left: 50%;
+      
 }
-
-h2{
-    margin: auto;
-    width: 50%;
-    
-  }
   
