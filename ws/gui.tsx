@@ -7,7 +7,7 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
-import './App.css';
+import "./App.css";
 
 const client = new W3CWebSocket("ws://localhost:8080");
 
@@ -30,50 +30,85 @@ const CreateAccount: React.FC = () => {
   const [response, setResponse] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const navigate = useNavigate();
-  useEffect(()=>{
-    client.onopen = () =>{
+  useEffect(() => {
+    client.onopen = () => {
       console.log("polaczono");
       setIsConnected(true);
-    }
+    };
     client.onclose = () => {
       console.log("Brak połączenia");
       setIsConnected(false);
     };
 
-    client.onmessage = (message: IMessageEvent) =>{
-      if (typeof message.data == "string"){
+    client.onmessage = (message: IMessageEvent) => {
+      if (typeof message.data == "string") {
         console.log("Received Data:", message.data);
-        setResponse(message.data); 
-        if (message.data == "0"){
+        setResponse(message.data);
+        if (message.data == "0") {
           console.log("bledna e-mail lub login");
           setResponse("0");
-        }
-        else if (message.data == "1"){
+        } else if (message.data == "1") {
           console.log("taki uzytkownik juz istnieje!");
           setResponse("1");
-        }
-        else if(message.data == "2"){
-            console.log("haslo musi skladac się z:\n-malej litery\n-duzej litery\n-liczby\n-znaku specjalnego (np. !, @, #)");
-            setResponse("2");
-        }
-        else if(message.data == "3"){
+        } else if (message.data == "2") {
+          console.log(
+            "haslo musi skladac się z:\n-malej litery\n-duzej litery\n-liczby\n-znaku specjalnego (np. !, @, #)"
+          );
+          setResponse("2");
+        } else if (message.data == "3") {
           console.log("hasla sa rozne!");
           setResponse("3");
-        }
-        else{
+        } else {
           navigate("/new-page");
         }
       }
-    }
-
+    };
   }, [navigate]);
+  const handleSend = () => {
+    if (isConnected) {
+      const combinedMessage = `${message1} ${message2}`;
+      client.send(combinedMessage);
+      setResponse(`Wysłano: ${combinedMessage}`);
+    }
+  };
 
-
-
-
-  return <div></div>;
+  return (
+    <>
+      <h2>Login
+        <br/>
+        <input
+          value={message1}
+          onChange={(e) => setMessage1(e.target.value)}
+          placeholder="Wpisz login"
+        ></input>
+      <br/>
+      E-mail
+      <br/>
+      <input
+          value={message2}
+          onChange={(e) => setMessage2(e.target.value)}
+          placeholder="Wpisz E-mail"
+        ></input>
+      <br/>
+      Haslo
+      <br/>
+      <input
+          value={message3}
+          onChange={(e) => setMessage3(e.target.value)}
+          placeholder="Wpisz E-mail"
+        ></input>
+<br/>
+      Powtorz haslo
+      <br/>
+      <input
+          value={message4}
+          onChange={(e) => setMessage4(e.target.value)}
+          placeholder="Wpisz E-mail"
+        ></input>
+    </h2>
+    </>
+  );
 };
-
 
 const Login: React.FC = () => {
   const [message1, setMessage1] = useState<string>("");
@@ -156,6 +191,5 @@ const Login: React.FC = () => {
 const NewPage: React.FC = () => {
   return <div>Witamy na nowej stronie!</div>;
 };
-
 
 export default App;
