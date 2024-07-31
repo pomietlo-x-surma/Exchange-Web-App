@@ -47,7 +47,7 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& email, con
 	return true;
 }
 
-bool correct_password_check(const std::string& input_login, const std::string& input_pass) {
+bool correct_password_check(const std::string& input_email, const std::string& input_pass) {
 	const std::string& file_path = "Dane.csv";
 	if (!EnsureFileExists(file_path)) {
 		return false;
@@ -65,12 +65,13 @@ bool correct_password_check(const std::string& input_login, const std::string& i
 		std::string stored_email, stored_login, stored_pass;
 
 		std::getline(ss, stored_email, ',');
-		std::getline(ss, stored_login, ',');
 		std::getline(ss, stored_pass, ',');
-		if (stored_login == input_login && stored_pass == input_pass) {
+		std::getline(ss, stored_login, ',');
+		std::cout << stored_email << " " << stored_login << " " << stored_pass << "////" << input_email << " " << input_pass << "s" << std::endl;
+		if ((stored_email == input_email) && (stored_pass == input_pass)) {
 			return true;
 		}
-		if (stored_login == input_login) {
+		if (stored_email == input_email) {
 			if (stored_pass != input_pass) {
 				std::cout << "Podany login lub hasło jest niepoprawne" << std::endl;
 				file.close();
@@ -88,3 +89,24 @@ bool correct_password_check(const std::string& input_login, const std::string& i
 	file.close();
 	return false;
 }
+bool check_login_email_existence(const std::string email, const std::string& login) {
+	const std::string& file_path = "Dane.csv";
+	std::string line;
+	std::stringstream ss(line);
+	std::ifstream file(file_path);
+	std::string stored_email, stored_login, stored_pass;
+	while (std::getline(file, line)) {
+		std::stringstream ss(line);
+		std::string stored_email, stored_login, stored_pass;
+
+		std::getline(ss, stored_email, ',');
+		std::getline(ss, stored_login, ',');
+		std::getline(ss, stored_pass, ',');
+		if (stored_login == login || stored_email == email) {
+			return true;
+		}
+
+	}
+	return false;
+}
+
