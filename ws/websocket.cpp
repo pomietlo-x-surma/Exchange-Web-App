@@ -3,6 +3,8 @@
 #include <iostream>
 #include <thread>
 #include "handling_CSV_file.h"
+#include "password_checker.h"
+
 
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
@@ -13,19 +15,52 @@ namespace websocket = boost::beast::websocket;
 std::string process_message(const std::string& received_message) {
 	return received_message;
 }
+std::string check_register(const std::string& email, const std::string& login, const std::string& pass, const std::string& pass_rep) {
+	if (!(email_check(email) && login_check(login))) {
+		return process_message("0");
+	}
+	else if (check_login_email_existence(email, login)) {
+		return process_message("1");
+	}
+	else if (!pass_check(pass)) {
+		return process_message("2");
+	}
+	else if (pass != pass_rep) {
+		return process_message("3");
+	}
+	std::cout << "rejestrowanie!" << std::endl;
+		return "s";
+}
 
+std::string check_logging(const std::string& email, const std::string& pass) {
+	std::cout << "logowanie!" << std::endl;
+	if (correct_password_check(email, pass)) {
+		std::cout << "uuuuuuuuuuu" << std::endl;
+		return process_message("Witaj" + email + pass);
+
+	}
+	std::cout << email << "**************" << pass << std::endl;
+	return process_message("5");
+}
 
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
-	unsigned char split = wiad.find(" ");
-	std::string login = wiad.substr(0, split);
-	std::string pass = wiad.substr(split + 1, wiad.length());   //rozdzielanie stringa
-	std::cout << login << " " << pass << '\n';
-	if (correct_password_check(login, pass)) {
-		std::cout << "hut" << std::endl;
-		return process_message(wiad);
+	const std::string& file_path = "Dane.csv";
+	std::stringstream sa(wiad);
+	std::string tag, email, login, pass, pass_rep;
+	std::getline(sa, tag, ',');
+	std::getline(sa, email, ' ');
+	if (tag == "0") {
+		std::getline(sa, pass, ' ');
+		return check_logging(email, pass);
 	}
-	return process_message("0");
+	if (tag == "1") {
+		std::getline(sa, login, ' ');
+		std::getline(sa, pass, ' ');
+		std::getline(sa, pass_rep, ' ');
+		return check_register(email, login, pass, pass_rep);
+	}
+	return "blad";
 }
 
 
