@@ -66,7 +66,7 @@ const CreateAccount: React.FC = () => {
   }, [navigate]);
   const handleSend = () => {
     if (isConnected) {
-      const combinedMessage = `${message1} ${message2}`;
+      const combinedMessage = `1,${message1} ${message2} ${message3} ${message4}`;
       client.send(combinedMessage);
       setResponse(`Wysłano: ${combinedMessage}`);
     }
@@ -105,6 +105,9 @@ const CreateAccount: React.FC = () => {
           onChange={(e) => setMessage4(e.target.value)}
           placeholder="Wpisz E-mail"
         ></input>
+        <br/>
+    <button onClick={handleSend}>Zaloguj</button>
+    <p>{response}</p>
     </h2>
     </>
   );
@@ -132,7 +135,7 @@ const Login: React.FC = () => {
       if (typeof message.data === "string") {
         console.log("Received Data:", message.data);
         setResponse(message.data);
-        if (message.data === "0") {
+        if (message.data === "5") {
           console.log("Received non-string message:", message.data);
           setResponse("Zly login lub haslo!");
         } else {
@@ -144,7 +147,7 @@ const Login: React.FC = () => {
 
   const handleSend = () => {
     if (isConnected) {
-      const combinedMessage = `${message1} ${message2}`;
+      const combinedMessage = `0,${message1} ${message2}`;
       client.send(combinedMessage);
       setResponse(`Wysłano: ${combinedMessage}`);
     }
