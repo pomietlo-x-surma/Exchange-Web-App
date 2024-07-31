@@ -5,9 +5,9 @@ import {
   Route,
   Routes,
   useNavigate,
+  Link,
 } from "react-router-dom";
 import './App.css';
-
 
 const client = new W3CWebSocket("ws://localhost:8080");
 
@@ -17,10 +17,63 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/new-page" element={<NewPage />} />
+        <Route path="/create-account" element={<CreateAccount />} />
       </Routes>
     </Router>
   );
 };
+const CreateAccount: React.FC = () => {
+  const [message1, setMessage1] = useState<string>(""); //login
+  const [message2, setMessage2] = useState<string>(""); //mail
+  const [message3, setMessage3] = useState<string>(""); //haslo
+  const [message4, setMessage4] = useState<string>(""); //pwt haslo
+  const [response, setResponse] = useState<string>("");
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const navigate = useNavigate();
+  useEffect(()=>{
+    client.onopen = () =>{
+      console.log("polaczono");
+      setIsConnected(true);
+    }
+    client.onclose = () => {
+      console.log("Brak połączenia");
+      setIsConnected(false);
+    };
+
+    client.onmessage = (message: IMessageEvent) =>{
+      if (typeof message.data == "string"){
+        console.log("Received Data:", message.data);
+        setResponse(message.data); 
+        if (message.data == "0"){
+          console.log("bledna e-mail lub login");
+          setResponse("0");
+        }
+        else if (message.data == "1"){
+          console.log("taki uzytkownik juz istnieje!");
+          setResponse("1");
+        }
+        else if(message.data == "2"){
+            console.log("haslo musi skladac się z:\n-malej litery\n-duzej litery\n-liczby\n-znaku specjalnego (np. !, @, #)");
+            setResponse("2");
+        }
+        else if(message.data == "3"){
+          console.log("hasla sa rozne!");
+          setResponse("3");
+        }
+        else{
+          navigate("/new-page");
+        }
+      }
+    }
+
+  }, [navigate]);
+
+
+
+
+  return <div></div>;
+};
+
 
 const Login: React.FC = () => {
   const [message1, setMessage1] = useState<string>("");
@@ -31,12 +84,12 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     client.onopen = () => {
-      console.log("Polaczono");
+      console.log("Połączono");
       setIsConnected(true);
     };
 
     client.onclose = () => {
-      console.log("Brak polaczenia");
+      console.log("Brak połączenia");
       setIsConnected(false);
     };
 
@@ -77,13 +130,13 @@ const Login: React.FC = () => {
       </div>
       <div>
         <br></br>
-        <h1>Haslo:</h1>
+        <h1>Hasło:</h1>
         <h2>
           <input
-            type="text"
+            type="password"
             value={message2}
             onChange={(e) => setMessage2(e.target.value)}
-            placeholder="Haslo"
+            placeholder="Hasło"
           />{" "}
         </h2>
       </div>
@@ -91,6 +144,11 @@ const Login: React.FC = () => {
         <button onClick={handleSend}>Zaloguj</button>
         <p>{response}</p>
       </h1>
+      <h2>
+        <Link to="/create-account" className="create-account-link">
+          Utwórz nowe konto
+        </Link>
+      </h2>
     </div>
   );
 };
@@ -98,5 +156,6 @@ const Login: React.FC = () => {
 const NewPage: React.FC = () => {
   return <div>Witamy na nowej stronie!</div>;
 };
+
 
 export default App;
