@@ -42,24 +42,12 @@ const CreateAccount: React.FC = () => {
 
     client.onmessage = (message: IMessageEvent) => {
       if (typeof message.data == "string") {
-        console.log("Received Data:", message.data);
-        setResponse(message.data);
         if (message.data == "0") {
-          console.log("bledna e-mail lub login");
-          setResponse("0");
-        } else if (message.data == "1") {
-          console.log("taki uzytkownik juz istnieje!");
-          setResponse("1");
-        } else if (message.data == "2") {
-          console.log(
-            "haslo musi skladac się z:\n-malej litery\n-duzej litery\n-liczby\n-znaku specjalnego (np. !, @, #)"
-          );
-          setResponse("2");
-        } else if (message.data == "3") {
-          console.log("hasla sa rozne!");
-          setResponse("3");
-        } else {
           navigate("/new-page");
+        }
+        else {
+          console.log("Received Data:", message.data);
+          setResponse(message.data);
         }
       }
     };
@@ -73,44 +61,47 @@ const CreateAccount: React.FC = () => {
   };
 
   return (
-    <>
-      <h2>E-mail
+    <div className="container">
+      <h1>Rejestracja</h1>
+      <h2>
+        E-mail
         <br/>
         <input
           value={message1}
           onChange={(e) => setMessage1(e.target.value)}
           placeholder="Wpisz E-mail"
-        ></input>
-      <br/>
-      Login
-      <br/>
-      <input
+        />
+        <br/>
+        Login
+        <br/>
+        <input
           value={message2}
           onChange={(e) => setMessage2(e.target.value)}
           placeholder="Wpisz Login"
-        ></input>
-      <br/>
-      Haslo
-      <br/>
-      <input
+        />
+        <br/>
+        Haslo
+        <br/>
+        <input
           value={message3}
           onChange={(e) => setMessage3(e.target.value)}
-          placeholder="Wpisz E-mail"
-        ></input>
-<br/>
-      Powtorz haslo
-      <br/>
-      <input
+          placeholder="Wpisz Haslo"
+        />
+        <br/>
+        Powtorz haslo
+        <br/>
+        <input
           value={message4}
           onChange={(e) => setMessage4(e.target.value)}
-          placeholder="Wpisz E-mail"
-        ></input>
+          placeholder="Wpisz Haslo ponownie"
+        />
         <br/>
-    <button onClick={handleSend}>Zaloguj</button>
-    <p>{response}</p>
-    </h2>
-    </>
+        <button onClick={handleSend}>Zaloguj</button>
+        <p>{response}</p>
+      </h2>
+    </div>
   );
+  
 };
 
 const Login: React.FC = () => {
