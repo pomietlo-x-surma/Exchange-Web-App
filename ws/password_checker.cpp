@@ -12,6 +12,11 @@ std::string pass_check(std::string password) {
 
 
     std::string nap = "";
+
+    if (password.find('\\0') != std::string::npos) {
+        return "Haslo nie moze zawierac znaku '\\0'!";
+    }
+
     if (std::regex_search(password, wzorzec_nalfa) &&
         std::regex_search(password, wzorzec_liczba) &&
         std::regex_search(password, wzorzec_AZ) &&
@@ -45,9 +50,13 @@ std::string pass_check(std::string password) {
 }
 
 bool email_check(std::string email) {
-    std::regex email_regex("[0-9a-zA-Z]+@[0-9a-z]+\\.[a-z]{2}");
+    std::regex email_regex("[0-9a-zA-Z]+@[0-9a-z]+\\.[a-z]{2,3}");
     if (std::regex_match(email, email_regex)) {
         return true;
+    }
+    if (email.find('\\0') != std::string::npos) {
+        std::cout << "Bledny adres E-mail!\nEmail nie moze zawierac znaku null (\\0)!\n";
+        return false;
     }
     std::cout << "Bledny adres E-mail!\nEmail musi musi byc w postaci np. example123@gmail.pl!\n";
     return false;
@@ -59,7 +68,12 @@ bool login_check(std::string user) {
     if (std::regex_match(user, user_regex)) {
         return true;
     }
-    std::cout << "Bledna nazwa uzytkownika!\nNazwa uzytkownika nie moze zawieracznakow specjalnych\ni miec dlugosc od 4 do 30 znakow!\n";
+    if (user.find('\\0') != std::string::npos) {
+        std::cout << "Bledna nazwa uzytkownika!\nNazwa uzytkownika nie moze zawierac znaku null (\\0)!\n";
+        return false;
+    }
+
+    std::cout << "Bledna nazwa uzytkownika!\nNazwa uzytkownika nie moze zawierac znakow specjalnych\ni miec dlugosc od 4 do 30 znakow!\n";
     return false;
 
 }
