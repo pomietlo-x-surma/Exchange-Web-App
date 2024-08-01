@@ -74,20 +74,20 @@ const CreateAccount: React.FC = () => {
 
   return (
     <>
-      <h2>Login
+      <h2>E-mail
         <br/>
         <input
           value={message1}
           onChange={(e) => setMessage1(e.target.value)}
-          placeholder="Wpisz login"
+          placeholder="Wpisz E-mail"
         ></input>
       <br/>
-      E-mail
+      Login
       <br/>
       <input
           value={message2}
           onChange={(e) => setMessage2(e.target.value)}
-          placeholder="Wpisz E-mail"
+          placeholder="Wpisz Login"
         ></input>
       <br/>
       Haslo
@@ -155,14 +155,14 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <h1>Login:</h1>
+      <h1>E-mail:</h1>
       <div>
         <h2>
           <input
             type="text"
             value={message1}
             onChange={(e) => setMessage1(e.target.value)}
-            placeholder="Wpisz login"
+            placeholder="Wpisz E-mail"
           />
         </h2>
       </div>
