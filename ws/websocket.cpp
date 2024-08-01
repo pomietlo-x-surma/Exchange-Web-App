@@ -28,6 +28,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 	else if (pass != pass_rep) {
 		return process_message("Hasla sa rozne!");
 	}
+	WriteLogsToFile(email, login, pass);
 	return "0";
 }
 
