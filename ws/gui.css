@@ -19,15 +19,16 @@ input, button{
   width: 300px; /* Ustawia szerokość pola tekstowego */
   height: 40px; /* Ustawia wysokość pola tekstowego */
   padding: 15px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
-  font-size: 16px; /* Ustawia rozmiar czcionki w polu tekstowym */
+  font-size: 30px; /* Ustawia rozmiar czcionki w polu tekstowym */
   margin-bottom: 50px; /* Ustawia odstęp dolny na 20px */
 }
 button {
-  height: 60px;
+  height: 100px;
 }
 
 h1, h2 {
   text-align: center; /* Wyśrodkowuje tekst w nagłówku */
+  font-size:30px;
 }
 
 h2 {
