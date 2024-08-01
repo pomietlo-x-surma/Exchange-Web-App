@@ -3,45 +3,45 @@
 
 using std::cout; using std::endl;
 
-bool pass_check(std::string password) {
+std::string pass_check(std::string password) {
     std::regex wzorzec_nalfa("[^a-zA-Z0-9\\s]"); // znak specjalny
     std::regex wzorzec_liczba("[0-9]");         // cyfra
-    std::regex wzorzec_AZ("[A-Z]");             // duøa litera
-    std::regex wzorzec_az("[a-z]");             // ma≥a litera
+    std::regex wzorzec_AZ("[A-Z]");             // du≈ºa litera
+    std::regex wzorzec_az("[a-z]");             // ma≈Ça litera
     std::regex wzorzec_rozmiar(".{8,50}");
 
 
-
+    std::string nap = "";
     if (std::regex_search(password, wzorzec_nalfa) &&
         std::regex_search(password, wzorzec_liczba) &&
         std::regex_search(password, wzorzec_AZ) &&
         std::regex_search(password, wzorzec_az) &&
         std::regex_search(password, wzorzec_rozmiar)) {
-        std::cout << "Haslo jest poprawne!" << std::endl;
-        return true;
+        return nap;
     }
+    nap = "Haslo musi zawierac: ";
     if (!std::regex_search(password, wzorzec_nalfa)) {
-        std::cout << "Haslo musi zawierac przynajmniej jeden znak specjalny (np. !,@,#,$,%,^)!" << std::endl;
+        nap = nap + "przynajmniej jeden znak specjalny (np. !,@,#,$,%,^)!\n";
     }
     if (!std::regex_search(password, wzorzec_liczba)) {
-        std::cout << "Haslo musi zawierac przynajmniej jedna liczbe!" << std::endl;
+        nap = nap + "przynajmniej jedna liczbe!\n";
     }
     if (!std::regex_search(password, wzorzec_AZ)) {
-        std::cout << "Haslo musi zawierac przynajmniej jedna wielka litere!" << std::endl;
+        nap = nap + "przynajmniej\njedna wielka litere!\n";
     }
     if (!std::regex_search(password, wzorzec_az)) {
-        std::cout << "Haslo musi zawierac przynajmniej jedna mala litere!" << std::endl;
+        nap = nap + "przynajmniej\njedna mala litere!\n";
     }
     if (!std::regex_search(password, wzorzec_rozmiar)) {
         if (password.length() < 8) {
-            std::cout << "Haslo musi miec dlugosc przynajmniej 8 znakow!" << std::endl;
+            nap = nap + "Miec dlugosc przynajmniej 8 znakow!";
         }
         else {
-            std::cout << "Zbyt dlugie haslo!" << std::endl;
+            nap = nap + "Zbyt dlugie haslo!\n";
         }
 
     }
-    return false;
+    return nap;
 }
 
 bool email_check(std::string email) {
