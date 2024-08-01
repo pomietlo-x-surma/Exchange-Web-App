@@ -1,35 +1,40 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .container {
   display: flex; /* Ustawia kontener jako elastyczny box (Flexbox) */
-  justify-content: center; /* Wyśrodkowuje zawartość kontenera poziomo */
-  align-items: center; /* Wyśrodkowuje zawartość kontenera pionowo */
-  height: 100vh; /* Ustawia wysokość kontenera na 100% wysokości okna przeglądarki */
+  flex-direction: column; /* Ustawia kierunek flexboxa na kolumnę */
+  justify-content: center; /* Wyśrodkowuje zawartość kontenera pionowo */
+  align-items: center; /* Wyśrodkowuje zawartość kontenera poziomo */
+  padding: 20px;
+  border-radius: 10px;
 }
 
-input {
-  position: relative; /* Ustawia pozycjonowanie relatywne dla elementu, co pozwala na przesunięcia */
-  width: 230px; /* Ustawia szerokość pola tekstowego */
+input, button{
+  width: 300px; /* Ustawia szerokość pola tekstowego */
   height: 40px; /* Ustawia wysokość pola tekstowego */
-  padding: 10px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
-  font-size: 32px; /* Ustawia rozmiar czcionki w polu tekstowym */ /* Ustawia odstęp górny na 100px */
-  margin-bottom: 50px; /* Ustawia odstęp dolny na 100px */
+  padding: 15px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
+  font-size: 16px; /* Ustawia rozmiar czcionki w polu tekstowym */
+  margin-bottom: 50px; /* Ustawia odstęp dolny na 20px */
+}
+button {
+  height: 60px;
 }
 
-h1 { 
-  font-size: 50px;
-  position: relative;
-    margin: auto;
-    width: 300px;
-    padding: 20px;
-    left: 170%;
-    
+h1, h2 {
+  text-align: center; /* Wyśrodkowuje tekst w nagłówku */
 }
 
-h2 { 
-  font-size: 30px; /* Ustawia rozmiar czcionki w nagłówku */
-  position: relative; /* Ustawia pozycjonowanie relatywne dla nagłówka, co pozwala na przesunięcia */ /* Ustawia odstęp dolny na 100px */
-  left: 600px;
-  bottom: 10px;
-  /* Jeśli potrzebujesz precyzyjnego przesunięcia, użyj bottom lub transform */
-  /* bottom: 50px; */ /* Przesuwa element w górę o 50px (zakomentowane, jeśli używasz margin-top) */
-  /* transform: translateY(-50px); */ /* Przesuwa element w górę o 50px (alternatywna metoda) */
+h2 {
+  margin-bottom: 30px; /* Dodaje odstęp dolny do nagłówka */
+}
+
+p {
+  margin-top: 30px; /* Dodaje odstęp górny do paragrafu */
+  text-align: center; /* Wyśrodkowuje tekst w paragrafie */
 }
