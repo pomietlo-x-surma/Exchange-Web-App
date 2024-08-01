@@ -17,29 +17,26 @@ std::string process_message(const std::string& received_message) {
 }
 std::string check_register(const std::string& email, const std::string& login, const std::string& pass, const std::string& pass_rep) {
 	if (!(email_check(email) && login_check(login))) {
-		return process_message("0");
+		return process_message("bledny E-mail lub haslo!");
 	}
 	else if (check_login_email_existence(email, login)) {
-		return process_message("1");
+		return process_message("podany E-mail lub login juz istnije!");
 	}
-	else if (!pass_check(pass)) {
-		return process_message("2");
+	else if (pass_check(pass)!="") {
+		return process_message(pass_check(pass));
 	}
 	else if (pass != pass_rep) {
-		return process_message("3");
+		return process_message("Hasla sa rozne!");
 	}
-	std::cout << "rejestrowanie!" << std::endl;
-		return "s";
+	return "0";
 }
 
 std::string check_logging(const std::string& email, const std::string& pass) {
 	std::cout << "logowanie!" << std::endl;
 	if (correct_password_check(email, pass)) {
-		std::cout << "uuuuuuuuuuu" << std::endl;
 		return process_message("Witaj" + email + pass);
 
 	}
-	std::cout << email << "**************" << pass << std::endl;
 	return process_message("5");
 }
 
@@ -67,6 +64,7 @@ std::string receive_text(const std::string& wiad) {
 
 
 void serwer() {
+	std::cout << "Rozpoczynanie pracy serwera!\n";
 	try {
 		boost::asio::io_context ioc;
 		tcp::acceptor acceptor{ ioc, {tcp::v4(), 8080} };
