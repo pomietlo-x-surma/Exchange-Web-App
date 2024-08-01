@@ -4,7 +4,7 @@
 #include <iostream>
 #include "handling_CSV_file.h"
 
-
+//ta funkcja to nw czy jest potrzebna
 bool EnsureFileExists(const std::string& file_path) {
 	std::ifstream file(file_path);
 	if (!file) {
@@ -32,14 +32,14 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& email, con
 
 	file << email << ',' << login << ',' << password << std::endl;
 
-	if (file.fail()) {
+	if (file.fail()) { //ta funckja to jest chyba nie potrzebna
 		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
 		file.close();
 		return false;
 	}
 
 	file.close();
-	if (file.fail()) {
+	if (file.fail()) { //ta chyba też
 		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
 		return false;
 	}
@@ -47,6 +47,10 @@ bool WriteLogsToFile(const std::string& file_path, const std::string& email, con
 	return true;
 }
 
+
+//ta funkcja i ta  check_login_email_existence mają dużo części wspólnych 
+//więc ja bym albo zrobił 3cią funkcję która to upraszcza albo zrobił
+// jedną funkcję z połączonymi elementami
 bool correct_password_check(const std::string& input_email, const std::string& input_pass) {
 	const std::string& file_path = "Dane.csv";
 	if (!EnsureFileExists(file_path)) {
@@ -68,9 +72,13 @@ bool correct_password_check(const std::string& input_email, const std::string& i
 		std::getline(ss, stored_pass, ',');
 		std::getline(ss, stored_login, ',');
 		std::cout << stored_email << " " << stored_login << " " << stored_pass << "////" << input_email << " " << input_pass << "s" << std::endl;
+		//to jest testowy cout więc raczej do wyjebania
 		if ((stored_email == input_email) && (stored_pass == input_pass)) {
 			return true;
 		}
+
+
+		//tutaj chyba te funkcje sa nie potrzebne
 		if (stored_email == input_email) {
 			if (stored_pass != input_pass) {
 				std::cout << "Podany login lub hasło jest niepoprawne" << std::endl;
@@ -89,6 +97,7 @@ bool correct_password_check(const std::string& input_email, const std::string& i
 	file.close();
 	return false;
 }
+
 bool check_login_email_existence(const std::string email, const std::string& login) {
 	const std::string& file_path = "Dane.csv";
 	std::string line;
