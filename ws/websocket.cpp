@@ -35,7 +35,8 @@ std::string check_register(const std::string& email, const std::string& login, c
 std::string check_logging(const std::string& email, const std::string& pass) {
 	std::cout << "logowanie!" << std::endl;
 	if (correct_password_check(email, pass)) {
-		return process_message("Witaj" + email + pass);
+		std::cout << "szim" << std::endl;
+		return process_message(email);
 
 	}
 	return process_message("5");
@@ -52,7 +53,7 @@ std::string receive_text(const std::string& wiad) {
 		std::getline(sa, pass, ' ');
 		return check_logging(email, pass);
 	}
-	if (tag == "1") {
+	else if (tag == "1") {
 		std::getline(sa, login, ' ');
 		std::getline(sa, pass, ' ');
 		std::getline(sa, pass_rep, ' ');
