@@ -5,10 +5,7 @@
 #include "handling_CSV_file.h"
 
 
-bool WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password) {
-	if (!EnsureFileExists(file_path)) {
-		return false;
-	}
+bool WriteLogsToFile(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path) {
 
 	std::ofstream file(file_path, std::ios_base::app);
 	if (!file.is_open()) {
@@ -55,8 +52,6 @@ bool correct_password_check(const std::string& input_email, const std::string& i
 		std::getline(ss, stored_pass, ',');
 		std::getline(ss, stored_login, ',');
 		//std::cout << stored_email << " " << stored_login << " " << stored_pass << "////" << input_email << " " << input_pass << "s" << std::endl;
-		//pomietło: to jest testowy cout więc raczej do wyjebania
-		//surma: też mi się tak wydaje, ale na razie zostawię zahashowane po prostu
 		if ((stored_email == input_email) && (stored_pass == input_pass)) {
 			return true;
 		}
@@ -92,4 +87,3 @@ bool check_login_email_existence(const std::string email, const std::string& log
 	}
 	return false;
 }
-
