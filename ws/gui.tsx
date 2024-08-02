@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   useNavigate,
+  useParams,
   Link,
 } from "react-router-dom";
 import "./App.css";
@@ -16,23 +17,25 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/new-page" element={<NewPage />} />
+        <Route path="/new-page/:message" element={<NewPage />} />
         <Route path="/create-account" element={<CreateAccount />} />
       </Routes>
     </Router>
   );
 };
+
 const CreateAccount: React.FC = () => {
-  const [message1, setMessage1] = useState<string>(""); //login
-  const [message2, setMessage2] = useState<string>(""); //mail
-  const [message3, setMessage3] = useState<string>(""); //haslo
-  const [message4, setMessage4] = useState<string>(""); //pwt haslo
+  const [message1, setMessage1] = useState<string>(""); // login
+  const [message2, setMessage2] = useState<string>(""); // mail
+  const [message3, setMessage3] = useState<string>(""); // haslo
+  const [message4, setMessage4] = useState<string>(""); // powtorz haslo
   const [response, setResponse] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     client.onopen = () => {
-      console.log("polaczono");
+      console.log("połączono");
       setIsConnected(true);
     };
     client.onclose = () => {
@@ -41,17 +44,17 @@ const CreateAccount: React.FC = () => {
     };
 
     client.onmessage = (message: IMessageEvent) => {
-      if (typeof message.data == "string") {
-        if (message.data == "0") {
-          navigate("/new-page");
-        }
-        else {
+      if (typeof message.data === "string") {
+        if (message.data === "0") {
+          navigate(`/new-page/${message.data}`);
+        } else {
           console.log("Received Data:", message.data);
           setResponse(message.data);
         }
       }
     };
   }, [navigate]);
+
   const handleSend = () => {
     if (isConnected) {
       const combinedMessage = `1,${message1} ${message2} ${message3} ${message4}`;
@@ -65,43 +68,42 @@ const CreateAccount: React.FC = () => {
       <h1>Rejestracja</h1>
       <h2>
         E-mail
-        <br/>
+        <br />
         <input
           value={message1}
           onChange={(e) => setMessage1(e.target.value)}
           placeholder="Wpisz E-mail"
         />
-        <br/>
+        <br />
         Login
-        <br/>
+        <br />
         <input
           value={message2}
           onChange={(e) => setMessage2(e.target.value)}
           placeholder="Wpisz Login"
         />
-        <br/>
-        Haslo
-        <br/>
+        <br />
+        Hasło
+        <br />
         <input
           value={message3}
           onChange={(e) => setMessage3(e.target.value)}
-          placeholder="Wpisz Haslo"
+          placeholder="Wpisz Hasło"
         />
-        <br/>
-        Powtorz haslo
-        <br/>
+        <br />
+        Powtórz hasło
+        <br />
         <input
           value={message4}
           onChange={(e) => setMessage4(e.target.value)}
-          placeholder="Wpisz Haslo ponownie"
+          placeholder="Wpisz Hasło ponownie"
         />
-        <br/>
+        <br />
         <button onClick={handleSend}>Zaloguj</button>
         <p>{response}</p>
       </h2>
     </div>
   );
-  
 };
 
 const Login: React.FC = () => {
@@ -128,9 +130,9 @@ const Login: React.FC = () => {
         setResponse(message.data);
         if (message.data === "5") {
           console.log("Received non-string message:", message.data);
-          setResponse("Zly login lub haslo!");
+          setResponse("Zły login lub hasło!");
         } else {
-          navigate("/new-page");
+          navigate(`/new-page/${message.data}`);
         }
       }
     };
@@ -158,7 +160,7 @@ const Login: React.FC = () => {
         </h2>
       </div>
       <div>
-        <br></br>
+        <br />
         <h1>Hasło:</h1>
         <h2>
           <input
@@ -166,7 +168,7 @@ const Login: React.FC = () => {
             value={message2}
             onChange={(e) => setMessage2(e.target.value)}
             placeholder="Hasło"
-          />{" "}
+          />
         </h2>
       </div>
       <h1>
@@ -183,7 +185,11 @@ const Login: React.FC = () => {
 };
 
 const NewPage: React.FC = () => {
-  return <div>Witamy na nowej stronie!</div>;
+  const { message } = useParams<{ message: string }>();
+    return(
+      <></>
+    );
+
 };
 
 export default App;
