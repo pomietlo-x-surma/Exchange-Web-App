@@ -185,9 +185,49 @@ const Login: React.FC = () => {
 };
 
 const NewPage: React.FC = () => {
-  const { message } = useParams<{ message: string }>();
+  const [message1, setMessage1] = useState<string>("");
+  const [message2, setMessage2] = useState<string>("");
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [response, setResponse] = useState<string>("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    client.onopen = () => {
+      console.log("Połączono");
+      setIsConnected(true);
+    };
+
+    client.onclose = () => {
+      console.log("Brak połączenia");
+      setIsConnected(false);
+    };
+
+    client.onmessage = (message: IMessageEvent) => {
+      if (typeof message.data === "string") {
+        console.log("Received Data:", message.data);
+        setResponse(message.data);
+        // if (message.data === "5") {
+        //   console.log("Received non-string message:", message.data);
+        //   setResponse("Zły login lub hasło!");
+        // } else {
+        //   navigate(`/new-page/${message.data}`);
+        // }
+      }
+    };
+  }, [navigate]);
+
+  const handleSend = () => {
+    if (isConnected) {
+      const combinedMessage = `0,${message1} ${message2}`;
+      client.send(combinedMessage);
+      setResponse(`Wysłano: ${combinedMessage}`);
+    }
+  };
     return(
-      <></>
+      <>
+      <h3>Witaj<br/><br/><br/>
+      twoj stan konta: ...</h3>
+      </>
     );
 
 };
