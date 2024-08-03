@@ -15,7 +15,7 @@ html, body {
   border-radius: 10px;
 }
 
-input, button{
+input, button, h3{
   width: 300px; /* Ustawia szerokość pola tekstowego */
   height: 40px; /* Ustawia wysokość pola tekstowego */
   padding: 15px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
@@ -23,8 +23,58 @@ input, button{
   margin-bottom: 50px; /* Ustawia odstęp dolny na 20px */
 }
 button {
-  height: 100px;
+  height: 150px;
+
 }
+.rect-1 , .rect-2{
+  position: fixed;
+  margin-top: 40px; /* Przesuwa prostokąt o 20px w dół */
+  position: relative; /* Ustawia prostokąt jako odniesienie dla absolutnego pozycjonowania wewnątrz */
+  display: flex; /* Ustawia prostokąt jako elastyczny box */
+  justify-content: center; /* Wyśrodkowuje zawartość prostokąta poziomo */
+  align-items: center; /* Wyśrodkowuje zawartość prostokąta pionowo */
+}
+
+.rect-1{
+  width: 300px;
+  height: 70px;
+  border: 5px solid white;
+  background-color: rgb(227, 143, 143);
+}
+.text{
+  align-items: center;
+  position: absolute;
+  display: flex;
+  justify-content: center;/* Odległość od lewej krawędzi prostokąta */
+  left:20px;
+  color: rgb(0, 0, 0); 
+  font-size: 20px;
+}
+
+h3, h4{
+  position: fixed;
+  left: 100px;
+  top: 10px;
+  margin-top: 20px;
+  color: white; 
+}
+
+.rect-2{
+  width: 600px;
+  height: 250px;
+  background-color: rgb(255, 255, 255);
+  border: 5px solid rgb(103, 101, 101);
+  left:0px;
+  top:-20px;
+}
+
+h4{
+  position: fixed;
+  left: 100px;
+  top: 10px;
+  margin-top: 20px;
+}
+
 
 h1, h2 {
   text-align: center; /* Wyśrodkowuje tekst w nagłówku */
