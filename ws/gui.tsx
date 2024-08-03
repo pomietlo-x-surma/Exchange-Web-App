@@ -160,7 +160,6 @@ const Login: React.FC = () => {
         </h2>
       </div>
       <div>
-        <br />
         <h1>Hasło:</h1>
         <h2>
           <input
