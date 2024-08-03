@@ -225,8 +225,15 @@ const NewPage: React.FC = () => {
   };
     return(
       <>
-      <h3>Witaj<br/><br/><br/>
-      twoj stan konta: ...</h3>
+      <h3>Witaj...<br/><br/>
+      Aktualny kurs wybranej waluty: <br/>
+      <div className="rect-1">
+        
+        <span className="text" >USD to PLN:</span>
+        </div>
+      <p>Wykres zmien kursu wybranej waluty</p>
+      <h4 className="rect-2"></h4>
+        </h3>
       </>
     );
 
