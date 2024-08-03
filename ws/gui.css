@@ -56,13 +56,13 @@ h3, h4{
   position: fixed;
   left: 100px;
   top: 10px;
-  margin-top: 20px;
+  margin-top: -20px;
   color: white; 
 }
 
 .rect-2{
   width: 600px;
-  height: 250px;
+  height: 240px;
   background-color: rgb(255, 255, 255);
   border: 5px solid rgb(103, 101, 101);
   left:0px;
