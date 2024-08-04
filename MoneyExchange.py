@@ -24,11 +24,22 @@ def get_currency(currency1, currency2):
             soup = BeautifulSoup(page.text, 'html.parser')
             res = soup.find_all('div', attrs={'class': 'YMlKec fxKbKc'})
             res = float([x.text for x in res][0].replace(',', ''))
-            return res, currency2
+            # Extract chart SVG from 1D
+            #need to add more date options
+            chart_div = soup.find('div', attrs={'class': 'ushogf'})
+            if chart_div:
+                svg = chart_div.find('svg')
+                if svg:
+                    svg_content = str(svg)
+                    return res, curr[currency2][1], svg_content
+            return res, curr[currency2][1], None
     except ValueError:
         raise ValueError("Wystąpił błąd!")
     except Exception as e:
         print(f"Błąd: {e}")
+
+
+
 
 
 if __name__ == "__main__":
@@ -38,4 +49,9 @@ if __name__ == "__main__":
         currency1 = sys.argv[1].lower()
         currency2 = sys.argv[2].lower()
         result = get_currency(currency1, currency2)
-        print(f"{result[0]}")
+        print(f"Exchange Rate: {result[0]} {result[1]}")
+        if result[2]:
+            print("Chart SVG:")
+            print(result[2])
+        else:
+            print("No chart found.")
