@@ -234,8 +234,13 @@ const NewPage: React.FC = () => {
       <h4 className="rect-2"></h4>
         </h3>
 
-        <h4>twoje saldo</h4>
+        <h4>twoje saldo
+          <h5><button onClick={handleSend}>Dokonaj tranzakcji</button></h5>
 
+
+
+
+        </h4>
 
 
       </>
