@@ -233,6 +233,11 @@ const NewPage: React.FC = () => {
       <p>Wykres zmien kursu wybranej waluty</p>
       <h4 className="rect-2"></h4>
         </h3>
+
+        <h4>twoje saldo</h4>
+
+
+
       </>
     );
 
