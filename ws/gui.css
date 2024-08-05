@@ -27,6 +27,17 @@ button {
   height: 150px;
 
 }
+
+.button1{
+  width: 150px; /* Ustawia szerokość pola tekstowego */
+  height: 50px; 
+  position: relative;
+  display: flex;
+  top: -300px;
+  font-size: 30px;
+  left: 100px;
+  margin: 10px;
+}
 .rect-1 , .rect-2{
   position: fixed;
   margin-top: 40px; /* Przesuwa prostokąt o 20px w dół */
@@ -112,4 +123,36 @@ h4{
 h5{
   position: relative;
   top: 400px;
+}
+
+
+.dropdown{
+  display: inline-block;
+}
+
+.dropdown button{
+  background-color: rgb(203, 30, 30);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+.dropdown a{
+  display: block;
+  color: black;
+  text-decoration: none;
+  padding: 10px 15px;
+}
+.dropdown .content{
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 100px;
+  box-shadow:2px 2px 5px black;
+}
+.dropdown:hover .content{
+  display: block;
+}
+.dropdown a:hover{
+  background-color: aliceblue;
 }
