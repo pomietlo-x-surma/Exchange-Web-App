@@ -184,7 +184,8 @@ const Login: React.FC = () => {
 };
 
 const NewPage: React.FC = () => {
-  const [selectedCurrency, setSelectedCurrency] = useState('Wybierz walutę');
+  const [selectedCurrency1, setSelectedCurrency1] = useState('Wybierz walutę');
+  const [selectedCurrency2, setSelectedCurrency2] = useState('Wybierz walutę');
   const [message1, setMessage1] = useState<string>("");
   const [message2, setMessage2] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -223,8 +224,11 @@ const NewPage: React.FC = () => {
       setResponse(`Wysłano: ${combinedMessage}`);
     }
   };
-  const handleSelect = (currency: any) => {
-    setSelectedCurrency(currency);
+  const handleSelect1 = (currency: any) => {
+    setSelectedCurrency1(currency);
+  };
+  const handleSelect2 = (currency: any) => {
+    setSelectedCurrency2(currency);
   };
   return (
     <>
@@ -247,24 +251,22 @@ const NewPage: React.FC = () => {
         </h5>
       </h4>
       <div className="dropdown">
-        szim
         <div className="button1">
-          <button>waluta</button>
+          <button>{selectedCurrency1}</button>
           <div className="content">
-          <a href="#" onClick={() => handleSelect('USD')}>USD</a>
-            <a href="#" onClick={() => handleSelect('PLN')}>PLN</a>
-            <a href="#" onClick={() => handleSelect('EUR')}>EUR</a>
+          <a href="#" onClick={() => handleSelect1('USD')}>USD</a>
+            <a href="#" onClick={() => handleSelect1('PLN')}>PLN</a>
+            <a href="#" onClick={() => handleSelect1('EUR')}>EUR</a>
           </div>
         </div>
       </div>
       <div className="dropdown">
-        szim
         <div className="button1">
-          <button>waluta</button>
+          <button>{selectedCurrency2}</button>
           <div className="content">
-            <a href="#" onClick={() => handleSelect('USD')}>USD</a>
-            <a href="#" onClick={() => handleSelect('PLN')}>PLN</a>
-            <a href="#" onClick={() => handleSelect('EUR')}>EUR</a>
+            <a href="#" onClick={() => handleSelect2('USD')}>USD</a>
+            <a href="#" onClick={() => handleSelect2('PLN')}>PLN</a>
+            <a href="#" onClick={() => handleSelect2('EUR')}>EUR</a>
             </div>
         </div>
       </div>
