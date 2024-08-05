@@ -21,7 +21,7 @@ input, button, h3{
   padding: 15px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
   font-size: 30px; /* Ustawia rozmiar czcionki w polu tekstowym */
   margin-bottom: 40px; /* Ustawia odstęp dolny na 20px */
-  margin-top:0px;
+  margin-top:-50px;
 }
 button {
   height: 150px;
@@ -33,9 +33,9 @@ button {
   height: 50px; 
   position: relative;
   display: flex;
-  top: -300px;
+  top: -100px;
   font-size: 30px;
-  left: 100px;
+  left: -100px;
   margin: 10px;
 }
 .rect-1 , .rect-2{
