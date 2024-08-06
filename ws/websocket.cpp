@@ -4,6 +4,7 @@
 #include <thread>
 #include "handling_CSV_file.h"
 #include "password_checker.h"
+#include "money_converter.h"
 
 
 using tcp = boost::asio::ip::tcp;
@@ -41,23 +42,32 @@ std::string check_logging(const std::string& email, const std::string& pass) {
 	}
 	return process_message("5");
 }
-
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
 	const std::string& file_path = "Dane.csv";
 	std::stringstream sa(wiad);
-	std::string tag, email, login, pass, pass_rep;
+	std::string tag;
 	std::getline(sa, tag, ',');
-	std::getline(sa, email, ' ');
-	if (tag == "0") {
-		std::getline(sa, pass, ' ');
-		return check_logging(email, pass);
+	if (tag == "0" || tag == "1") {
+		std::string email, login, pass, pass_rep;
+		std::getline(sa, email, ' ');
+		if (tag == "0") {
+			std::getline(sa, pass, ' ');
+			return check_logging(email, pass);
+		}
+		else if (tag == "1") {
+			std::getline(sa, login, ' ');
+			std::getline(sa, pass, ' ');
+			std::getline(sa, pass_rep, ' ');
+			return check_register(email, login, pass, pass_rep);
+		}
 	}
-	else if (tag == "1") {
-		std::getline(sa, login, ' ');
-		std::getline(sa, pass, ' ');
-		std::getline(sa, pass_rep, ' ');
-		return check_register(email, login, pass, pass_rep);
+	else if (tag == "3") {
+		std::string waluta1, waluta2;
+		std::getline(sa, waluta1, ' ');
+		std::getline(sa, waluta2, ' ');
+		return process_message(currency_comparison(waluta1, waluta2));
+
 	}
 	return "blad";
 }
