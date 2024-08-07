@@ -207,6 +207,7 @@ const NewPage: React.FC = () => {
       if (typeof message.data === "string") {
         console.log("Received Data:", message.data);
         setResponse(message.data);
+
         // if (message.data === "5") {
         //   console.log("Received non-string message:", message.data);
         //   setResponse("Zły login lub hasło!");
@@ -222,6 +223,14 @@ const NewPage: React.FC = () => {
       const combinedMessage = `0,${message1} ${message2}`;
       client.send(combinedMessage);
       setResponse(`Wysłano: ${combinedMessage}`);
+      
+    }
+  };
+  const handleSend2 = () => {
+    if (isConnected) {
+      const combinedMessage = `3,${selectedCurrency1} ${selectedCurrency2}`;
+      client.send(combinedMessage);
+      console.log(`Waluta ${combinedMessage}`);
     }
   };
   const handleSelect1 = (currency: any) => {
@@ -240,7 +249,7 @@ const NewPage: React.FC = () => {
         <div className="rect-1">
           <span className="text">USD to PLN:</span>
         </div>
-        <p>Wykres zmien kursu wybranej waluty</p>
+        <p>Wykres zmian kursu wybranej waluty</p>
         <h4 className="rect-2"></h4>
       </h3>
 
@@ -252,22 +261,23 @@ const NewPage: React.FC = () => {
       </h4>
       <div className="dropdown">
         <div className="button1">
-          <button>{selectedCurrency1}</button>
+          <button onClick={handleSend2}>{selectedCurrency1}</button>
           <div className="content">
-          <a href="#" onClick={() => handleSelect1('USD')}>USD</a>
-            <a href="#" onClick={() => handleSelect1('PLN')}>PLN</a>
-            <a href="#" onClick={() => handleSelect1('EUR')}>EUR</a>
+            <a href="#" onClick={() => handleSelect1('dollar')}>USD</a>
+            <a href="#" onClick={() => handleSelect1('zloty')}>PLN</a>
+            <a href="#" onClick={() => handleSelect1('euro')}>EUR</a>
           </div>
         </div>
       </div>
       <div className="dropdown">
         <div className="button1">
-          <button>{selectedCurrency2}</button>
+          <button onClick={handleSend2}>{selectedCurrency2}</button>
           <div className="content">
-            <a href="#" onClick={() => handleSelect2('USD')}>USD</a>
-            <a href="#" onClick={() => handleSelect2('PLN')}>PLN</a>
-            <a href="#" onClick={() => handleSelect2('EUR')}>EUR</a>
+            <a href="#" onClick={() => handleSelect2('dolar')}>USD</a>
+            <a href="#" onClick={() => handleSelect2('zloty')}>PLN</a>
+            <a href="#" onClick={() => handleSelect2('euro')}>EUR</a>
             </div>
+            <p>{response}</p>
         </div>
       </div>
     </>
