@@ -39,7 +39,8 @@ bool WriteUser(const std::string& email, const std::string& login, const std::st
 		return false;
 	}
 
-	file << email << ',' << login << ',' << password << std::endl;
+	file << email << ',' << login << ',' << password << euro << ',' << euro_count <<  dolar << ',' << dolar_count
+		<< zloty << ',' << zloty_count << std::endl;
 
 	if (file.fail()) { //ta funckja to jest chyba nie potrzebna
 		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
