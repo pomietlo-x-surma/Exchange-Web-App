@@ -1,6 +1,2 @@
-﻿  CurrencyTransaction.cpp
-  handling_CSV_file.cpp
-  Pass-Checker.cpp
-  User_info_balance.cpp
-  Generowanie kodu...
-  Pass-Checker.vcxproj -> C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\Debug\Pass-Checker.exe
+﻿  money_converter.cpp
+C:\Users\User\source\repos\pomietlo-x-surma\Pass-Checker\Pass-Checker\money_converter.cpp(55,26): error C2668: "currency_comparison": niejednoznaczne wywołanie przeciążonej funkcji

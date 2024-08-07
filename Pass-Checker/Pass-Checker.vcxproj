@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="CurrencyTransaction.cpp" />
     <ClCompile Include="handling_CSV_file.cpp" />
+    <ClCompile Include="money_converter.cpp" />
     <ClCompile Include="Pass-Checker.cpp" />
     <ClCompile Include="password_checker.cpp" />
     <ClCompile Include="User_info_balance.cpp" />
@@ -136,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="CurrencyTransaction.h" />
     <ClInclude Include="handling_CSV_file.h" />
+    <ClInclude Include="money_converter.h" />
     <ClInclude Include="password_checker.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
