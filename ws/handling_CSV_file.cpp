@@ -29,6 +29,35 @@ bool WriteLogsToFile(const std::string& email, const std::string& login, const s
 
 	return true;
 }
+bool WriteUser(const std::string& email, const std::string& login, const std::string& password,
+			   const std::string& euro, const std::string& euro_count, const std::string& dolar, const std::string& dolar_count,
+			   const std::string& zloty, const std::string& zloty_count, const std::string& file_path ) {
+
+	std::ofstream file(file_path, std::ios_base::app);
+	if (!file.is_open()) {
+		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
+		return false;
+	}
+
+	file << email << ',' << login << ',' << password << std::endl;
+
+	if (file.fail()) { //ta funckja to jest chyba nie potrzebna
+		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
+		file.close();
+		return false;
+	}
+
+	file.close();
+	if (file.fail()) { //ta chyba też
+		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+
+
 
 
 //ta funkcja i ta  check_login_email_existence mają dużo części wspólnych 
