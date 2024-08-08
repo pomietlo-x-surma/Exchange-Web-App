@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include "handling_CSV_file.h"
-
+#include <vector>
 
 void WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password) {
 
@@ -11,39 +11,43 @@ void WriteLogsToFile(const std::string& file_path, const std::string& email, con
 	if (!file.is_open()) {
 		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
 	}
-
 	file << email << ',' << login << ',' << password << '\n';
+	file.close();
+}
 
-	if (file.fail()) {
-		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
+
+
+void WriteLogsToFile(const std::string& file_path, const std::string& login, const std::string& euro,
+	const std::string& dolar, const std::string& zloty, bool reg) {
+
+	std::string w = login + ',' + euro + ',' + dolar + ',' + zloty + '\n';
+
+	if (reg) {
+		std::ofstream file(file_path, std::ios_base::app);
+		file << w;
 		file.close();
 	}
+	else {
+		std::ifstream infile(file_path);
+		std::vector<std::string> lines;
+		std::string line;
 
-	file.close();
-	if (file.fail()) {
-		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
+		while (std::getline(infile, line)) {
+			std::stringstream ss(line);
+			std::string login_infile;
+			std::getline(ss, login_infile, ',');
+
+			if (login_infile == login) {
+				lines.push_back(w);
+			}
+		}
+
+		infile.close();
+
 	}
 }
-void WriteLogsToFile(const std::string& file_path, const std::string& login, const std::string& euro, 
-					 const std::string& dolar, const std::string& zloty) {
 
-	std::ofstream file(file_path, std::ios_base::app);
-	if (!file.is_open()) {
-		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
-	}
 
-	file  << login << ',' << euro << ',' << dolar << ',' << zloty << '\n';
-
-	if (file.fail()) {
-		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
-		file.close();
-	}
-
-	file.close();
-	if (file.fail()) {
-		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
-	}
-}
 
 bool correct_password_check(const std::string& input_email, const std::string& input_pass) {
 	const std::string& file_path = "Dane.csv";
