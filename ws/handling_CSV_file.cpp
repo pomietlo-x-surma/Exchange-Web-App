@@ -5,21 +5,34 @@
 #include "handling_CSV_file.h"
 
 
-void WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password,
-	const std::string& euro, const std::string& dolar, const std::string& zloty) {
+void WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password) {
 
 	std::ofstream file(file_path, std::ios_base::app);
 	if (!file.is_open()) {
 		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
 	}
 
-	file << email << ',' << login << ',';
-	if (password != "") {
-		file << password << '\n';
+	file << email << ',' << login << ',' << password << '\n';
+
+	if (file.fail()) {
+		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
+		file.close();
 	}
-	else if (euro != "") {
-		file << email << ',' << login << ',' << euro << ',' << dolar << ',' << zloty << '\n';
+
+	file.close();
+	if (file.fail()) {
+		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
 	}
+}
+void WriteLogsToFile(const std::string& file_path, const std::string& login, const std::string& euro, 
+					 const std::string& dolar, const std::string& zloty) {
+
+	std::ofstream file(file_path, std::ios_base::app);
+	if (!file.is_open()) {
+		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
+	}
+
+	file  << login << ',' << euro << ',' << dolar << ',' << zloty << '\n';
 
 	if (file.fail()) {
 		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
