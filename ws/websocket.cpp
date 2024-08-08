@@ -5,11 +5,11 @@
 #include "handling_CSV_file.h"
 #include "password_checker.h"
 #include "money_converter.h"
+#include "User.h"
 
 
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
-
 
 
 //funkcja wysylajaca do klienta
@@ -29,19 +29,24 @@ std::string check_register(const std::string& email, const std::string& login, c
 	else if (pass != pass_rep) {
 		return process_message("Hasla sa rozne!");
 	}
-	WriteLogsToFile(email, login, pass);
+	std::cout << "test" << '\n';
+	WriteLogsToFile("Dane.csv", email, login, pass);
+	std::cout << email << " " << login << " " << pass << std::endl;
+	WriteLogsToFile("Users.csv", login, "0.0","0.0","0.0",true);
 	return "0";
 }
 
 std::string check_logging(const std::string& email, const std::string& pass) {
 	std::cout << "logowanie!" << std::endl;
 	if (correct_password_check(email, pass)) {
-		std::cout << "szim" << std::endl;
 		return process_message(email);
 
 	}
 	return process_message("5");
 }
+
+
+
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
 	const std::string& file_path = "Dane.csv";
@@ -59,6 +64,7 @@ std::string receive_text(const std::string& wiad) {
 			std::getline(sa, login, ' ');
 			std::getline(sa, pass, ' ');
 			std::getline(sa, pass_rep, ' ');
+			
 			return check_register(email, login, pass, pass_rep);
 		}
 	}
@@ -67,7 +73,6 @@ std::string receive_text(const std::string& wiad) {
 		std::getline(sa, waluta1, ' ');
 		std::getline(sa, waluta2, ' ');
 		return process_message(currency_comparison(waluta1, waluta2));
-
 	}
 	return "blad";
 }
