@@ -5,65 +5,33 @@
 #include "handling_CSV_file.h"
 
 
-bool WriteLogsToFile(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path) {
+void WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password,
+	const std::string& euro, const std::string& dolar, const std::string& zloty) {
 
 	std::ofstream file(file_path, std::ios_base::app);
 	if (!file.is_open()) {
 		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
-		return false;
 	}
 
-	file << email << ',' << login << ',' << password << std::endl;
+	file << email << ',' << login << ',';
+	if (password != "") {
+		file << password << '\n';
+	}
+	else if (euro != "") {
+		file << email << ',' << login << ',' << euro << ',' << dolar << ',' << zloty << '\n';
+	}
 
-	if (file.fail()) { //ta funckja to jest chyba nie potrzebna
+	if (file.fail()) {
 		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
 		file.close();
-		return false;
 	}
 
 	file.close();
-	if (file.fail()) { //ta chyba też
+	if (file.fail()) {
 		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
-		return false;
 	}
-
-	return true;
-}
-bool WriteUser(const std::string& email, const std::string& login, const std::string& password,
-			   const std::string& euro, const std::string& euro_count, const std::string& dolar, const std::string& dolar_count,
-			   const std::string& zloty, const std::string& zloty_count, const std::string& file_path ) {
-
-	std::ofstream file(file_path, std::ios_base::app);
-	if (!file.is_open()) {
-		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
-		return false;
-	}
-
-	file << email << ',' << login << ',' << password << euro << ',' << euro_count <<  dolar << ',' << dolar_count
-		<< zloty << ',' << zloty_count << std::endl;
-
-	if (file.fail()) { //ta funckja to jest chyba nie potrzebna
-		std::cerr << "Error: Failed to write to file " << file_path << "." << std::endl;
-		file.close();
-		return false;
-	}
-
-	file.close();
-	if (file.fail()) { //ta chyba też
-		std::cerr << "Error: Failed to close file " << file_path << "." << std::endl;
-		return false;
-	}
-
-	return true;
 }
 
-
-
-
-
-//ta funkcja i ta  check_login_email_existence mają dużo części wspólnych 
-//więc ja bym albo zrobił 3cią funkcję która to upraszcza albo zrobił
-// jedną funkcję z połączonymi elementami
 bool correct_password_check(const std::string& input_email, const std::string& input_pass) {
 	const std::string& file_path = "Dane.csv";
 
@@ -89,7 +57,7 @@ bool correct_password_check(const std::string& input_email, const std::string& i
 			std::cout << "Podany E-mail lub hasło jest niepoprawne" << std::endl;
 			file.close();
 			return false;
-		}//spr czy user wprowadził poprawne dane podczas logowania
+		}
 	}
 	std::cout << "Uzytkownik o podanym E-mailu nie istnieje!" << std::endl;
 
