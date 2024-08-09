@@ -154,14 +154,14 @@ h3{
   height: 20vw;
   left:5%;
   background-color: aliceblue;
-  margin: 0px;
+  margin: -1vw;
 }
 .saldo{
   position: absolute;
   width: 40vw;
   height: 20vw;
   left: 150%;
-  bottom: 3vw;
+  bottom: 4vw;
   background-color: aqua;
 }
 .currencychange {
@@ -181,16 +181,16 @@ h3{
   cursor: pointer;
   position: relative; /* Relative względem kontenera .currencychange */
   margin: 0;
-  left: 40vw;
-  top: -35vw;
+  left: 25vw;
+  top: -30vw;
 }
 
 .dropdown-content {
-  font-size: 3vw;
+  font-size: 2vw;
   display: none;
   position: absolute; /* Absolutne pozycjonowanie względem .currencychange */
-  left: 40vw;
-  top: -28vw;
+  left: 25vw;
+  top: -23vw;
   background-color: white;
   z-index: 1;
   min-width: 10vw; /* Minimalna szerokość, aby menu było wystarczająco szerokie */
@@ -202,7 +202,7 @@ h3{
 
 .dropdown-content a {
   color: black;
-  padding: 1vw 2vw;
+  padding: 0vw 3vw;
   text-decoration: none;
   display: block;
   font-size: 1em; /* Font-size z jednostką względną */
