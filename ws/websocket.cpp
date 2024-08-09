@@ -6,6 +6,7 @@
 #include "password_checker.h"
 #include "money_converter.h"
 #include "User.h"
+#include <unordered_set>
 
 
 using tcp = boost::asio::ip::tcp;
@@ -30,14 +31,13 @@ std::string check_register(const std::string& email, const std::string& login, c
 		return process_message("Hasla sa rozne!");
 	}
 	std::cout << "test" << '\n';
-	WriteLogsToFile("Dane.csv", email, login, pass);
+	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
 	std::cout << email << " " << login << " " << pass << std::endl;
-	WriteLogsToFile("Users.csv", login, "0.0","0.0","0.0",true);
+	WriteLogsToFile_Currencies(login, "0.0","0.0","0.0", "Users.csv", true);
 	return "0";
 }
 
 std::string check_logging(const std::string& email, const std::string& pass) {
-	std::cout << "logowanie!" << std::endl;
 	if (correct_password_check(email, pass)) {
 		return process_message(email);
 
@@ -49,11 +49,11 @@ std::string check_logging(const std::string& email, const std::string& pass) {
 
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
-	const std::string& file_path = "Dane.csv";
+	const std::string& file_path = "Dane.csv"; 
 	std::stringstream sa(wiad);
 	std::string tag;
 	std::getline(sa, tag, ',');
-	if (tag == "0" || tag == "1") {
+	if (tag == "0" || tag == "1") { //TODO przerobić na switch/case
 		std::string email, login, pass, pass_rep;
 		std::getline(sa, email, ' ');
 		if (tag == "0") {
@@ -70,9 +70,24 @@ std::string receive_text(const std::string& wiad) {
 	}
 	else if (tag == "3") {
 		std::string waluta1, waluta2;
+		std::string all = "";
 		std::getline(sa, waluta1, ' ');
-		std::getline(sa, waluta2, ' ');
-		return process_message(currency_comparison(waluta1, waluta2));
+		//std::getline(sa, waluta2, ' ');
+		std::unordered_set<std::string> currencies= { "zloty", "euro", "dollar" };
+		std::cout << waluta1 << std::endl;
+		for (const auto& v : currencies) {
+			if (v != "zloty") {
+				all += currency_comparison("zloty", v) + "\n";
+			}
+		}
+		return all;
+		//return process_message(currency_comparison(waluta1, waluta2));
+	}
+	else if (tag == "4") {
+		std::string email, login;
+		std::getline(sa, email, ' '); //TODO uprościć zczytywanie getline, żeby nie używać zmiennej "email"
+		std::getline(sa, login, ' '); //tak samo w innych miejsch
+		return process_message(ReadLogs(login, "Users.csv"));
 	}
 	return "blad";
 }
@@ -80,7 +95,7 @@ std::string receive_text(const std::string& wiad) {
 
 
 
-void serwer() {
+void serwer() { //zrobić hermetyzację tej funkcji
 	std::cout << "Rozpoczynanie pracy serwera!\n";
 	try {
 		boost::asio::io_context ioc;
