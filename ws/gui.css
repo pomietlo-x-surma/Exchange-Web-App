@@ -15,7 +15,7 @@ html, body {
   border-radius: 10px;
 }
 
-input, button, h3{
+input, button{
   width: 300px; /* Ustawia szerokość pola tekstowego */
   height: 40px; /* Ustawia wysokość pola tekstowego */
   padding: 15px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
@@ -24,19 +24,19 @@ input, button, h3{
   margin-top:-50px;
 }
 button {
-  height: 150px;
+  height: 100px;
+  position: relative;
+  left:2vw;
 
 }
 
 .button1{
-  width: 150px; /* Ustawia szerokość pola tekstowego */
-  height: 50px; 
   position: relative;
   display: flex;
   top: -100px;
   font-size: 30px;
   left: -100px;
-  margin: 10px;
+  padding:2vw;
 }
 .rect-1 , .rect-2{
   position: fixed;
@@ -63,7 +63,7 @@ button {
   font-size: 20px;
 }
 
-h3, h4{
+h4{
   position: fixed;
   left: 100px;
   top: 10px;
@@ -118,41 +118,96 @@ h4{
   width: 500px;
   height: 300px;
   background-color: aqua;
+  aspect-ratio: 16/9;
 }
 
 h5{
   position: relative;
   top: 400px;
 }
-
-
-.dropdown{
-  display: inline-block;
+h3{
+  position: relative;
+  left: -30vw;
+  top: 0vw;
+  font-size: 3dvmin;
 }
-
-.dropdown button{
-  background-color: rgb(203, 30, 30);
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
+.onevalue{
+  width: 19vw;
+  height: 3vw;
+  background-color: rgb(255, 0, 21);
+  padding: 2%;
+  border: solid white 0.5vw;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  font-size: 2vw;
 }
-.dropdown a{
-  display: block;
+.plot, .saldo{
+  justify-content: top; 
+  font-size: 3dvmin;
   color: black;
-  text-decoration: none;
-  padding: 10px 15px;
+  border: solid gray 0.5vw;
+  margin:0px;
 }
-.dropdown .content{
-  display: none;
-  position: absolute;
-  background-color: white;
-  min-width: 100px;
-  box-shadow:2px 2px 5px black;
-}
-.dropdown:hover .content{
-  display: block;
-}
-.dropdown a:hover{
+.plot{
+  width: 30vw;
+  height: 20vw;
+  left:5%;
   background-color: aliceblue;
+  margin: 0px;
+}
+.saldo{
+  position: absolute;
+  width: 40vw;
+  height: 20vw;
+  left: 150%;
+  bottom: 3vw;
+  background-color: aqua;
+}
+.currencychange {
+  position: relative; /* Kontener do pozycjonowania przycisku i menu */
+  width: fit-content; /* Dostosowuje szerokość kontenera do zawartości */
+}
+
+.dropdown-button {
+  background-color: red;
+  border-radius: 1vw;
+  width: 5vw;
+  padding: 2vw;
+  font-size: 2vw;
+
+  color: white;
+  border: solid 0.5vw white;
+  cursor: pointer;
+  position: relative; /* Relative względem kontenera .currencychange */
+  margin: 0;
+  left: 40vw;
+  top: -35vw;
+}
+
+.dropdown-content {
+  font-size: 3vw;
+  display: none;
+  position: absolute; /* Absolutne pozycjonowanie względem .currencychange */
+  left: 40vw;
+  top: -28vw;
+  background-color: white;
+  z-index: 1;
+  min-width: 10vw; /* Minimalna szerokość, aby menu było wystarczająco szerokie */
+}
+
+.currencychange:hover .dropdown-content {
+  display: block; /* Wyświetla menu rozwijane na hover */
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 1vw 2vw;
+  text-decoration: none;
+  display: block;
+  font-size: 1em; /* Font-size z jednostką względną */
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
 }
