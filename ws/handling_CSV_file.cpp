@@ -5,7 +5,7 @@
 #include "handling_CSV_file.h"
 #include <vector>
 
-void WriteLogsToFile(const std::string& file_path, const std::string& email, const std::string& login, const std::string& password) {
+void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path) {
 
 	std::ofstream file(file_path, std::ios_base::app);
 	if (!file.is_open()) {
@@ -17,8 +17,8 @@ void WriteLogsToFile(const std::string& file_path, const std::string& email, con
 
 
 
-void WriteLogsToFile(const std::string& file_path, const std::string& login, const std::string& euro,
-	const std::string& dolar, const std::string& zloty, bool reg) {
+void WriteLogsToFile_Currencies(const std::string& login, const std::string& euro,
+	const std::string& dolar, const std::string& zloty, const std::string& file_path, bool reg) {
 
 	std::string w = login + ',' + euro + ',' + dolar + ',' + zloty + '\n';
 
@@ -44,6 +44,20 @@ void WriteLogsToFile(const std::string& file_path, const std::string& login, con
 
 		infile.close();
 
+	}
+}
+std::string ReadLogs(const std::string& login, const std::string& file_path) {
+	std::ifstream infile(file_path);
+	std::vector<std::string> lines;
+	std::string line;
+
+	while (std::getline(infile, line)) {
+		std::stringstream ss(line);
+		std::string login_infile;
+		std::getline(ss, login_infile, ',');
+		if (login_infile == login) {
+			return line;
+		}
 	}
 }
 
