@@ -154,7 +154,7 @@ h3{
   height: 20vw;
   left: 150%;
   bottom: 4vw;
-  background-color: aqua;
+  background-color: rgb(235, 139, 126);
 }
 .currencychange {
   position: relative; /* Kontener do pozycjonowania przycisku i menu */
