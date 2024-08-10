@@ -260,31 +260,34 @@ const NewPage: React.FC = () => {
         <br />
         <p className="plot">Wykres waluty:</p>
         <p className="saldo">Twoje saldo:</p>
+        <div
+          className="currencychange"
+          style={{ left: "15vw", position: "relative" }}
+        >
+          <p className="dropdown-button" onClick={handleSend}>
+            {selectedCurrency1}
+          </p>
+          <div className="dropdown-content">
+            <a onClick={() => handleSelect1("USD")}>USD</a>
+            <a onClick={() => handleSelect1("PLN")}>PLN</a>
+            <a onClick={() => handleSelect1("EUR")}>EUR</a>
+          </div>
+        </div>
+        
         <div className="currencychange">
           <p className="dropdown-button" onClick={handleSend}>
             {selectedCurrency2}
           </p>
           <div className="dropdown-content">
-            <a onClick={() => handleSelect1("dollar")}>USD</a>
-            <a onClick={() => handleSelect1("zloty")}>PLN</a>
-            <a onClick={() => handleSelect1("euro")}>EUR</a>
+            <a onClick={() => handleSelect2("USD")}>USD</a>
+            <a onClick={() => handleSelect2("PLN")}>PLN</a>
+            <a onClick={() => handleSelect2("EUR")}>EUR</a>
           </div>
-        </div>
-        <div className="currencychange" style={{ left: '15vw', position: 'relative'}}>
-          <p className="dropdown-button" onClick={handleSend2}>
-            {selectedCurrency2}
-          </p>
-          <div className="dropdown-content">
-            <a onClick={() => handleSelect2("dollar")}>USD</a>
-            <a onClick={() => handleSelect2("zloty")}>PLN</a>
-            <a onClick={() => handleSelect2("euro")}>EUR</a>
-          </div>
+          <p style={{left: '10vh', top: '-35vw', position: 'absolute', fontSize:'7vw'}}>→</p>
         </div>
       </h3>
     </>
   );
-  
-  
 };
 
 export default App;
