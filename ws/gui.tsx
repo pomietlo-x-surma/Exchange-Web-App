@@ -220,7 +220,7 @@ const NewPage: React.FC = () => {
 
   const handleSend = () => {
     if (isConnected) {
-      const combinedMessage = `0,${message1} ${message2}`;
+      const combinedMessage = `11,${message1} ${message2}`;
       client.send(combinedMessage);
       setResponse(`Wysłano: ${combinedMessage}`);
     }
@@ -268,9 +268,9 @@ const NewPage: React.FC = () => {
             {selectedCurrency1}
           </p>
           <div className="dropdown-content">
-            <a onClick={() => {handleSelect1("dollar");handleSend()}}>USD</a>
-            <a onClick={() => {handleSelect1("zloty");handleSend()}}>PLN</a>
-            <a onClick={() => {handleSelect1("euro");handleSend()}}>EUR</a>
+            <a onClick={() => {handleSelect1("dollar");handleSend2()}}>USD</a>
+            <a onClick={() => {handleSelect1("zloty");handleSend2()}}>PLN</a>
+            <a onClick={() => {handleSelect1("euro");handleSend2()}}>EUR</a>
           </div>
         </div>
         <div className="currencychange">
