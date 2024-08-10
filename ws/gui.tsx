@@ -184,8 +184,8 @@ const Login: React.FC = () => {
 };
 
 const NewPage: React.FC = () => {
-  const [selectedCurrency1, setSelectedCurrency1] = useState('Wybierz walutę');
-  const [selectedCurrency2, setSelectedCurrency2] = useState('Wybierz walutę');
+  const [selectedCurrency1, setSelectedCurrency1] = useState("USD");
+  const [selectedCurrency2, setSelectedCurrency2] = useState("PLN");
   const [message1, setMessage1] = useState<string>("");
   const [message2, setMessage2] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -223,7 +223,6 @@ const NewPage: React.FC = () => {
       const combinedMessage = `0,${message1} ${message2}`;
       client.send(combinedMessage);
       setResponse(`Wysłano: ${combinedMessage}`);
-      
     }
   };
   const handleSend2 = () => {
@@ -242,46 +241,50 @@ const NewPage: React.FC = () => {
   return (
     <>
       <h3>
-        Witaj...
+        <p
+          style={{
+            color: "white",
+            left: "1vw",
+            position: "relative",
+            margin: "0px",
+            textAlign: "left",
+          }}
+        >
+          <span style={{ fontSize: "5dvmin", fontWeight: "bold" }}>
+            Witaj username!
+          </span>
+          <br />
+          <br />
+          <span style={{ fontSize: "3dvmin" }}>Kurs wybranej waluty:</span>
+        </p>
         <br />
-        <br />
-        Aktualny kurs wybranej waluty: <br />
-        <div className="rect-1">
-          <span className="text">USD to PLN:</span>
-        </div>
-        <p>Wykres zmian kursu wybranej waluty</p>
-        <h4 className="rect-2"></h4>
-      </h3>
-
-      <h4>
-        twoje saldo
-        <h5>
-          <button onClick={handleSend}>Dokonaj tranzakcji</button>
-        </h5>
-      </h4>
-      <div className="dropdown">
-        <div className="button1">
-          <button onClick={handleSend2}>{selectedCurrency1}</button>
-          <div className="content">
-            <a href="#" onClick={() => handleSelect1('dollar')}>USD</a>
-            <a href="#" onClick={() => handleSelect1('zloty')}>PLN</a>
-            <a href="#" onClick={() => handleSelect1('euro')}>EUR</a>
+        <p className="plot">Wykres waluty:</p>
+        <p className="saldo">Twoje saldo:</p>
+        <div className="currencychange">
+          <p className="dropdown-button" onClick={handleSend}>
+            {selectedCurrency2}
+          </p>
+          <div className="dropdown-content">
+            <a onClick={() => handleSelect1("dollar")}>USD</a>
+            <a onClick={() => handleSelect1("zloty")}>PLN</a>
+            <a onClick={() => handleSelect1("euro")}>EUR</a>
           </div>
         </div>
-      </div>
-      <div className="dropdown">
-        <div className="button1">
-          <button onClick={handleSend2}>{selectedCurrency2}</button>
-          <div className="content">
-            <a href="#" onClick={() => handleSelect2('dolar')}>USD</a>
-            <a href="#" onClick={() => handleSelect2('zloty')}>PLN</a>
-            <a href="#" onClick={() => handleSelect2('euro')}>EUR</a>
-            </div>
-            <p>{response}</p>
+        <div className="currencychange" style={{ left: '15vw', position: 'relative'}}>
+          <p className="dropdown-button" onClick={handleSend2}>
+            {selectedCurrency2}
+          </p>
+          <div className="dropdown-content">
+            <a onClick={() => handleSelect2("dollar")}>USD</a>
+            <a onClick={() => handleSelect2("zloty")}>PLN</a>
+            <a onClick={() => handleSelect2("euro")}>EUR</a>
+          </div>
         </div>
-      </div>
+      </h3>
     </>
   );
+  
+  
 };
 
 export default App;
