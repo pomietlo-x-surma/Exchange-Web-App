@@ -6,7 +6,7 @@
 #include "password_checker.h"
 #include "money_converter.h"
 #include "User.h"
-#include <unordered_set>
+#include <unordered_map>
 
 
 using tcp = boost::asio::ip::tcp;
@@ -70,17 +70,19 @@ std::string receive_text(const std::string& wiad) {
 	}
 	else if (tag == "3") {
 		std::string waluta1, waluta2;
-		std::string all = "";
+		//std::string all = "";
 		std::getline(sa, waluta1, ' ');
-		//std::getline(sa, waluta2, ' ');
-		std::unordered_set<std::string> currencies= { "zloty", "euro", "dollar" };
-		std::cout << waluta1 << std::endl;
-		for (const auto& v : currencies) {
-			if (v != "zloty") {
-				all += currency_comparison("zloty", v) + "\n";
-			}
+		std::getline(sa, waluta2, ' ');
+		std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"}};
+		waluta1 = currencies[waluta1];
+		waluta2 = currencies[waluta2];
+		std::cout << waluta1 << " " << waluta2 << std::endl;
+		if (waluta2 == waluta1) {
+			return "1.0";
 		}
-		return all;
+		else{
+			return currency_comparison(waluta2, waluta1);
+		}
 		//return process_message(currency_comparison(waluta1, waluta2));
 	}
 	else if (tag == "4") {
