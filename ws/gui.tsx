@@ -240,7 +240,7 @@ const NewPage: React.FC = () => {
   };
   return (
     <>
-      <h3>
+      <h3 style={{top: '0vw', margin: '1vw', position: 'relative'}}>
         <p
           style={{
             color: "white",
@@ -273,7 +273,6 @@ const NewPage: React.FC = () => {
             <a onClick={() => handleSelect1("EUR")}>EUR</a>
           </div>
         </div>
-        
         <div className="currencychange">
           <p className="dropdown-button" onClick={handleSend}>
             {selectedCurrency2}
@@ -282,8 +281,11 @@ const NewPage: React.FC = () => {
             <a onClick={() => handleSelect2("USD")}>USD</a>
             <a onClick={() => handleSelect2("PLN")}>PLN</a>
             <a onClick={() => handleSelect2("EUR")}>EUR</a>
+
           </div>
-          <p style={{left: '10vh', top: '-35vw', position: 'absolute', fontSize:'7vw'}}>→</p>
+          <p style={{fontSize: '8vw', left: '10vw', top: '-32vw', position: 'absolute', margin: '0vw'  }}>→</p>
+      <p style={{fontSize: '8vw', left: '27vw', top: '-32vw', position: 'absolute', margin: '0vw'  }}>=</p>
+      <p style={{fontSize: '8vw', left: '35vw', top: '-32vw', position: 'absolute', margin: '0vw'  }}>X</p>
         </div>
       </h3>
     </>
