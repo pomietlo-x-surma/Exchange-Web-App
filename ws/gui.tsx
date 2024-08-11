@@ -240,7 +240,7 @@ const NewPage: React.FC = () => {
   };
   return (
     <>
-      <h3 style={{top: '0vw', margin: '1vw', position: 'relative'}}>
+      <h3 style={{top: '0vw', margin: '0vw', position: 'relative'}}>
         <p
           style={{
             color: "white",
@@ -250,12 +250,12 @@ const NewPage: React.FC = () => {
             textAlign: "left",
           }}
         >
-          <span style={{ fontSize: "5vw", fontWeight: "bold", top: "-2vw", position: 'relative' }}>
+          <span style={{ fontSize: "5vw", fontWeight: "bold", top: "0vw", position: 'relative' }}>
             Witaj username!
           </span>
           <br />
           <br />
-          <span style={{ fontSize: "3vw", position: "relative", top: '-2vw' }}>Kurs wybranej waluty:</span>
+          <span style={{ fontSize: "3vw", position: "relative", top: '-4vw' }}>Kurs wybranej waluty:</span>
         </p>
         <br />
         <p className="plot">Wykres waluty:
@@ -285,9 +285,9 @@ const NewPage: React.FC = () => {
 
           </div>
         </div>
-        <p style={{fontSize: '9vw', left: '9vw', top: '11.5vw', position: 'absolute', margin: '0.5vw'  }}>→</p>
-      <p style={{fontSize: '6vw', left: '25.5vw', top: '14vw', position: 'absolute', margin: '0.5vw'  }}>=</p>
-      <p style={{fontSize: '2.5vw', left: '31vw', top: '16vw', position: 'absolute', margin: '0.5vw', backgroundColor: 'red',
+        <p style={{fontSize: '9vw', left: '9vw', top: '9vw', position: 'absolute', margin: '0.5vw'  }}>→</p>
+      <p style={{fontSize: '6vw', left: '25.5vw', top: '12vw', position: 'absolute', margin: '0.5vw'  }}>=</p>
+      <p style={{fontSize: '2.5vw', left: '31vw', top: '14vw', position: 'absolute', margin: '0.5vw', backgroundColor: 'red',
         border: 'solid white 0.5vw ', borderRadius: '1vw', padding: '1vw', minHeight: "4vw", minWidth: "10vw"
         }}>{response}</p>
       </h3>
