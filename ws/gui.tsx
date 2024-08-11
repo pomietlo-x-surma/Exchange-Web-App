@@ -207,38 +207,29 @@ const NewPage: React.FC = () => {
       if (typeof message.data === "string") {
         console.log("Received Data:", message.data);
         setResponse(message.data);
-
-        // if (message.data === "5") {
-        //   console.log("Received non-string message:", message.data);
-        //   setResponse("Zły login lub hasło!");
-        // } else {
-        //   navigate(`/new-page/${message.data}`);
-        // }
       }
     };
   }, [navigate]);
 
-  const handleSend = () => {
+  useEffect(() => {
     if (isConnected) {
-      const combinedMessage = `11,${message1} ${message2}`;
-      client.send(combinedMessage);
-      setResponse(`Wysłano: ${combinedMessage}`);
-    }
-  };
-  const handleSend2 = () => {
       const combinedMessage = `3,${selectedCurrency2} ${selectedCurrency1}`;
       client.send(combinedMessage);
       console.log(`Waluta ${combinedMessage}`);
-  };
+    }
+  }, [selectedCurrency1, selectedCurrency2, isConnected]);
+
   const handleSelect1 = (currency: any) => {
     setSelectedCurrency1(currency);
   };
+
   const handleSelect2 = (currency: any) => {
     setSelectedCurrency2(currency);
   };
+
   return (
     <>
-      <h3 style={{top: '0vw', margin: '0vw', position: 'relative'}}>
+      <h3 style={{ top: '0vw', margin: '0vw', position: 'relative' }}>
         <p
           style={{
             color: "white",
@@ -256,41 +247,52 @@ const NewPage: React.FC = () => {
           <span style={{ fontSize: "3vw", position: "relative", top: '-4vw' }}>Kurs wybranej waluty:</span>
         </p>
         <br />
-        <p className="plot">Wykres waluty:
-        </p>
+        <p className="plot">Wykres waluty:</p>
         <p className="saldo">Twoje saldo:</p>
         <div
           className="currencychange"
           style={{ left: "15vw", position: "relative" }}
         >
-          <p className="dropdown-button" onClick={handleSend2}>
+          <p className="dropdown-button">
             {selectedCurrency1}
           </p>
           <div className="dropdown-content">
-            <a onClick={() => {handleSelect1("USD");handleSend2()}}>USD</a>
-            <a onClick={() => {handleSelect1("PLN");handleSend2()}}>PLN</a>
-            <a onClick={() => {handleSelect1("EUR");handleSend2()}}>EUR</a>
+            <a onClick={() => handleSelect1("USD")}>USD</a>
+            <a onClick={() => handleSelect1("PLN")}>PLN</a>
+            <a onClick={() => handleSelect1("EUR")}>EUR</a>
           </div>
         </div>
         <div className="currencychange">
-          <p className="dropdown-button" onClick={handleSend2}>
+          <p className="dropdown-button">
             {selectedCurrency2}
           </p>
           <div className="dropdown-content">
-          <a onClick={() => {handleSelect2("USD");handleSend2()}}>USD</a>
-            <a onClick={() => {handleSelect2("PLN");handleSend2()}}>PLN</a>
-            <a onClick={() => {handleSelect2("EUR");handleSend2()}}>EUR</a>
-
+            <a onClick={() => handleSelect2("USD")}>USD</a>
+            <a onClick={() => handleSelect2("PLN")}>PLN</a>
+            <a onClick={() => handleSelect2("EUR")}>EUR</a>
           </div>
         </div>
-        <p style={{fontSize: '9vw', left: '9vw', top: '9vw', position: 'absolute', margin: '0.5vw'  }}>→</p>
-      <p style={{fontSize: '6vw', left: '25.5vw', top: '12vw', position: 'absolute', margin: '0.5vw'  }}>=</p>
-      <p style={{fontSize: '2.5vw', left: '31vw', top: '14vw', position: 'absolute', margin: '0.5vw', backgroundColor: 'red',
-        border: 'solid white 0.5vw ', borderRadius: '1vw', padding: '1vw', minHeight: "4vw", minWidth: "10vw"
-        }}>{response}</p>
+        <p style={{ fontSize: '9vw', left: '9vw', top: '9vw', position: 'absolute', margin: '0.5vw' }}>→</p>
+        <p style={{ fontSize: '6vw', left: '25.5vw', top: '12vw', position: 'absolute', margin: '0.5vw' }}>=</p>
+        <p style={{
+          fontSize: '2.5vw',
+          left: '31vw',
+          top: '14vw',
+          position: 'absolute',
+          margin: '0.5vw',
+          backgroundColor: 'red',
+          border: 'solid white 0.5vw',
+          borderRadius: '1vw',
+          padding: '1vw',
+          minHeight: "4vw",
+          minWidth: "10vw"
+        }}>
+          {response}
+        </p>
       </h3>
     </>
   );
+  
 };
 
 export default App;
