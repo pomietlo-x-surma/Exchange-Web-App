@@ -184,7 +184,7 @@ const Login: React.FC = () => {
 };
 
 const NewPage: React.FC = () => {
-  const [selectedCurrency1, setSelectedCurrency1] = useState("USD");
+  const [selectedCurrency1, setSelectedCurrency1] = useState("PLN");
   const [selectedCurrency2, setSelectedCurrency2] = useState("PLN");
   const [message1, setMessage1] = useState<string>("");
   const [message2, setMessage2] = useState<string>("");
@@ -226,11 +226,9 @@ const NewPage: React.FC = () => {
     }
   };
   const handleSend2 = () => {
-    if (isConnected) {
-      const combinedMessage = `3,${selectedCurrency1} ${selectedCurrency2}`;
+      const combinedMessage = `3,${selectedCurrency2} ${selectedCurrency1}`;
       client.send(combinedMessage);
       console.log(`Waluta ${combinedMessage}`);
-    }
   };
   const handleSelect1 = (currency: any) => {
     setSelectedCurrency1(currency);
@@ -265,23 +263,23 @@ const NewPage: React.FC = () => {
           className="currencychange"
           style={{ left: "15vw", position: "relative" }}
         >
-          <p className="dropdown-button" onClick={handleSend}>
+          <p className="dropdown-button" onClick={handleSend2}>
             {selectedCurrency1}
           </p>
           <div className="dropdown-content">
-            <a onClick={() => {handleSelect1("dollar");handleSend2()}}>USD</a>
-            <a onClick={() => {handleSelect1("zloty");handleSend2()}}>PLN</a>
-            <a onClick={() => {handleSelect1("euro");handleSend2()}}>EUR</a>
+            <a onClick={() => {handleSelect1("USD");handleSend2()}}>USD</a>
+            <a onClick={() => {handleSelect1("PLN");handleSend2()}}>PLN</a>
+            <a onClick={() => {handleSelect1("EUR");handleSend2()}}>EUR</a>
           </div>
         </div>
         <div className="currencychange">
-          <p className="dropdown-button" onClick={handleSend}>
+          <p className="dropdown-button" onClick={handleSend2}>
             {selectedCurrency2}
           </p>
           <div className="dropdown-content">
-          <a onClick={() => {handleSelect2("dollar");handleSend2()}}>USD</a>
-            <a onClick={() => {handleSelect2("zloty");handleSend2()}}>PLN</a>
-            <a onClick={() => {handleSelect2("euro");handleSend2()}}>EUR</a>
+          <a onClick={() => {handleSelect2("USD");handleSend2()}}>USD</a>
+            <a onClick={() => {handleSelect2("PLN");handleSend2()}}>PLN</a>
+            <a onClick={() => {handleSelect2("EUR");handleSend2()}}>EUR</a>
 
           </div>
         </div>
