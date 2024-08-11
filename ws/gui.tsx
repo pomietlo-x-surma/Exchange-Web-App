@@ -284,8 +284,10 @@ const NewPage: React.FC = () => {
 
           </div>
           <p style={{fontSize: '8vw', left: '10vw', top: '-32vw', position: 'absolute', margin: '0vw'  }}>→</p>
-      <p style={{fontSize: '8vw', left: '27vw', top: '-32vw', position: 'absolute', margin: '0vw'  }}>=</p>
-      <p style={{fontSize: '8vw', left: '35vw', top: '-31.5vw', position: 'absolute', margin: '0vw'  }}>{response}</p>
+      <p style={{fontSize: '6vw', left: '26vw', top: '-30vw', position: 'absolute', margin: '0vw'  }}>=</p>
+      <p style={{fontSize: '2.5vw', left: '31vw', top: '-28.5vw', position: 'absolute', margin: '0vw', backgroundColor: 'red',
+        border: 'solid white 0.5vw ', borderRadius: '1vw', padding: '1vw'
+        }}>{response}</p>
         </div>
       </h3>
     </>
