@@ -250,15 +250,16 @@ const NewPage: React.FC = () => {
             textAlign: "left",
           }}
         >
-          <span style={{ fontSize: "5dvmin", fontWeight: "bold" }}>
+          <span style={{ fontSize: "5vw", fontWeight: "bold", top: "-2vw", position: 'relative' }}>
             Witaj username!
           </span>
           <br />
           <br />
-          <span style={{ fontSize: "3dvmin" }}>Kurs wybranej waluty:</span>
+          <span style={{ fontSize: "3vw", position: "relative", top: '-2vw' }}>Kurs wybranej waluty:</span>
         </p>
         <br />
-        <p className="plot">Wykres waluty:</p>
+        <p className="plot">Wykres waluty:
+        </p>
         <p className="saldo">Twoje saldo:</p>
         <div
           className="currencychange"
@@ -283,12 +284,12 @@ const NewPage: React.FC = () => {
             <a onClick={() => {handleSelect2("euro");handleSend2()}}>EUR</a>
 
           </div>
-          <p style={{fontSize: '8vw', left: '10vw', top: '-32vw', position: 'absolute', margin: '0vw'  }}>→</p>
-      <p style={{fontSize: '6vw', left: '26vw', top: '-30vw', position: 'absolute', margin: '0vw'  }}>=</p>
-      <p style={{fontSize: '2.5vw', left: '31vw', top: '-28.5vw', position: 'absolute', margin: '0vw', backgroundColor: 'red',
-        border: 'solid white 0.5vw ', borderRadius: '1vw', padding: '1vw'
-        }}>{response}</p>
         </div>
+        <p style={{fontSize: '9vw', left: '9vw', top: '11.5vw', position: 'absolute', margin: '0.5vw'  }}>→</p>
+      <p style={{fontSize: '6vw', left: '25.5vw', top: '14vw', position: 'absolute', margin: '0.5vw'  }}>=</p>
+      <p style={{fontSize: '2.5vw', left: '31vw', top: '16vw', position: 'absolute', margin: '0.5vw', backgroundColor: 'red',
+        border: 'solid white 0.5vw ', borderRadius: '1vw', padding: '1vw', minHeight: "4vw", minWidth: "10vw"
+        }}>{response}</p>
       </h3>
     </>
   );
