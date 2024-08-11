@@ -7,158 +7,128 @@ html, body {
 }
 
 .container {
-  display: flex; /* Ustawia kontener jako elastyczny box (Flexbox) */
-  flex-direction: column; /* Ustawia kierunek flexboxa na kolumnę */
-  justify-content: center; /* Wyśrodkowuje zawartość kontenera pionowo */
-  align-items: center; /* Wyśrodkowuje zawartość kontenera poziomo */
-  padding: 20px;
-  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2vw;
+  border-radius: 1vw;
 }
 
 input, button{
-  width: 300px; /* Ustawia szerokość pola tekstowego */
-  height: 40px; /* Ustawia wysokość pola tekstowego */
-  padding: 15px; /* Dodaje wewnętrzne odstępy w polu tekstowym */
-  font-size: 30px; /* Ustawia rozmiar czcionki w polu tekstowym */
-  margin-bottom: 40px; /* Ustawia odstęp dolny na 20px */
-  margin-top:-50px;
+  width: 80vw; /* Jednostki względne */
+  max-width: 300px;
+  height: 10vh; /* Jednostki względne */
+  padding: 1.5vw;
+  font-size: 2.5vw; /* Jednostki względne */
+  margin-bottom: 4vh;
 }
+
 button {
-  height: 100px;
+  height: 10vh;
   position: relative;
-  left:2vw;
-
+  left: 2vw;
 }
 
-.button1{
+.button1 {
   position: relative;
   display: flex;
-  top: -100px;
-  font-size: 30px;
-  left: -100px;
-  padding:2vw;
-}
-.rect-1 , .rect-2{
-  position: fixed;
-  margin-top: 40px; /* Przesuwa prostokąt o 20px w dół */
-  position: relative; /* Ustawia prostokąt jako odniesienie dla absolutnego pozycjonowania wewnątrz */
-  display: flex; /* Ustawia prostokąt jako elastyczny box */
-  justify-content: center; /* Wyśrodkowuje zawartość prostokąta poziomo */
-  align-items: center; /* Wyśrodkowuje zawartość prostokąta pionowo */
+  top: -10vh;
+  font-size: 2.5vw;
+  left: -10vw;
+  padding: 2vw;
 }
 
-.rect-1{
-  width: 300px;
-  height: 70px;
-  border: 5px solid white;
+.rect-1, .rect-2 {
+  position: fixed;
+  margin-top: 4vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rect-1 {
+  width: 60vw;
+  height: 10vh;
+  max-width: 300px;
+  border: 0.5vw solid white;
   background-color: rgb(227, 143, 143);
 }
-.text{
+
+.text {
   align-items: center;
   position: absolute;
   display: flex;
-  justify-content: center;/* Odległość od lewej krawędzi prostokąta */
-  left:20px;
+  justify-content: center;
+  left: 2vw;
   color: rgb(0, 0, 0); 
-  font-size: 20px;
+  font-size: 2vw;
 }
 
-h4{
-  position: fixed;
-  left: 100px;
-  top: 10px;
-  margin-top: -20px;
-  color: white; 
+.rect-2 {
+  width: 80vw;
+  height: 50vh;
+  background-color: white;
+  border: 0.5vw solid rgb(103, 101, 101);
+  left: 0px;
+  top: -2vh;
 }
 
-.rect-2{
-  width: 600px;
-  height: 240px;
-  background-color: rgb(255, 255, 255);
-  border: 5px solid rgb(103, 101, 101);
-  left:0px;
-  top:-20px;
-}
-
-h4{
-  position: fixed;
-  left: 100px;
-  top: 10px;
-  margin-top: 20px;
-}
-
-
-h1, h2 {
-  text-align: center; /* Wyśrodkowuje tekst w nagłówku */
-  font-size:30px;
-}
-
-h2 {
-  margin-bottom: 30px; /* Dodaje odstęp dolny do nagłówka */
-  margin-top: 10px;
-}
-
-p {
-  margin-top: 30px; /* Dodaje odstęp górny do paragrafu */
-  text-align: center; /* Wyśrodkowuje tekst w paragrafie */
-}
-h4,h5{
+h4, h5 {
   align-items: top;
   display: flex;
   justify-content: center;
-  font-size: 20px;
+  font-size: 2vw;
   color: black;
 }
 
-
-
-h4{
-  left:1000px;
-  top: 100px;
-  width: 500px;
-  height: 300px;
+h4 {
+  position: fixed;
+  left: 50vw;
+  top: 10vh;
+  width: 50vw;
+  height: 30vh;
   background-color: aqua;
   aspect-ratio: 16/9;
 }
 
-h5{
-  position: relative;
-  top: 400px;
-}
-h3{
+h3 {
   position: relative;
   left: -30vw;
   top: 0vw;
-  font-size: 3dvmin;
+  font-size: 3vw;
 }
-.plot, .saldo{
+
+.plot, .saldo {
   justify-content: top; 
-  font-size: 3dvmin;
+  font-size: 3vw;
   color: black;
   border: solid gray 0.5vw;
-  margin:0px;
+  margin: -2px;
 }
-.plot{
+
+.plot {
   width: 30vw;
   height: 20vw;
-  left:5%;
+  left: 5%;
   background-color: aliceblue;
-  margin: 0vw;
-  margin-top: 7vw;
+  margin-top: 3vw;
   position: relative;
-  top:3vw;
+  top: 0vw;
 }
-.saldo{
+
+.saldo {
   position: absolute;
   width: 40vw;
   height: 20vw;
   left: 150%;
   bottom: 4vw;
-  background-color: rgb(235, 139, 126);
+  background-color: rgb(234, 118, 103);
 }
+
 .currencychange {
-  position: relative; /* Kontener do pozycjonowania przycisku i menu */
-  width: fit-content; /* Dostosowuje szerokość kontenera do zawartości */
+  position: relative;
+  width: fit-content;
 }
 
 .dropdown-button {
@@ -173,32 +143,39 @@ h3{
   position: absolute;
   margin: 0;
   left: 2vw;
-  top: -28vw;
+  top: -30vw;
 }
 
 .dropdown-content {
   font-size: 2vw;
   display: none;
-  position: absolute; /* Absolutne pozycjonowanie względem .currencychange */
+  position: absolute;
   left: 2vw;
-  top: -23vw;
+  top: -25vw;
   background-color: white;
   z-index: 1;
-  min-width: 0vw; /* Minimalna szerokość, aby menu było wystarczająco szerokie */
+  min-width: 0vw;
 }
 
 .currencychange:hover .dropdown-content {
-  display: block; /* Wyświetla menu rozwijane na hover */
+  display: block;
 }
-
+.block-dropdown .dropdown-content {
+  display: none !important;
+}
 .dropdown-content a {
   color: black;
   padding: 0vw 2vw;
   text-decoration: none;
   display: block;
-  font-size: 1em; /* Font-size z jednostką względną */
+  font-size: 1em;
 }
 
 .dropdown-content a:hover {
   background-color: #f1f1f1;
+}
+
+p {
+  margin-top: 3vh;
+  text-align: center;
 }
