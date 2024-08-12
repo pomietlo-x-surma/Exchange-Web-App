@@ -183,7 +183,7 @@ const Login: React.FC = () => {
   );
 };
 const NewPage: React.FC = () => {
-  const [selectedCurrency1, setSelectedCurrency1] = useState("PLN");
+  const [selectedCurrency1, setSelectedCurrency1] = useState("EUR");
   const [selectedCurrency2, setSelectedCurrency2] = useState("PLN");
   const [message1, setMessage1] = useState<string>("");
   const [message2, setMessage2] = useState<string>("");
@@ -208,13 +208,10 @@ const NewPage: React.FC = () => {
         const base64str = `data:image/png;base64,${code}`;
         const img = document.createElement('img');
         img.src = base64str;
-        setMessage1(base64str);
-        if (money) {
-          setResponse(money);
+        setResponse(money);
+        if (selectedCurrency1!=selectedCurrency2){
+          setMessage1(base64str);
         }
-        console.log("////");
-        console.log(money);
-        console.log("////");
       }
     };
   }, [navigate]);
@@ -256,6 +253,18 @@ const NewPage: React.FC = () => {
         </p>
         <br />
         <p className="plot">Wykres waluty:
+        <img
+        src={message1}
+        alt="Image"
+        style={{
+          position: 'absolute',
+          left: '0vw',
+          zIndex: 1, 
+          width: '40vw',
+          margin: '0vw',
+          height: '17vw',
+          top: '3vw',
+        }}></img>
         </p>
         <p className="saldo">Twoje saldo:</p>
         <div
@@ -282,11 +291,11 @@ const NewPage: React.FC = () => {
           </div>
         </div>
         <p style={{ fontSize: '9vw', left: '9vw', top: '9vw', position: 'absolute', margin: '0.5vw' }}>→</p>
-        <p style={{ fontSize: '6vw', left: '25.5vw', top: '12vw', position: 'absolute', margin: '0.5vw' }}>=</p>
+        <p style={{ fontSize: '6vw', left: '25.5vw', top: '11.5vw', position: 'absolute', margin: '0.5vw' }}>=</p>
         <p style={{
           fontSize: '2.5vw',
           left: '31vw',
-          top: '14vw',
+          top: '13vw',
           position: 'absolute',
           margin: '0.5vw',
           backgroundColor: 'red',
@@ -298,21 +307,6 @@ const NewPage: React.FC = () => {
         }}>
           {response}
         </p>
-        <img
-        src={message1}
-        alt="Image"
-        style={{
-          position: 'absolute',
-          top: '30vw',
-          left: '2.5vw',
-          zIndex: 1000, 
-          width: '29.5vw',
-          height: 'auto',
-          margin: '0vw'
-
-        }}
-        
-      />
       </h3>
     </>
 
