@@ -78,6 +78,7 @@ if __name__ == "__main__":
         currency1 = sys.argv[1].lower()
         currency2 = sys.argv[2].lower()
         result = get_currency(currency1, currency2)
+        print(f"{result[0]}")
         if result:
             if result[2]:
                 try:
