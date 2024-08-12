@@ -189,6 +189,7 @@ const NewPage: React.FC = () => {
   const [message2, setMessage2] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [response, setResponse] = useState<string>("");
+  const [text, setText] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     client.onopen = () => {
@@ -203,16 +204,17 @@ const NewPage: React.FC = () => {
 
     client.onmessage = (message: IMessageEvent) => {
       if (typeof message.data === "string") {
-        if (message.data.length<10){
-          console.log("Received Data:", message.data);
-          setResponse(message.data);
+        const [money, code] = message.data.split(" ");
+        const base64str = `data:image/png;base64,${code}`;
+        const img = document.createElement('img');
+        img.src = base64str;
+        setMessage1(base64str);
+        if (money) {
+          setResponse(money);
         }
-        else{
-          const base64str = "data:image/png;base64,"+message.data;
-          const img = document.createElement('img');
-          img.src = base64str;
-          setMessage1(base64str);
-        }
+        console.log("////");
+        console.log(money);
+        console.log("////");
       }
     };
   }, [navigate]);
