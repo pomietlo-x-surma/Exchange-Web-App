@@ -4,7 +4,7 @@ from PIL import Image
 from io import BytesIO
 import sys
 import base64
-
+#Przerobiłem pod projekt .py i .exe. Więc jak chcesz to możesz przenieść tutaj
 curr = {
     'zloty': ('PLN', 'zł'),
     'dollar': ('USD', '$'),
