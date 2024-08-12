@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
 import sys
+import base64
+
 curr = {
     'zloty': ('PLN', 'zł'),
     'dollar': ('USD', '$'),
@@ -25,7 +27,7 @@ def get_currency(currency1, currency2):
         else:
             url_chart = f'https://mybank.pl/kursy-walut/{curr[currency2][0].lower()}-{currency2.lower()}/'
 
-        print(f"Fetching URL: {url}")
+
 
         page = r.get(url)
         if page.status_code != 200:
@@ -39,7 +41,7 @@ def get_currency(currency1, currency2):
         res = float(res[0].text.replace(',', ''))
 
         # Fetching the chart
-        print(f"Fetching URL: {url_chart}")
+
         page_2 = r.get(url_chart)
         if page_2.status_code != 200:
             raise Exception(f"Failed to fetch page, status code: {page_2.status_code}")
@@ -69,7 +71,6 @@ def get_currency(currency1, currency2):
 #python.exe>argv[1] argv[2]
 
 
-
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: MoneyExchange.exe [currency1] [currency2]")
@@ -78,35 +79,20 @@ if __name__ == "__main__":
         currency2 = sys.argv[2].lower()
         result = get_currency(currency1, currency2)
         if result:
-            print(f"Exchange Rate: {result[0]} {result[1]}")
             if result[2]:
                 try:
-                    # Save the chart image to a file
+
                     img = Image.open(BytesIO(result[2]))
-                    file_name = "curr_chart.png"
-                    img.save(file_name)
-                    print(f"Chart saved as {file_name}")
+
+                    buffered = BytesIO()
+                    img.save(buffered, format="PNG")
+
+                    encoded_content = base64.b64encode(buffered.getvalue())
+                    encoded_string = encoded_content.decode('utf-8')
+                    #print(encoded_string)
                 except Exception as e:
                     print(f"An error occurred: {e}")
             else:
                 print("No chart found.")
         else:
             print("No data available.")
-
-
-
-# if __name__ == "__main__":
-#     currency1=input("wpisz walute1")
-#     currency2 = input("wpisz walute2")
-#     # if len(sys.argv) != 3:
-#     #     print("Użycie: MoneyExchange.exe [currency1] [currency2]")
-#     # else:
-#         # currency1 = sys.argv[1].lower()
-#         # currency2 = sys.argv[2].lower()
-#     result = get_currency(currency1, currency2)
-#     print(f"Exchange Rate: {result[0]} {result[1]}")
-#     if result[2]:
-#         print("Chart SVG:")
-#         print(result[2])
-#     else:
-#         print("No chart found.")
