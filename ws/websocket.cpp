@@ -77,13 +77,13 @@ std::string receive_text(const std::string& wiad) {
 		waluta1 = currencies[waluta1];
 		waluta2 = currencies[waluta2];
 		std::cout << waluta1 << " " << waluta2 << std::endl;
+		//std::cout << currency_comparison(waluta1, waluta2, true) << std::endl;
 		if (waluta2 == waluta1) {
-			return "1.0";
+			return currency_comparison("zloty", "euro") + "1.0";
 		}
 		else{
-			return currency_comparison(waluta2, waluta1);
+			return currency_comparison(waluta1, waluta2) + " " + currency_comparison(waluta1, waluta2, true);
 		}
-		//return process_message(currency_comparison(waluta1, waluta2));
 	}
 	else if (tag == "4") {
 		std::string email, login;
