@@ -64,10 +64,9 @@ const CreateAccount: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Rejestracja</h1>
-      <h2>
-        E-mail
+    <div className="container" style={{height: "15vw", fontSize: "2vw"}}>
+      <p style={{fontSize: "5vw", position: "relative", top: "2vw"}}>Rejestracja</p>
+        <p style={{margin: "0vw", position: "relative", top: "-3vw"}}>E-mail</p>
         <br />
         <input
           value={message1}
@@ -75,7 +74,7 @@ const CreateAccount: React.FC = () => {
           placeholder="Wpisz E-mail"
         />
         <br />
-        Login
+        <p style={{margin: "0vw", position: "relative", top: "-3vw"}}>Login</p>
         <br />
         <input
           value={message2}
@@ -83,7 +82,7 @@ const CreateAccount: React.FC = () => {
           placeholder="Wpisz Login"
         />
         <br />
-        Hasło
+        <p style={{margin: "0vw", position: "relative", top: "-3vw"}}>Hasło</p>
         <br />
         <input
           value={message3}
@@ -91,7 +90,7 @@ const CreateAccount: React.FC = () => {
           placeholder="Wpisz Hasło"
         />
         <br />
-        Powtórz hasło
+        <p style={{margin: "0vw", position: "relative", top: "-3vw"}}>Powtórz hasło</p>
         <br />
         <input
           value={message4}
@@ -99,9 +98,8 @@ const CreateAccount: React.FC = () => {
           placeholder="Wpisz Hasło ponownie"
         />
         <br />
-        <button onClick={handleSend}>Zaloguj</button>
+        <button onClick={handleSend} style={{position:"relative", top: "-3.5vw", padding: "0.8vw"}}>Zaloguj</button>
         <p>{response}</p>
-      </h2>
     </div>
   );
 };
