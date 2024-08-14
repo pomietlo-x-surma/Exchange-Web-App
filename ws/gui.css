@@ -17,14 +17,14 @@ html, body {
 
 input, button{
   width: 80vw; /* Jednostki względne */
-  max-width: 300px;
+  max-width: 30vw;
   height: 10vh; /* Jednostki względne */
-  padding: 1.5vw;
-  font-size: 2.5vw; /* Jednostki względne */
+  font-size: 3vw; /* Jednostki względne */
   margin-bottom: 4vh;
 }
 
 button {
+  padding: 10vw;
   height: 10vh;
   position: relative;
   left: 2vw;
@@ -40,7 +40,7 @@ button {
 }
 
 .rect-1, .rect-2 {
-  position: fixed;
+  position: relative;
   margin-top: 4vh;
   display: flex;
   justify-content: center;
@@ -49,8 +49,8 @@ button {
 
 .rect-1 {
   width: 60vw;
-  height: 10vh;
-  max-width: 300px;
+  height: 15vw;
+  max-width: 60vw;
   border: 0.5vw solid white;
   background-color: rgb(227, 143, 143);
 }
@@ -70,7 +70,7 @@ button {
   height: 50vh;
   background-color: white;
   border: 0.5vw solid rgb(103, 101, 101);
-  left: 0px;
+  left: 2vwx;
   top: -2vh;
 }
 
@@ -101,20 +101,20 @@ h3 {
 
 .plot, .saldo {
   justify-content: top; 
-  font-size: 3vw;
-  color: black;
+  font-size: 2vw;
+  color: rgb(255, 255, 255);
   border: solid gray 0.5vw;
-  margin: -2px;
+  margin: -0.8vw;
 }
 
 .plot {
-  width: 30vw;
+  width: 40vw;
   height: 20vw;
   left: 5%;
-  background-color: aliceblue;
+  background-color: rgb(40, 46, 52);
   margin-top: 3vw;
   position: relative;
-  top: 0vw;
+  top: -2vw;
 }
 
 .saldo {
@@ -160,9 +160,7 @@ h3 {
 .currencychange:hover .dropdown-content {
   display: block;
 }
-.block-dropdown .dropdown-content {
-  display: none !important;
-}
+
 .dropdown-content a {
   color: black;
   padding: 0vw 2vw;
