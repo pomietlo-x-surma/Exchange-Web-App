@@ -148,39 +148,31 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <h1 style={{fontSize: "4vw", position: "relative", top: "2vw"}}>E-mail:</h1>
-      <div>
-        <h2>
-          <input
+      <p style={{fontSize: "4vw", position: "relative", top: "-5vw"}}>E-mail:</p>
+        <input
             type="text"
             value={message1}
             onChange={(e) => setMessage1(e.target.value)}
             placeholder="Wpisz E-mail"
-            style={{padding:"1vw", fontSize: "3vw", width: "40vw", height: "4vw", top: "1vw", position: "relative"}}
+            style={{padding:"1vw", fontSize: "3vw", width: "40vw", height: "4vw", top: "-8vw", position: "relative", margin:"0vw", left: "10vw"}}
           />
-        </h2>
-      </div>
-      <div>
-        <h1 style={{fontSize: "4vw", position: "relative", top: "-1vw"}}>Hasło:</h1>
-        <h2>
+        <p style={{fontSize: "4vw", position: "relative", top: "-8vw"}}>Hasło:</p>
           <input
             type="password"
             value={message2}
             onChange={(e) => setMessage2(e.target.value)}
             placeholder="Hasło"
-            style={{padding:"1vw", fontSize: "3vw", width: "40vw", height: "4vw", top: "-2vw", position: "relative"}}
+            style={{padding:"1vw", fontSize: "3vw", width: "40vw", height: "4vw", top: "-12vw", position: "relative", left: "10vw"}}
           />
-        </h2>
-      </div>
-      <h1>
-        <button onClick={handleSend} style={{fontSize: "3vw", paddingBottom: "5vw", paddingTop:"1vw", height: "7vw",width: "20vw", margin: "5vw", top: "-10vw",position: "relative",left: "2vw",   flexDirection: "column", justifyContent: "center", alignItems: "center"}}>Zaloguj</button>
+        <button onClick={handleSend} style={{fontSize: "3vw", paddingBottom: "5vw", paddingTop:"1vw", height: "7vw",width: "20vw", 
+          margin: "0vw", top: "-3vw",position: "relative",left: "-16vw",   flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+          Zaloguj</button>
         <p style={{fontSize: "2vw"}}>{response}</p>
-      </h1>
-      <h2 style={{fontSize: "2vw", margin: "0vw", position: "relative", left: "8vw", top:"-17vw"}}>
+      <p style={{fontSize: "2vw", margin: "-5vw", position: "relative", left: "0vw", top:"-0vw"}}>
         <Link to="/create-account" className="create-account-link">
           Utwórz nowe konto
         </Link>
-      </h2>
+      </p>
     </div>
   );
 };
