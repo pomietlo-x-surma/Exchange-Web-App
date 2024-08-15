@@ -23,7 +23,7 @@ std::string exec(const char* cmd) {
 
 
 //function saving currencies requested by user
-std::string currency_comparison(const std::string currency1, const std::string currency2, bool chart) {
+std::string currency_comparison(const std::string& currency1, const std::string& currency2, bool chart) {
     std::string money, code;
     std::string command = "MoneyExchange.exe " + currency1 + " " + currency2;
     std::string result = exec(command.c_str());
