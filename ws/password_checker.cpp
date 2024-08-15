@@ -3,7 +3,7 @@
 
 using std::cout; using std::endl;
 
-std::string pass_check(std::string& password) {
+std::string pass_check(const std::string& password) {
     std::regex wzorzec_nalfa("[^a-zA-Z0-9\\s]"); // znak specjalny
     std::regex wzorzec_liczba("[0-9]");         // cyfra
     std::regex wzorzec_AZ("[A-Z]");             // duża litera
@@ -49,7 +49,7 @@ std::string pass_check(std::string& password) {
     return nap;
 }
 
-bool email_check(std::string& email) {
+bool email_check(const std::string& email) {
     std::regex email_regex("[0-9a-zA-Z]+@[0-9a-z]+\\.[a-z]{2,3}");
     if (std::regex_match(email, email_regex)) {
         return true;
@@ -63,7 +63,7 @@ bool email_check(std::string& email) {
 
 }
 
-bool login_check(std::string& user) {
+bool login_check(const std::string& user) {
     std::regex user_regex("^[0-9a-zA-Z]{4,30}$");
     if (std::regex_match(user, user_regex)) {
         return true;
