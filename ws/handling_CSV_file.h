@@ -10,4 +10,4 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& eur
 
 std::string ReadLogs(const std::string& login, const std::string& file_path = "Users.csv");
 bool correct_password_check(const std::string& input_email, const std::string& input_pass);
-bool check_login_email_existence(const std::string email, const std::string& login);
+bool check_login_email_existence(const std::string& email, const std::string& login);
