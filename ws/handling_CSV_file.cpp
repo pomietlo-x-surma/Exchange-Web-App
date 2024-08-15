@@ -48,18 +48,21 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& eur
 }
 std::string ReadLogs(const std::string& login, const std::string& file_path) {
 	std::ifstream infile(file_path);
-	std::vector<std::string> lines;
-	std::string line;
+	std::string line, log;
 
 	while (std::getline(infile, line)) {
 		std::stringstream ss(line);
 		std::string login_infile;
 		std::getline(ss, login_infile, ',');
 		if (login_infile == login) {
-			return line;
+			std::getline(ss, log);
+			return log;
 		}
 	}
+
+	return "";
 }
+
 
 
 
@@ -96,7 +99,7 @@ bool correct_password_check(const std::string& input_email, const std::string& i
 	return false;
 }
 
-bool check_login_email_existence(const std::string email, const std::string& login) {
+bool check_login_email_existence(const std::string& email, const std::string& login) {
 	const std::string& file_path = "Dane.csv";
 	std::string line;
 	std::stringstream ss(line);
