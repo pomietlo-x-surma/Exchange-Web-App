@@ -1,5 +1,5 @@
 #include <iostream>
 
-std::string pass_check(std::string& password);
-bool email_check(std::string& email);
-bool login_check(std::string& user);
+std::string pass_check(const std::string& password);
+bool email_check(const std::string& email);
+bool login_check(const std::string& user);
