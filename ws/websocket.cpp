@@ -24,7 +24,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 	else if (check_login_email_existence(email, login)) {
 		return process_message("podany E-mail lub login juz istnije!");
 	}
-	else if (pass_check(pass)!="") {
+	else if (pass_check(pass) != "") {
 		return process_message(pass_check(pass));
 	}
 	else if (pass != pass_rep) {
@@ -33,7 +33,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 	std::cout << "test" << '\n';
 	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
 	std::cout << email << " " << login << " " << pass << std::endl;
-	WriteLogsToFile_Currencies(login, "0.0","0.0","0.0", "Users.csv", true);
+	WriteLogsToFile_Currencies(login, "0.0", "0.0", "0.0", "Users.csv", true);
 	return "0";
 }
 
@@ -49,7 +49,8 @@ std::string check_logging(const std::string& email, const std::string& pass) {
 
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
-	const std::string& file_path = "Dane.csv"; 
+	std::cout << wiad << std::endl;
+	const std::string& file_path = "Dane.csv";
 	std::stringstream sa(wiad);
 	std::string tag;
 	std::getline(sa, tag, ',');
@@ -64,7 +65,7 @@ std::string receive_text(const std::string& wiad) {
 			std::getline(sa, login, ' ');
 			std::getline(sa, pass, ' ');
 			std::getline(sa, pass_rep, ' ');
-			
+
 			return check_register(email, login, pass, pass_rep);
 		}
 	}
@@ -73,23 +74,23 @@ std::string receive_text(const std::string& wiad) {
 		//std::string all = "";
 		std::getline(sa, waluta1, ' ');
 		std::getline(sa, waluta2, ' ');
-		std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"}};
+		std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"} };
 		waluta1 = currencies[waluta1];
 		waluta2 = currencies[waluta2];
 		std::cout << waluta1 << " " << waluta2 << std::endl;
 		//std::cout << currency_comparison(waluta1, waluta2, true) << std::endl;
 		if (waluta2 == waluta1) {
-			return currency_comparison("zloty", "euro") + "1.0";
+			return "Z"+currency_comparison("zloty", "euro") + "1.0";
 		}
-		else{
-			return currency_comparison(waluta1, waluta2) + " " + currency_comparison(waluta1, waluta2, true);
+		else {
+			return "Z"+currency_comparison(waluta1, waluta2) + " " + currency_comparison(waluta1, waluta2, true);
 		}
+		std::getline(sa, tag, ' ');
 	}
 	else if (tag == "4") {
-		std::string email, login;
-		std::getline(sa, email, ' '); //TODO uprościć zczytywanie getline, żeby nie używać zmiennej "email"
-		std::getline(sa, login, ' '); //tak samo w innych miejsch
-		return process_message(ReadLogs(login, "Users.csv"));
+		std::string log;
+		std::getline(sa, log, ',');
+		return process_message(ReadLogs(log, "Users.csv"));
 	}
 	return "blad";
 }
