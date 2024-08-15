@@ -146,27 +146,27 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <p style={{fontSize: "4vw", position: "relative", top: "-5vw"}}>E-mail:</p>
+      <p style={{fontSize: "4vw", position: "relative", top: "-5vw", left: "-2vw"}}>E-mail:</p>
         <input
             type="text"
             value={message1}
             onChange={(e) => setMessage1(e.target.value)}
             placeholder="Wpisz E-mail"
-            style={{padding:"1vw", fontSize: "3vw", width: "40vw", height: "4vw", top: "-8vw", position: "relative", margin:"0vw", left: "10vw"}}
+            style={{padding:"1vw", fontSize: "3vw", width: "30vw", height: "4vw", top: "-8vw", position: "relative", margin:"0vw", left: "6vw"}}
           />
-        <p style={{fontSize: "4vw", position: "relative", top: "-8vw"}}>Hasło:</p>
+        <p style={{fontSize: "4vw", position: "relative", top: "-8vw", left: "-2vw"}}>Hasło:</p>
           <input
             type="password"
             value={message2}
             onChange={(e) => setMessage2(e.target.value)}
             placeholder="Hasło"
-            style={{padding:"1vw", fontSize: "3vw", width: "40vw", height: "4vw", top: "-12vw", position: "relative", left: "10vw"}}
+            style={{padding:"1vw", fontSize: "3vw", width: "30vw", height: "4vw", top: "-12vw", position: "relative", left: "8vw"}}
           />
         <button onClick={handleSend} style={{fontSize: "3vw", paddingBottom: "5vw", paddingTop:"1vw", height: "7vw",width: "20vw", 
           margin: "0vw", top: "-3vw",position: "relative",left: "-16vw",   flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
           Zaloguj</button>
         <p style={{fontSize: "2vw"}}>{response}</p>
-      <p style={{fontSize: "2vw", margin: "-5vw", position: "relative", left: "0vw", top:"-0vw"}}>
+      <p style={{fontSize: "2vw", margin: "-5vw", position: "relative", left: "-2vw", top:"-0vw"}}>
         <Link to="/create-account" className="create-account-link">
           Utwórz nowe konto
         </Link>
