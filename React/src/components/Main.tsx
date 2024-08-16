@@ -10,6 +10,7 @@ const client = new W3CWebSocket("ws://localhost:8080");
 const Main: React.FC<MainProps> = ({ username }) => {
   const [selectedCurrency1, setSelectedCurrency1] = useState("EUR");
   const [selectedCurrency2, setSelectedCurrency2] = useState("PLN");
+  const [selectedCurrency3, setSelectedCurrency3] = useState("PLN");
   const [selectedstate, setState] = useState("");
   const [message1, setMessage1] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -60,10 +61,12 @@ const Main: React.FC<MainProps> = ({ username }) => {
   const handleSelect2 = (currency: any) => {
     setSelectedCurrency2(currency);
   };
-  
+  const handleSelect3 = (currency: any) => {
+    setSelectedCurrency3(currency);
+  };
   return (
     <>
-      <h3 style={{ top: "0vw", margin: "0vw", position: "relative" }}>
+      <h3 style={{ top: "5vw", margin: "0vw" }}>
         <p
           style={{
             color: "white",
@@ -106,9 +109,9 @@ const Main: React.FC<MainProps> = ({ username }) => {
             }}
           ></img>
         </p>
-        <p className="saldo">
+        <p className="saldo" style={{top: "23vw"}}>
           Twoje saldo:
-          {selectedstate.split("\n").map(
+          {selectedstate.split("  ").map(
             (line, index) =>
               line.trim() && (
                 <span key={index}>
@@ -176,6 +179,18 @@ const Main: React.FC<MainProps> = ({ username }) => {
         >
           {response}
         </p>
+        <input 
+    placeholder="Wpisz kwote"
+    style={{ position: "relative", height: "3vw", width: "11.5vw", left: "63vw", top: "-30vw", zIndex: 20 }} />
+     <div className="currencychange" style={{left: "50vw", top:"-4.5vw"}}>
+          <p className="dropdown-button">{selectedCurrency3}</p>
+          <div className="dropdown-content">
+            <a onClick={() => handleSelect3("USD")}>USD</a>
+            <a onClick={() => handleSelect3("PLN")}>PLN</a>
+            <a onClick={() => handleSelect3("EUR")}>EUR</a>
+          </div>
+        </div>
+          <p style={{position: "relative", left: "59vw", top: "-40vw", fontSize: "9vw", margin: "0vw"}}>→</p>
       </h3>
     </>
   );
