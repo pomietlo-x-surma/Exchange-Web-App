@@ -18,7 +18,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [response, setResponse] = useState<string>("");
   const [response2, setResponse2] = useState<string>("");
-
+  const [error, setError] = useState<string>("");
   useEffect(() => {
     client.onopen = () => {
       console.log("Połączono");
@@ -44,6 +44,10 @@ const Main: React.FC<MainProps> = ({ username }) => {
       } 
       else if (typeof message.data === "string" && message.data[0] == "W"){
         setResponse2(message.data.substring(1));
+        setError("");
+      }
+      else if (typeof message.data === "string" && message.data[0]=="E") {
+        setError(message.data.substring(1));
       }
       else if (typeof message.data === "string") {
         setState(message.data);
@@ -85,8 +89,9 @@ const Main: React.FC<MainProps> = ({ username }) => {
   };
   const handleSend = () => {
     if (isConnected) {
-      const combinedMessage = `6,${selectedCurrency3} ${selectedCurrency4} ${message2}`; //TODO
-      client.send(combinedMessage);  
+      const combinedMessage = `6,${username} ${selectedCurrency3} ${selectedCurrency4} ${message2}`;
+      client.send(combinedMessage);
+      console.log(`Wysłano wiadomość: ${combinedMessage}`);
     }
   };
 
@@ -266,6 +271,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
             <a onClick={() => handleSelect4("EUR")}>EUR</a>
           </div>
         </div>
+        {error}
         <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw" }}>dokonaj tranzakcji</button>
       </h3>
     </>
