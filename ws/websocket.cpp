@@ -7,6 +7,7 @@
 #include "money_converter.h"
 #include "User.h"
 #include <unordered_map>
+#include <string>
 
 
 using tcp = boost::asio::ip::tcp;
@@ -31,7 +32,6 @@ std::string check_register(const std::string& email, const std::string& login, c
 	else if (pass != pass_rep) {
 		return process_message("Hasla sa rozne!");
 	}
-	std::cout << "test" << '\n';
 	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
 	std::cout << email << " " << login << " " << pass << std::endl;
 	WriteLogsToFile_Currencies(login, "0.0", "0.0", "0.0", "Users.csv", true);
@@ -50,6 +50,7 @@ std::string check_logging(const std::string& email, const std::string& pass) {
 
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
+	std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"} };
 	std::cout << wiad << std::endl;
 	const std::string& file_path = "Dane.csv";
 	std::stringstream sa(wiad);
@@ -75,10 +76,8 @@ std::string receive_text(const std::string& wiad) {
 		//std::string all = "";
 		std::getline(sa, waluta1, ' ');
 		std::getline(sa, waluta2, ' ');
-		std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"} };
 		waluta1 = currencies[waluta1];
 		waluta2 = currencies[waluta2];
-		std::cout << waluta1 << " " << waluta2 << std::endl;
 		//std::cout << currency_comparison(waluta1, waluta2, true) << std::endl;
 		if (waluta2 == waluta1) {
 			return "Z"+currency_comparison("zloty", "euro") + "1.0";
@@ -97,7 +96,20 @@ std::string receive_text(const std::string& wiad) {
 		return "  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
 	}
 	else if (tag == "6") {
-		//TODO WALUTA1 WALUTA2 WARTOSC
+		std::string waluta1, waluta2, wartosc;
+		sa >> waluta1 >> waluta2 >> wartosc;
+		if (waluta1 == waluta2) {
+			return "1.0";
+		}
+		else if ((waluta1 != waluta2) && wartosc != "") {
+			waluta1 = currencies[waluta1];
+			waluta2 = currencies[waluta2];
+			return "W"+std::to_string(stold(wartosc) * stold(currency_comparison(waluta1, waluta2)));
+
+		}
+		else {
+			return "blad\n";
+		}
 	}
 	return "blad";
 }
