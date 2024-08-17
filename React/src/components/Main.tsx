@@ -11,16 +11,18 @@ const Main: React.FC<MainProps> = ({ username }) => {
   const [selectedCurrency1, setSelectedCurrency1] = useState("EUR");
   const [selectedCurrency2, setSelectedCurrency2] = useState("PLN");
   const [selectedCurrency3, setSelectedCurrency3] = useState("PLN");
+  const [selectedCurrency4, setSelectedCurrency4] = useState("EUR");
   const [selectedstate, setState] = useState("");
   const [message1, setMessage1] = useState<string>("");
+  const [message2, setMessage2] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [response, setResponse] = useState<string>("");
+  const [response2, setResponse2] = useState<string>("");
 
   useEffect(() => {
     client.onopen = () => {
       console.log("Połączono");
       setIsConnected(true);
-      
     };
 
     client.onclose = () => {
@@ -37,11 +39,20 @@ const Main: React.FC<MainProps> = ({ username }) => {
         if (selectedCurrency1 !== selectedCurrency2) {
           setMessage1(base64str);
         }
-      } else if (typeof message.data === "string") {
+      } 
+      else if (typeof message.data === "string" && message.data[0] == "Y") {
+      } 
+      else if (typeof message.data === "string") {
         setState(message.data);
       }
     };
-  }, [username, selectedCurrency1, selectedCurrency2]);
+  }, [
+    username,
+    selectedCurrency1,
+    selectedCurrency2,
+    selectedCurrency3,
+    selectedCurrency4,
+  ]);
 
   useEffect(() => {
     if (isConnected && username) {
@@ -52,6 +63,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
       client.send(usernameMessage);
       console.log(`Wysłano wiadomość: ${usernameMessage}`);
     }
+    
+
   }, [selectedCurrency1, selectedCurrency2, isConnected, username]);
 
   const handleSelect1 = (currency: any) => {
@@ -64,9 +77,20 @@ const Main: React.FC<MainProps> = ({ username }) => {
   const handleSelect3 = (currency: any) => {
     setSelectedCurrency3(currency);
   };
+  const handleSelect4 = (currency: any) => {
+    setSelectedCurrency4(currency);
+  };
+  const handleSend = () => {
+    if (isConnected) {
+      const combinedMessage = `6,${selectedCurrency3} ${selectedCurrency4} ${message2}`; //TODO
+      client.send(combinedMessage);  
+      setResponse2(`${combinedMessage}`);
+    }
+  };
+
   return (
     <>
-      <h3 style={{ top: "5vw", margin: "0vw" }}>
+      <h3 style={{ top: "-22vw", margin: "-2vw", height: "0vw" }}>
         <p
           style={{
             color: "white",
@@ -109,7 +133,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
             }}
           ></img>
         </p>
-        <p className="saldo" style={{top: "23vw"}}>
+        <p className="saldo" style={{ top: "23vw" }}>
           Twoje saldo:
           {selectedstate.split("  ").map(
             (line, index) =>
@@ -179,10 +203,20 @@ const Main: React.FC<MainProps> = ({ username }) => {
         >
           {response}
         </p>
-        <input 
-    placeholder="Wpisz kwote"
-    style={{ position: "relative", height: "3vw", width: "11.5vw", left: "63vw", top: "-30vw", zIndex: 20 }} />
-     <div className="currencychange" style={{left: "50vw", top:"-4.5vw"}}>
+        <input
+          placeholder="Wpisz kwote"
+          onChange={(e) => setMessage2(e.target.value)}
+          style={{
+            position: "relative",
+            height: "3vw",
+            width: "11.5vw",
+            left: "55vw",
+            top: "-29.5vw",
+            zIndex: 20,
+            margin: "0vw",
+          }}
+        />
+        <div className="currencychange" style={{ left: "44.5vw", top: "-5vw" }}>
           <p className="dropdown-button">{selectedCurrency3}</p>
           <div className="dropdown-content">
             <a onClick={() => handleSelect3("USD")}>USD</a>
@@ -190,7 +224,42 @@ const Main: React.FC<MainProps> = ({ username }) => {
             <a onClick={() => handleSelect3("EUR")}>EUR</a>
           </div>
         </div>
-          <p style={{position: "relative", left: "59vw", top: "-40vw", fontSize: "9vw", margin: "0vw"}}>→</p>
+        <p
+          style={{
+            position: "relative",
+            left: "53vw",
+            top: "-40vw",
+            fontSize: "9vw",
+            margin: "0vw",
+          }}
+        >
+          →
+        </p>
+        <p
+          style={{
+            position: "relative",
+            height: "5vw",
+            width: "14vw",
+            left: "85vw",
+            top: "-48vw",
+            zIndex: 0,
+            margin: "0vw",
+            backgroundColor: "gray",
+            color: "black"
+          }}
+        >{response2}</p>
+        <div
+          className="currencychange"
+          style={{ left: "74.5vw", top: "-23.5vw" }}
+        >
+          <p className="dropdown-button">{selectedCurrency4}</p>
+          <div className="dropdown-content">
+            <a onClick={() => handleSelect4("USD")}>USD</a>
+            <a onClick={() => handleSelect4("PLN")}>PLN</a>
+            <a onClick={() => handleSelect4("EUR")}>EUR</a>
+          </div>
+        </div>
+        <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw"}}>dokonaj tranzakcji</button>
       </h3>
     </>
   );
