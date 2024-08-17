@@ -42,6 +42,9 @@ const Main: React.FC<MainProps> = ({ username }) => {
       } 
       else if (typeof message.data === "string" && message.data[0] == "Y") {
       } 
+      else if (typeof message.data === "string" && message.data[0] == "W"){
+        setResponse2(message.data.substring(1));
+      }
       else if (typeof message.data === "string") {
         setState(message.data);
       }
@@ -84,7 +87,6 @@ const Main: React.FC<MainProps> = ({ username }) => {
     if (isConnected) {
       const combinedMessage = `6,${selectedCurrency3} ${selectedCurrency4} ${message2}`; //TODO
       client.send(combinedMessage);  
-      setResponse2(`${combinedMessage}`);
     }
   };
 
@@ -186,7 +188,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
         >
           =
         </p>
-        <p
+        <p //result box
           style={{
             fontSize: "2.5vw",
             left: "31vw",
@@ -205,6 +207,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
         </p>
         <input
           placeholder="Wpisz kwote"
+          type="number" 
+          step="1"
           onChange={(e) => setMessage2(e.target.value)}
           style={{
             position: "relative",
@@ -241,11 +245,14 @@ const Main: React.FC<MainProps> = ({ username }) => {
             height: "5vw",
             width: "14vw",
             left: "85vw",
-            top: "-48vw",
+            top: "-47.7vw",
             zIndex: 0,
             margin: "0vw",
             backgroundColor: "gray",
-            color: "black"
+            color: "black",
+            border: "white solid 0.5vw",
+            borderRadius: "0.3vw",
+            fontSize: "2vw"
           }}
         >{response2}</p>
         <div
@@ -259,7 +266,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
             <a onClick={() => handleSelect4("EUR")}>EUR</a>
           </div>
         </div>
-        <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw"}}>dokonaj tranzakcji</button>
+        <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw" }}>dokonaj tranzakcji</button>
       </h3>
     </>
   );
