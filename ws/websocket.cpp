@@ -33,7 +33,6 @@ std::string check_register(const std::string& email, const std::string& login, c
 		return process_message("Hasla sa rozne!");
 	}
 	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
-	std::cout << email << " " << login << " " << pass << std::endl;
 	WriteLogsToFile_Currencies(login, "0.0", "0.0", "0.0", "Users.csv", true);
 	return "0"+login;
 }
@@ -90,21 +89,39 @@ std::string receive_text(const std::string& wiad) {
 		std::string em, log, usd, pln, eur, res;
 		std::getline(sa, em, ',');
 		std::getline(sa, log, ',');
-		std::string result = process_message(ReadLogs(log, "Users.csv"));
+		std::string result = ReadLogs(log, "Users.csv");
 		std::istringstream(result) >> usd >> eur >> pln;
 		std::cout << result << std::endl;
 		return "  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
 	}
 	else if (tag == "6") {
-		std::string waluta1, waluta2, wartosc;
-		sa >> waluta1 >> waluta2 >> wartosc;
+		std::string log, waluta1, waluta2, wartosc;
+		sa >> log >> waluta1 >> waluta2 >> wartosc;
 		if (waluta1 == waluta2) {
 			return "1.0";
 		}
-		else if ((waluta1 != waluta2) && wartosc != "") {
+		else if ((waluta1 != waluta2) && waluta2 != "") {
+			std::string usd, pln, eur, login1;
 			waluta1 = currencies[waluta1];
 			waluta2 = currencies[waluta2];
-			return "W"+std::to_string(stold(wartosc) * stold(currency_comparison(waluta1, waluta2)));
+			std::string value = ReadLogs(login1, "Users.csv");
+			std::stringstream sd(value);
+			std::getline(sd, log, ',');
+			std::istringstream(value) >> usd >> eur >> pln;
+			long double wart = stold(wartosc);
+			if (waluta1 == "zloty" && stold(pln) <= wart) {
+				return "W" + std::to_string(wart * stold(currency_comparison(waluta1, waluta2)));
+			}
+			else if (waluta1 == "euro" && stold(eur) <= wart) {
+				return "W" + std::to_string(wart * stold(currency_comparison(waluta1, waluta2)));
+			}
+			else if (waluta1 == "dollar" && stold(usd) <= wart) {
+				return "W" + std::to_string(wart * stold(currency_comparison(waluta1, waluta2)));
+			}
+			else {
+				return "ENie masz wystarczajacej srodkow na koncie!\n";
+			}
+			
 
 		}
 		else {
