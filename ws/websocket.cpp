@@ -1,123 +1,151 @@
-#include <sstream>
-#include <fstream>
-#include <string>
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
 #include <iostream>
+#include <thread>
 #include "handling_CSV_file.h"
-#include <vector>
+#include "password_checker.h"
+#include "money_converter.h"
+#include "User.h"
+#include <unordered_map>
 
-void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path) {
 
-	std::ofstream file(file_path, std::ios_base::app);
-	if (!file.is_open()) {
-		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
+using tcp = boost::asio::ip::tcp;
+namespace websocket = boost::beast::websocket;
+
+
+//funkcja wysylajaca do klienta
+std::string process_message(const std::string& received_message) {
+	std::cout << received_message << std::endl;
+	return received_message;
+}
+std::string check_register(const std::string& email, const std::string& login, const std::string& pass, const std::string& pass_rep) {
+	if (!(email_check(email) && login_check(login))) {
+		return process_message("bledny E-mail lub haslo!");
 	}
-	file << email << ',' << login << ',' << password << '\n';
-	file.close();
+	else if (check_login_email_existence(email, login)) {
+		return process_message("podany E-mail lub login juz istnije!");
+	}
+	else if (pass_check(pass) != "") {
+		return process_message(pass_check(pass));
+	}
+	else if (pass != pass_rep) {
+		return process_message("Hasla sa rozne!");
+	}
+	std::cout << "test" << '\n';
+	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
+	std::cout << email << " " << login << " " << pass << std::endl;
+	WriteLogsToFile_Currencies(login, "0.0", "0.0", "0.0", "Users.csv", true);
+	return "0"+login;
+}
+
+std::string check_logging(const std::string& email, const std::string& pass) {
+	if (correct_password_check(email, pass)!="") {
+		return process_message(correct_password_check(email, pass));
+
+	}
+	return process_message("5");
 }
 
 
 
-void WriteLogsToFile_Currencies(const std::string& login, const std::string& euro,
-	const std::string& dolar, const std::string& zloty, const std::string& file_path, bool reg) {
-
-	std::string w = login + ',' + euro + ' ' + dolar + ' ' + zloty + '\n';
-
-	if (reg) {
-		std::ofstream file(file_path, std::ios_base::app);
-		file << w;
-		file.close();
-	}
-	else {
-		std::ifstream infile(file_path);
-		std::vector<std::string> lines;
-		std::string line;
-
-		while (std::getline(infile, line)) {
-			std::stringstream ss(line);
-			std::string login_infile;
-			std::getline(ss, login_infile, ',');
-
-			if (login_infile == login) {
-				lines.push_back(w);
-			}
-		}
-
-		infile.close();
-
-	}
-}
-std::string ReadLogs(const std::string& login, const std::string& file_path) {
-	std::ifstream infile(file_path);
-	std::string line, log;
-
-	while (std::getline(infile, line)) {
-		std::stringstream ss(line);
-		std::string email, login_infile;
-		std::cout << login_infile << std::endl;
-		std::getline(ss, line, ',');
-		if (login_infile == login) {
-			std::cout << login_infile << " " << login << "!!!!!!!!!!!" << std::endl;
-			std::getline(ss, log);
-			return log;
-		}
-	}
-
-	return "";
-}
-
-
-
-
-std::string correct_password_check(const std::string& input_email, const std::string& input_pass) {
+//funkcja do pobierania info od klienta
+std::string receive_text(const std::string& wiad) {
+	std::cout << wiad << std::endl;
 	const std::string& file_path = "Dane.csv";
-
-	std::ifstream file(file_path);
-	if (!file.is_open()) {
-		std::cerr << "Error: Could not open file " << file_path << " for reading." << std::endl;
-		return "";
-	}
-
-	std::string line;
-	while (std::getline(file, line)) {
-		std::stringstream ss(line);
-		std::string stored_email, stored_login, stored_pass;
-
-		std::getline(ss, stored_email, ',');
-		std::getline(ss, stored_login, ',');
-		std::getline(ss, stored_pass, ',');
-		//std::cout << stored_email << " " << stored_login << " " << stored_pass << "////" << input_email << " " << input_pass << "s" << std::endl;
-		if ((stored_email == input_email) && (stored_pass == input_pass)) {
-			return stored_login;
+	std::stringstream sa(wiad);
+	std::string tag;
+	std::getline(sa, tag, ',');
+	if (tag == "0" || tag == "1") { //TODO przerobić na switch/case
+		std::string email, login, pass, pass_rep;
+		std::getline(sa, email, ' ');
+		if (tag == "0") {
+			std::getline(sa, pass, ' ');
+			return check_logging(email, pass);
 		}
-		else if ((stored_email == input_email) && (stored_pass != input_pass)) {
-			std::cout << "Podany E-mail lub hasło jest niepoprawne" << std::endl;
-			file.close();
-			return "";
+		else if (tag == "1") {
+			std::getline(sa, login, ' ');
+			std::getline(sa, pass, ' ');
+			std::getline(sa, pass_rep, ' ');
+
+			return check_register(email, login, pass, pass_rep);
 		}
 	}
-	std::cout << "Uzytkownik o podanym E-mailu nie istnieje!" << std::endl;
-
-	file.close();
-	return "";
+	else if (tag == "3") {
+		std::string waluta1, waluta2;
+		//std::string all = "";
+		std::getline(sa, waluta1, ' ');
+		std::getline(sa, waluta2, ' ');
+		std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"} };
+		waluta1 = currencies[waluta1];
+		waluta2 = currencies[waluta2];
+		std::cout << waluta1 << " " << waluta2 << std::endl;
+		//std::cout << currency_comparison(waluta1, waluta2, true) << std::endl;
+		if (waluta2 == waluta1) {
+			return "Z"+currency_comparison("zloty", "euro") + "1.0";
+		}
+		else {
+			return "Z"+currency_comparison(waluta1, waluta2) + " " + currency_comparison(waluta1, waluta2, true);
+		}
+	}
+	else if (tag == "4") {
+		std::string em, log, usd, pln, eur, res;
+		std::getline(sa, em, ',');
+		std::getline(sa, log, ',');
+		std::string result = process_message(ReadLogs(log, "Users.csv"));
+		std::istringstream(result) >> usd >> eur >> pln;
+		std::cout << result << std::endl;
+		return "  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
+	}
+	else if (tag == "6") {
+		//TODO WALUTA1 WALUTA2 WARTOSC
+	}
+	return "blad";
 }
 
-bool check_login_email_existence(const std::string& email, const std::string& login) {
-	const std::string& file_path = "Dane.csv";
-	std::string line;
-	std::stringstream ss(line);
-	std::ifstream file(file_path);
-	std::string stored_email, stored_login, stored_pass;
-	while (std::getline(file, line)) {
-		std::stringstream ss(line);
-		std::string stored_email, stored_login, stored_pass;
 
-		std::getline(ss, stored_email, ',');
-		std::getline(ss, stored_login, ',');
-		std::getline(ss, stored_pass, ',');
-		if (stored_login == login || stored_email == email) {
-			return true;
+
+
+void serwer() { //zrobić hermetyzację tej funkcji
+	std::cout << "Rozpoczynanie pracy serwera!\n";
+	try {
+		boost::asio::io_context ioc;
+		tcp::acceptor acceptor{ ioc, {tcp::v4(), 8080} };
+
+		while (true) {
+			tcp::socket socket{ ioc };
+			acceptor.accept(socket);
+			std::thread{ [socket = std::move(socket)]() mutable { //musi byc mutable xd
+				try {
+					websocket::stream<tcp::socket> ws{ std::move(socket) };
+					ws.accept();
+
+					//petla glowna
+					while (1) {
+						boost::beast::multi_buffer buffer; //tworzenie bufora
+						ws.read(buffer);
+
+						//tekst odebrany
+						std::string odebrana_wiad = boost::beast::buffers_to_string(buffer.data());
+						//receive_text(odebrana_wiad); //wyswietlenie odebranej wiadomosci
+
+						std::string response_message = receive_text(odebrana_wiad);
+
+						//tekst zwrotny
+						ws.text(ws.got_text());
+						ws.write(boost::asio::buffer(response_message));
+					}
+				}
+				catch (boost::system::system_error const& se) {
+					if (se.code() != websocket::error::closed) {}
+				}
+			} }.detach();
 		}
-
 	}
-	return false;
+	catch (std::exception const& e) {
+		std::cerr << "Error2: " << e.what() << "\n";
+	}
+}
+
+int main() {
+	serwer();
 }
