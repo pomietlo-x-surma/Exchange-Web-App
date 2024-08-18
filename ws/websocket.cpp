@@ -8,6 +8,7 @@
 #include "User.h"
 #include <unordered_map>
 #include <string>
+#include <map>
 
 
 using tcp = boost::asio::ip::tcp;
@@ -97,32 +98,28 @@ std::string receive_text(const std::string& wiad) {
 	else if (tag == "6") {
 		std::string log, waluta1, waluta2, wartosc;
 		sa >> log >> waluta1 >> waluta2 >> wartosc;
-		if (waluta1 == waluta2) {
-			return "1.0";
-		}
-		else if ((waluta1 != waluta2) && waluta2 != "") {
+		if (true) {
 			std::string usd, pln, eur, login1;
-			waluta1 = currencies[waluta1];
-			waluta2 = currencies[waluta2];
+			std::map<std::string, long double> saldo = { {"USD", 0}, {"EUR", 0}, {"PLN", 0} };
+			std::string waluta11 = currencies[waluta1];
+			std::string waluta22 = currencies[waluta2];
 			std::string value = ReadLogs(login1, "Users.csv");
 			std::stringstream sd(value);
 			std::getline(sd, log, ',');
 			std::istringstream(value) >> usd >> eur >> pln;
-			long double wart = stold(wartosc);
-			if (waluta1 == "zloty" && stold(pln) <= wart) {
-				return "W" + std::to_string(wart * stold(currency_comparison(waluta1, waluta2)));
-			}
-			else if (waluta1 == "euro" && stold(eur) <= wart) {
-				return "W" + std::to_string(wart * stold(currency_comparison(waluta1, waluta2)));
-			}
-			else if (waluta1 == "dollar" && stold(usd) <= wart) {
-				return "W" + std::to_string(wart * stold(currency_comparison(waluta1, waluta2)));
+			long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(wartosc);
+			saldo[usd] = usd_value; saldo[eur] = eur_value; saldo[pln] = pln_value;
+			if (saldo[waluta1] >= wart) {
+				saldo[waluta1] -= wart;
+				saldo[waluta2] += wart * stold(currency_comparison(waluta11, waluta22));
 			}
 			else {
 				return "ENie masz wystarczajacej srodkow na koncie!\n";
 			}
-			
+			WriteLogsToFile_Currencies(log, std::to_string(saldo["USD"]), std::to_string(saldo["EUR"]), std::to_string(saldo["PLN"]), "Users.csv", false);
 
+			std::cout <<  "W" + std::to_string(saldo["USD"]) + " " + std::to_string(saldo["EUR"]) + " " + std::to_string(saldo["PLN"]) << "\n";
+			return "W" + std::to_string(saldo["USD"]) + " " + std::to_string(saldo["EUR"]) + " " + std::to_string(saldo["PLN"]);
 		}
 		else {
 			return "blad\n";
