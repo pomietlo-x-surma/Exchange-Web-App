@@ -28,6 +28,7 @@ const Register: React.FC = () => {
         if (message.data[0] === "0") {
           const log = message.data.substring(1);
           navigate(`/Main/${log}`);
+          window.location.reload();
         } else {
           setResponse(message.data);
         }
