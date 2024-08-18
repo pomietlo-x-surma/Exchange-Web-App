@@ -33,6 +33,7 @@ const Login: React.FC = () => {
         } else {
           localStorage.setItem("username", message.data);
           navigate(`/Main/${message.data}`);
+          window.location.reload();
         }
       }
     };
