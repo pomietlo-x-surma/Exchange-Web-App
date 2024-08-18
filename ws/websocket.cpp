@@ -98,14 +98,14 @@ std::string receive_text(const std::string& wiad) {
 	else if (tag == "6") {
 		std::string log, waluta1, waluta2, wartosc;
 		sa >> log >> waluta1 >> waluta2 >> wartosc;
-		if (true) {
+		if (waluta1!=waluta2) {
 			std::string usd, pln, eur, login1;
 			std::map<std::string, long double> saldo = { {"USD", 0}, {"EUR", 0}, {"PLN", 0} };
 			std::string waluta11 = currencies[waluta1];
 			std::string waluta22 = currencies[waluta2];
 			std::string value = ReadLogs(login1, "Users.csv");
 			std::stringstream sd(value);
-			std::getline(sd, log, ',');
+			std::cout << login1 << " " << log << "ASdasdaasda" << std::endl;
 			std::istringstream(value) >> usd >> eur >> pln;
 			long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(wartosc);
 			saldo["USD"] = usd_value; saldo["EUR"] = eur_value; saldo["PLN"] = pln_value;
@@ -116,9 +116,13 @@ std::string receive_text(const std::string& wiad) {
 			else {
 				return "ENie masz wystarczajacej srodkow na koncie!\n";
 			}
+			std::cout << log << "sziamfasga" << "\n";
 			WriteLogsToFile_Currencies(log, std::to_string(saldo["USD"]), std::to_string(saldo["EUR"]), std::to_string(saldo["PLN"]), "Users.csv", false);
 
 			return "W  USD: "  + std::to_string(saldo["USD"]) + "  EUR: " + std::to_string(saldo["EUR"]) + "  PLN: " + std::to_string(saldo["PLN"]);
+		}
+		else if (waluta1 != waluta2) {
+			return "Y" + wartosc;
 		}
 		else {
 			return "blad\n";
