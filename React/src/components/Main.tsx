@@ -43,8 +43,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
       else if (typeof message.data === "string" && message.data[0] == "Y") {
       } 
       else if (typeof message.data === "string" && message.data[0] == "W"){
-        setResponse2(message.data.substring(1));
-        setError("");
+        setState(message.data.substring(1));
+        setError(" ");
       }
       else if (typeof message.data === "string" && message.data[0]=="E") {
         setError(message.data.substring(1));
@@ -250,7 +250,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
             height: "5vw",
             width: "14vw",
             left: "85vw",
-            top: "-47.7vw",
+            top: "-48.7vw",
             zIndex: 0,
             margin: "0vw",
             backgroundColor: "gray",
@@ -262,7 +262,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
         >{response2}</p>
         <div
           className="currencychange"
-          style={{ left: "74.5vw", top: "-23.5vw" }}
+          style={{ left: "74.5vw", top: "-24.5vw" }}
         >
           <p className="dropdown-button">{selectedCurrency4}</p>
           <div className="dropdown-content">
@@ -271,8 +271,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
             <a onClick={() => handleSelect4("EUR")}>EUR</a>
           </div>
         </div>
-        <p style={{fontSize: "1vw" }}>{error}</p>
-        <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw", zIndex: 100 }}>dokonaj tranzakcji</button>
+        <p style={{fontSize: "2vw", left: "50vw", top: "-61vw", position:"relative", margin: "-3vw" }}>{error}</p>
+        <button onClick={handleSend} style={{position: "relative", top:"-58vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw", zIndex: 100, margin: "0vw" }}>dokonaj tranzakcji</button>
       </h3>
     </>
   );
