@@ -108,7 +108,7 @@ std::string receive_text(const std::string& wiad) {
 			std::getline(sd, log, ',');
 			std::istringstream(value) >> usd >> eur >> pln;
 			long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(wartosc);
-			saldo[usd] = usd_value; saldo[eur] = eur_value; saldo[pln] = pln_value;
+			saldo["USD"] = usd_value; saldo["EUR"] = eur_value; saldo["PLN"] = pln_value;
 			if (saldo[waluta1] >= wart) {
 				saldo[waluta1] -= wart;
 				saldo[waluta2] += wart * stold(currency_comparison(waluta11, waluta22));
@@ -118,8 +118,7 @@ std::string receive_text(const std::string& wiad) {
 			}
 			WriteLogsToFile_Currencies(log, std::to_string(saldo["USD"]), std::to_string(saldo["EUR"]), std::to_string(saldo["PLN"]), "Users.csv", false);
 
-			std::cout <<  "W" + std::to_string(saldo["USD"]) + " " + std::to_string(saldo["EUR"]) + " " + std::to_string(saldo["PLN"]) << "\n";
-			return "W" + std::to_string(saldo["USD"]) + " " + std::to_string(saldo["EUR"]) + " " + std::to_string(saldo["PLN"]);
+			return "W  USD: "  + std::to_string(saldo["USD"]) + "  EUR: " + std::to_string(saldo["EUR"]) + "  PLN: " + std::to_string(saldo["PLN"]);
 		}
 		else {
 			return "blad\n";
