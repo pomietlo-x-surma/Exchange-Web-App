@@ -271,8 +271,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
             <a onClick={() => handleSelect4("EUR")}>EUR</a>
           </div>
         </div>
-        {error}
-        <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw" }}>dokonaj tranzakcji</button>
+        <p style={{fontSize: "1vw" }}>{error}</p>
+        <button onClick={handleSend} style={{position: "relative", top:"-59vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw", zIndex: 100 }}>dokonaj tranzakcji</button>
       </h3>
     </>
   );
