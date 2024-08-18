@@ -16,21 +16,22 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 }
 
 
+//TODO POZMIENIAC dolar na usd itp w całym pliku
+void WriteLogsToFile_Currencies(const std::string& login, const std::string& dolar,
+	const std::string& euro, const std::string& zloty, const std::string& file_path, bool reg) {
 
-void WriteLogsToFile_Currencies(const std::string& login, const std::string& euro,
-	const std::string& dolar, const std::string& zloty, const std::string& file_path, bool reg) {
-
-	std::string w = login + ',' + euro + ' ' + dolar + ' ' + zloty + '\n';
+	std::string new_entry = login + ',' + dolar + ' ' + euro + ' ' + zloty + '\n';
 
 	if (reg) {
 		std::ofstream file(file_path, std::ios_base::app);
-		file << w;
+		file << new_entry;
 		file.close();
 	}
 	else {
 		std::ifstream infile(file_path);
 		std::vector<std::string> lines;
 		std::string line;
+		bool found = false;
 
 		while (std::getline(infile, line)) {
 			std::stringstream ss(line);
@@ -38,21 +39,34 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& eur
 			std::getline(ss, login_infile, ',');
 
 			if (login_infile == login) {
-				lines.push_back(w);
+				lines.push_back(new_entry);
+				found = true;
+			}
+			else {
+				lines.push_back(line + '\n');
 			}
 		}
 
 		infile.close();
 
+		if (found) {
+			std::ofstream outfile(file_path, std::ios_base::trunc);
+			for (const auto& updated_line : lines) {
+				outfile << updated_line;
+			}
+			outfile.close();
+		}
 	}
 }
+
+
 std::string ReadLogs(const std::string& login, const std::string& file_path) {
 	std::ifstream infile(file_path);
 	std::string line, log;
 
 	while (std::getline(infile, line)) {
 		std::stringstream ss(line);
-		std::string email, login_infile;
+		std::string email, login_infile; //TODO email do wywalenia
 		std::getline(ss, line, ',');
 		if (login_infile == login) {
 			std::getline(ss, log);
