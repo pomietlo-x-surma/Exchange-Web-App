@@ -9,10 +9,26 @@
 #include <unordered_map>
 #include <string>
 #include <map>
-
+#include <fstream>
+#include <array>
 
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
+
+void Currency_gen() {
+	std::ofstream outfile("currencies.csv", std::ios_base::trunc);
+	std::array<std::string, 3> currencies = { "dollar", "euro", "zloty" };
+	for (const auto &first: currencies) {
+		for (const auto &second: currencies) {
+			if (first != second) {
+				outfile << currency_comparison(first, second) + " " + currency_comparison(first, second, true);
+			}
+		}
+	}
+}
+
+
+
 
 
 //funkcja wysylajaca do klienta
@@ -45,8 +61,6 @@ std::string check_logging(const std::string& email, const std::string& pass) {
 	return process_message("5");
 }
 
-
-
 //funkcja do pobierania info od klienta
 std::string receive_text(const std::string& wiad) {
 	std::unordered_map<std::string, std::string> currencies = { {"PLN","zloty"}, {"EUR","euro"}, {"USD","dollar"} };
@@ -71,7 +85,6 @@ std::string receive_text(const std::string& wiad) {
 	}
 	else if (tag == "3") {
 		std::string waluta1, waluta2;
-		//std::string all = "";
 		sa >> waluta1 >> waluta2;
 		waluta1 = currencies[waluta1];
 		waluta2 = currencies[waluta2];
@@ -86,7 +99,6 @@ std::string receive_text(const std::string& wiad) {
 		std::string em, log, usd, pln, eur, res;
 		std::getline(sa, log, ',');
 		std::string result = ReadLogs(log, "Users.csv");
-		std::cout << result << "\n";
 		std::istringstream(result) >> usd >> eur >> pln;
 		return "  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
 	}
@@ -169,5 +181,6 @@ void serwer() { //zrobić hermetyzację tej funkcji
 }
 
 int main() {
+	//Currency_gen();
 	serwer();
 }
