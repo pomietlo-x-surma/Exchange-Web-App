@@ -32,7 +32,7 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 		while (std::getline(infile, line)) {
 			std::stringstream ss(line);
 			std::string login_infile;
-			std::getline(ss, login_infile, ',');
+			ss >> login_infile;
 
 			if (login_infile == login) {
 				lines.push_back(new_entry);
@@ -63,7 +63,7 @@ std::string ReadLogs(const std::string& login, const std::string& file_path) {
 	while (std::getline(infile, line)) {
 		std::stringstream ss(line);
 		std::string login_infile;
-		std::getline(ss, line, ',');
+		std::getline(ss, login_infile, ',');
 		if (login_infile == login) {
 			std::getline(ss, log);
 			return log;
