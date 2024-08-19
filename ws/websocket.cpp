@@ -17,7 +17,6 @@ namespace websocket = boost::beast::websocket;
 
 //funkcja wysylajaca do klienta
 std::string process_message(const std::string& received_message) {
-	std::cout << received_message << std::endl;
 	return received_message;
 }
 std::string check_register(const std::string& email, const std::string& login, const std::string& pass, const std::string& pass_rep) {
@@ -34,7 +33,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 		return process_message("Hasla sa rozne!");
 	}
 	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
-	WriteLogsToFile_Currencies(login, "0.0", "0.0", "0.0", "Users.csv", true);
+	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", "Users.csv", true);
 	return "0"+login;
 }
 
@@ -56,17 +55,16 @@ std::string receive_text(const std::string& wiad) {
 	std::stringstream sa(wiad);
 	std::string tag;
 	std::getline(sa, tag, ',');
-	if (tag == "0" || tag == "1") { //TODO przerobić na switch/case
+	if (tag == "0" || tag == "1") {
 		std::string email, login, pass, pass_rep;
-		std::getline(sa, email, ' ');
+		sa >> email;
 		if (tag == "0") {
-			std::getline(sa, pass, ' ');
+			sa >> pass;
 			return check_logging(email, pass);
 		}
 		else if (tag == "1") {
-			std::getline(sa, login, ' ');
-			std::getline(sa, pass, ' ');
-			std::getline(sa, pass_rep, ' ');
+
+			sa >> login >> pass >> pass_rep;
 
 			return check_register(email, login, pass, pass_rep);
 		}
@@ -74,11 +72,9 @@ std::string receive_text(const std::string& wiad) {
 	else if (tag == "3") {
 		std::string waluta1, waluta2;
 		//std::string all = "";
-		std::getline(sa, waluta1, ' ');
-		std::getline(sa, waluta2, ' ');
+		sa >> waluta1 >> waluta2;
 		waluta1 = currencies[waluta1];
 		waluta2 = currencies[waluta2];
-		//std::cout << currency_comparison(waluta1, waluta2, true) << std::endl;
 		if (waluta2 == waluta1) {
 			return "Z"+currency_comparison("zloty", "euro") + "1.0";
 		}
@@ -88,24 +84,22 @@ std::string receive_text(const std::string& wiad) {
 	}
 	else if (tag == "4") {
 		std::string em, log, usd, pln, eur, res;
-		std::getline(sa, em, ',');
 		std::getline(sa, log, ',');
 		std::string result = ReadLogs(log, "Users.csv");
+		std::cout << result << "\n";
 		std::istringstream(result) >> usd >> eur >> pln;
-		std::cout << result << std::endl;
 		return "  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
 	}
 	else if (tag == "6") {
 		std::string log, waluta1, waluta2, wartosc;
 		sa >> log >> waluta1 >> waluta2 >> wartosc;
 		if (waluta1!=waluta2) {
-			std::string usd, pln, eur, login1;
+			std::string usd, pln, eur;
 			std::map<std::string, long double> saldo = { {"USD", 0}, {"EUR", 0}, {"PLN", 0} };
 			std::string waluta11 = currencies[waluta1];
 			std::string waluta22 = currencies[waluta2];
-			std::string value = ReadLogs(login1, "Users.csv");
+			std::string value = ReadLogs(log, "Users.csv");
 			std::stringstream sd(value);
-			std::cout << login1 << " " << log << "ASdasdaasda" << std::endl;
 			std::istringstream(value) >> usd >> eur >> pln;
 			long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(wartosc);
 			saldo["USD"] = usd_value; saldo["EUR"] = eur_value; saldo["PLN"] = pln_value;
@@ -116,7 +110,6 @@ std::string receive_text(const std::string& wiad) {
 			else {
 				return "ENie masz wystarczajacej srodkow na koncie!\n";
 			}
-			std::cout << log << "sziamfasga" << "\n";
 			WriteLogsToFile_Currencies(log, std::to_string(saldo["USD"]), std::to_string(saldo["EUR"]), std::to_string(saldo["PLN"]), "Users.csv", false);
 
 			return "W  USD: "  + std::to_string(saldo["USD"]) + "  EUR: " + std::to_string(saldo["EUR"]) + "  PLN: " + std::to_string(saldo["PLN"]);
