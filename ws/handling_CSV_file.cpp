@@ -6,12 +6,8 @@
 #include <vector>
 
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path) {
-
 	std::ofstream file(file_path, std::ios_base::app);
-	if (!file.is_open()) {
-		std::cerr << "Error: Could not open file " << file_path << " for writing." << std::endl;
-	}
-	file << email << ',' << login << ',' << password << '\n';
+	file << email << ' ' << login << ' ' << password << '\n';
 	file.close();
 }
 
@@ -66,7 +62,7 @@ std::string ReadLogs(const std::string& login, const std::string& file_path) {
 
 	while (std::getline(infile, line)) {
 		std::stringstream ss(line);
-		std::string email, login_infile; //TODO email do wywalenia
+		std::string login_infile;
 		std::getline(ss, line, ',');
 		if (login_infile == login) {
 			std::getline(ss, log);
@@ -80,56 +76,31 @@ std::string ReadLogs(const std::string& login, const std::string& file_path) {
 
 
 
-std::string correct_password_check(const std::string& input_email, const std::string& input_pass) {
-	const std::string& file_path = "Dane.csv";
-
+std::string correct_password_check(const std::string& input_email, const std::string& input_pass, const std::string& file_path) {;
 	std::ifstream file(file_path);
-	if (!file.is_open()) {
-		std::cerr << "Error: Could not open file " << file_path << " for reading." << std::endl;
-		return "";
-	}
-
 	std::string line;
 	while (std::getline(file, line)) {
 		std::stringstream ss(line);
 		std::string stored_email, stored_login, stored_pass;
-
-		std::getline(ss, stored_email, ',');
-		std::getline(ss, stored_login, ',');
-		std::getline(ss, stored_pass, ',');
-		//std::cout << stored_email << " " << stored_login << " " << stored_pass << "////" << input_email << " " << input_pass << "s" << std::endl;
+		ss >> stored_email >> stored_login >> stored_pass;
 		if ((stored_email == input_email) && (stored_pass == input_pass)) {
+			file.close();
 			return stored_login;
 		}
-		else if ((stored_email == input_email) && (stored_pass != input_pass)) {
-			std::cout << "Podany E-mail lub hasło jest niepoprawne" << std::endl;
-			file.close();
-			return "";
-		}
 	}
-	std::cout << "Uzytkownik o podanym E-mailu nie istnieje!" << std::endl;
-
 	file.close();
 	return "";
 }
 
-bool check_login_email_existence(const std::string& email, const std::string& login) {
-	const std::string& file_path = "Dane.csv";
-	std::string line;
-	std::stringstream ss(line);
+bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path) {;
+	std::string line, stored_email, stored_login, stored_pass;
 	std::ifstream file(file_path);
-	std::string stored_email, stored_login, stored_pass;
 	while (std::getline(file, line)) {
 		std::stringstream ss(line);
-		std::string stored_email, stored_login, stored_pass;
-
-		std::getline(ss, stored_email, ',');
-		std::getline(ss, stored_login, ',');
-		std::getline(ss, stored_pass, ',');
+		ss >> stored_email >> stored_login >> stored_pass;
 		if (stored_login == login || stored_email == email) {
 			return true;
 		}
-
 	}
 	return false;
 }
