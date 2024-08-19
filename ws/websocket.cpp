@@ -10,6 +10,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <iomanip> 
 #include <array>
 
 using tcp = boost::asio::ip::tcp;
@@ -29,7 +30,11 @@ void Currency_gen() {
 
 
 
-
+std::string to_string_with_precision(double value, char precision = 2) {
+	std::ostringstream out;
+	out << std::fixed << std::setprecision(precision) << value;
+	return out.str();
+}
 
 //funkcja wysylajaca do klienta
 std::string process_message(const std::string& received_message) {
@@ -122,9 +127,9 @@ std::string receive_text(const std::string& wiad) {
 			else {
 				return "ENie masz wystarczajacej srodkow na koncie!\n";
 			}
-			WriteLogsToFile_Currencies(log, std::to_string(saldo["USD"]), std::to_string(saldo["EUR"]), std::to_string(saldo["PLN"]), "Users.csv", false);
-
-			return "W  USD: "  + std::to_string(saldo["USD"]) + "  EUR: " + std::to_string(saldo["EUR"]) + "  PLN: " + std::to_string(saldo["PLN"]);
+			WriteLogsToFile_Currencies(log, to_string_with_precision(saldo["USD"]), to_string_with_precision(saldo["EUR"]), to_string_with_precision(saldo["PLN"]), "Users.csv", false
+			);
+			return "W  USD: "  + to_string_with_precision(saldo["USD"]) + "  EUR: " + to_string_with_precision(saldo["EUR"]) + "  PLN: " + to_string_with_precision(saldo["PLN"]);
 		}
 		else if (waluta1 != waluta2) {
 			return "Y" + wartosc;
