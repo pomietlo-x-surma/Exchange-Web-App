@@ -4,6 +4,66 @@
 #include <iostream>
 #include "handling_CSV_file.h"
 #include <vector>
+#include <array>
+#include "money_converter.h"
+
+void Currency_gen() {
+	std::ofstream outfile("currencies.csv", std::ios_base::app);
+	std::array<std::string, 3> currencies = { "dollar", "euro", "zloty" };
+	for (const auto& first : currencies) {
+		for (const auto& second : currencies) {
+			if (first != second) {
+				std::string c1 = currency_comparison(first, second);
+				std::string c2 = currency_comparison(first, second, true);
+				outfile << first << " " << second << " " << c1 + " " + c2 << '\n';
+			}
+		}
+	}
+	outfile.close();
+}
+
+
+
+
+void Currency_update() {
+	bool found = false;
+	std::ifstream infile("currencies.csv");
+	std::vector<std::string> lines;
+	std::string line;
+	std::array<std::string, 3> currencies = { "dollar", "euro", "zloty" };
+	for (const auto& first : currencies) {
+		for (const auto& second : currencies) {
+			if (first != second) {
+				while (std::getline(infile, line)) {
+					std::stringstream ss(line);
+					std::string line_first, line_second;
+					ss >> line_first >> line_second;
+
+					// Jeśli znajdziesz odpowiednią linię, zastąp ją nową treścią
+					if (line_first == first && line_second == second) {
+						std::string c1 = currency_comparison(first, second);
+						std::string c2 = currency_comparison(first, second, true);
+						std::string result = first + " " + second + c1 + " " + c2 + '\n';
+						lines.push_back(result); // Dodaj nową treść zamiast starej
+						found = true;
+					}
+					else {
+						lines.push_back(line);
+					}
+				}
+			}
+		}
+	}
+	infile.close();
+
+	// Zapis zaktualizowanych danych do pliku
+	std::ofstream outfile("currencies.csv", std::ios_base::trunc);
+	for (const auto& updated_line : lines) {
+		outfile << updated_line << '\n'; // Zapisz linię
+	}
+	outfile.close();
+}
+
 
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path) {
 	std::ofstream file(file_path, std::ios_base::app);
