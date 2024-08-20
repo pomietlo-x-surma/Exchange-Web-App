@@ -7,3 +7,5 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 std::string ReadLogs(const std::string& login, const std::string& file_path = "Users.csv");
 std::string correct_password_check(const std::string& input_email, const std::string& input_pass, const std::string& file_path = "Dane.csv");
 bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path = "Dane.csv");
+void Currency_gen();
+void Currency_update();
