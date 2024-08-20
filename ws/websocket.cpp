@@ -2,9 +2,9 @@
 #include <boost/beast.hpp>
 #include <iostream>
 #include <thread>
-#include "handling_CSV_file.h"
-#include "password_checker.h"
-#include "money_converter.h"
+#include "handling_CSV_file.hpp"
+#include "password_checker.hpp"
+#include "money_converter.hpp"
 #include <unordered_map>
 #include <string>
 #include <map>
