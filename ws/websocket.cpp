@@ -5,7 +5,6 @@
 #include "handling_CSV_file.h"
 #include "password_checker.h"
 #include "money_converter.h"
-#include "User.h"
 #include <unordered_map>
 #include <string>
 #include <map>
@@ -16,17 +15,7 @@
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
-void Currency_gen() {
-	std::ofstream outfile("currencies.csv", std::ios_base::trunc);
-	std::array<std::string, 3> currencies = { "dollar", "euro", "zloty" };
-	for (const auto &first: currencies) {
-		for (const auto &second: currencies) {
-			if (first != second) {
-				outfile << currency_comparison(first, second) + " " + currency_comparison(first, second, true);
-			}
-		}
-	}
-}
+
 
 
 
@@ -153,7 +142,7 @@ void serwer() { //zrobić hermetyzację tej funkcji
 		while (true) {
 			tcp::socket socket{ ioc };
 			acceptor.accept(socket);
-			std::thread{ [socket = std::move(socket)]() mutable { //musi byc mutable xd
+			std::thread{ [socket = std::move(socket)]() mutable {
 				try {
 					websocket::stream<tcp::socket> ws{ std::move(socket) };
 					ws.accept();
@@ -186,6 +175,6 @@ void serwer() { //zrobić hermetyzację tej funkcji
 }
 
 int main() {
-	//Currency_gen();
-	serwer();
+	Currency_gen();
+	//serwer();
 }
