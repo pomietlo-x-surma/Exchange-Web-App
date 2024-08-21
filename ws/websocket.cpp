@@ -2,9 +2,9 @@
 #include <boost/beast.hpp>
 #include <iostream>
 #include <thread>
-#include "handling_CSV_file.hpp"
-#include "password_checker.hpp"
-#include "money_converter.hpp"
+#include "handling_CSV_file.h"
+#include "password_checker.h"
+#include "money_converter.h"
 #include <unordered_map>
 #include <string>
 #include <map>
@@ -80,13 +80,11 @@ std::string receive_text(const std::string& wiad) {
 	else if (tag == "3") {
 		std::string waluta1, waluta2;
 		sa >> waluta1 >> waluta2;
-		waluta1 = currencies[waluta1];
-		waluta2 = currencies[waluta2];
 		if (waluta2 == waluta1) {
-			return "Z"+currency_comparison("zloty", "euro") + "1.0";
+			return "Z"+currency_comparison("PLN", "EUR") + "1.0";
 		}
 		else {
-			return "Z"+currency_comparison(waluta1, waluta2) + " " + currency_comparison(waluta1, waluta2, true);
+			return "Z"+ReadLogs(waluta1 + " " + waluta2, "currencies.csv");
 		}
 	}
 	else if (tag == "4") {
@@ -111,7 +109,7 @@ std::string receive_text(const std::string& wiad) {
 			saldo["USD"] = usd_value; saldo["EUR"] = eur_value; saldo["PLN"] = pln_value;
 			if (saldo[waluta1] >= wart) {
 				saldo[waluta1] -= wart;
-				saldo[waluta2] += wart * stold(currency_comparison(waluta11, waluta22));
+				saldo[waluta2] += wart * stold(ReadLogs(waluta1 + " " + waluta2, "currencies.csv"));
 			}
 			else {
 				return "ENie masz wystarczajacej srodkow na koncie!\n";
@@ -133,7 +131,7 @@ std::string receive_text(const std::string& wiad) {
 
 
 
-void serwer() { //zrobić hermetyzację tej funkcji
+void serwer() {
 	std::cout << "Rozpoczynanie pracy serwera!\n";
 	try {
 		boost::asio::io_context ioc;
@@ -175,6 +173,8 @@ void serwer() { //zrobić hermetyzację tej funkcji
 }
 
 int main() {
-	Currency_gen();
-	//serwer();
+	//std::cout << "Start generacji!\n";
+	//Currency_gen();
+	//std::thread t1(Currency_update);
+	serwer();
 }
