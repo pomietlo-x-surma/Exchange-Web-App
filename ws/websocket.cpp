@@ -100,7 +100,7 @@ std::string receive_text(const std::string& wiad) {
 		std::getline(sa, log, ',');
 		std::string result = ReadLogs(log, "Users.csv");
 		std::istringstream(result) >> usd >> eur >> pln;
-		return "  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
+		return "W  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
 	}
 	else if (tag == "6") {
 		std::string log, waluta1, waluta2, wartosc;
