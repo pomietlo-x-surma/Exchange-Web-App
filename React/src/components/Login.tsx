@@ -48,7 +48,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{position: "relative", top: "2vw"}}>
       <p style={{fontSize: "4vw", position: "relative", top: "-5vw", left: "-2vw"}}>E-mail:</p>
         <input
             type="text"
@@ -68,8 +68,8 @@ const Login: React.FC = () => {
         <button onClick={handleSend} style={{fontSize: "3vw", paddingBottom: "5vw", paddingTop:"1vw", height: "7vw",width: "20vw", 
           margin: "0vw", top: "-3vw",position: "relative",left: "-16vw",   flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
           Zaloguj</button>
-        <p style={{fontSize: "2vw"}}>{response}</p>
-      <p style={{fontSize: "2vw", margin: "-5vw", position: "relative", left: "-2vw", top:"-0vw"}}>
+        <p style={{fontSize: "2vw", top: "-2.5vw", position: "relative", left: "-2vw", margin: "0vw"}}>{response}</p>
+      <p style={{fontSize: "2.5vw", margin: "0vw", position: "relative", left: "-2vw", top:"-3vw"}}>
         <Link to="/Register" className="Register-link">
           Utwórz nowe konto
         </Link>
