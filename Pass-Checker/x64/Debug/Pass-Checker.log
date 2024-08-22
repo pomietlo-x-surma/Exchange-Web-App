@@ -1,3 +1,0 @@
-﻿  Pass-Checker.cpp
-C:\Users\Ciapat\source\repos\pomietlo-x-surma\Pass-Checker\Pass-Checker\money_converter.cpp(27,44): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
-LINK : fatal error LNK1168: nie można otworzyć pliku C:\Users\Ciapat\source\repos\pomietlo-x-surma\Pass-Checker\x64\Debug\Pass-Checker.exe do zapisu
