@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iomanip> 
 #include <array>
+#include <chrono>
+
 
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
@@ -78,14 +80,20 @@ std::string receive_text(const std::string& wiad) {
 		}
 	}
 	else if (tag == "3") {
-		std::string waluta1, waluta2;
-		sa >> waluta1 >> waluta2;
-		if (waluta2 == waluta1) {
-			return "Z"+currency_comparison("PLN", "EUR") + "1.0";
+		std::string waluta1, waluta2, wartosc, wart_result;
+		sa >> waluta1 >> waluta2 >> wartosc;
+		if (wartosc == "") {
+			if (waluta2 == waluta1) {
+				return "Z1.0";
+			}
+			return "Z" + ReadLogs(waluta1 + " " + waluta2, "currencies.csv");
 		}
-		else {
-			return "Z"+ReadLogs(waluta1 + " " + waluta2, "currencies.csv");
+		if (waluta1 == waluta2) {
+			return "ZZ" + wartosc;
 		}
+		std::stringstream os(ReadLogs(waluta1 + " " + waluta2, "currencies.csv"));
+		std::getline(os, wart_result, ' ');
+		return "ZZ" + to_string_with_precision(stold(wart_result) * stold(wartosc)/10);
 	}
 	else if (tag == "4") {
 		std::string em, log, usd, pln, eur, res;
@@ -118,7 +126,7 @@ std::string receive_text(const std::string& wiad) {
 			);
 			return "W  USD: "  + to_string_with_precision(saldo["USD"]) + "  EUR: " + to_string_with_precision(saldo["EUR"]) + "  PLN: " + to_string_with_precision(saldo["PLN"]);
 		}
-		else if (waluta1 != waluta2) {
+		else if (waluta1 == waluta2) {
 			return "Y" + wartosc;
 		}
 		else {
@@ -173,7 +181,7 @@ void serwer() {
 }
 
 int main() {
-	//std::cout << "Start generacji!\n";
+	std::cout << "Start generacji111!\n";
 	//Currency_gen();
 	//std::thread t1(Currency_update);
 	serwer();
