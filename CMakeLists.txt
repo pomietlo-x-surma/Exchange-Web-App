@@ -9,14 +9,15 @@ set(BOOST_ROOT "./boost_1_85_0")
 include_directories(${BOOST_ROOT})
 
 add_executable(Exchange_Web_App
+    
     Exchange_Web_App.cpp
     handling_CSV_file.cpp
     money.converter.cpp
     password_checker.cpp
-)
+    server_message_processing.cpp)
 
-target_include_directories(Exchange_Web_App1 PRIVATE .)
+target_include_directories(Exchange_Web_App PRIVATE .)
 
-configure_file(out/build/x64-Debug/currencies.csv ${CMAKE_BINARY_DIR}/currencies.csv COPYONLY)
-configure_file(out/build/x64-Debug/Dane.csv ${CMAKE_BINARY_DIR}/Dane.csv COPYONLY)
-configure_file(out/build/x64-Debug/Users.csv ${CMAKE_BINARY_DIR}/Users.csv COPYONLY)
+configure_file(currencies.csv ${CMAKE_BINARY_DIR}/currencies.csv COPYONLY)
+configure_file(Dane.csv ${CMAKE_BINARY_DIR}/Dane.csv COPYONLY)
+configure_file(Users.csv ${CMAKE_BINARY_DIR}/Users.csv COPYONLY)
