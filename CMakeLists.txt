@@ -17,7 +17,3 @@ add_executable(Exchange_Web_App
     server_message_processing.cpp)
 
 target_include_directories(Exchange_Web_App PRIVATE .)
-
-configure_file(currencies.csv ${CMAKE_BINARY_DIR}/currencies.csv COPYONLY)
-configure_file(Dane.csv ${CMAKE_BINARY_DIR}/Dane.csv COPYONLY)
-configure_file(Users.csv ${CMAKE_BINARY_DIR}/Users.csv COPYONLY)
