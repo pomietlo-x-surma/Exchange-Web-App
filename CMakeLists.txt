@@ -18,7 +18,7 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/boostorg/beast.git
   GIT_TAG        boost-1.85.0
 )
-
+set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost beast)
 
 include_directories(${boost_SOURCE_DIR}/boost ${boost_SOURCE_DIR}/libs/asio/include ${beast_SOURCE_DIR}/include)
