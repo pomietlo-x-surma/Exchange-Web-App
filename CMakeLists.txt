@@ -11,19 +11,15 @@ FetchContent_Declare(
   boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
   GIT_TAG        boost-1.85.0
-)
-
-FetchContent_Declare(
-  beast
-  GIT_REPOSITORY https://github.com/boostorg/beast.git
-  GIT_TAG        boost-1.85.0
+  GIT_SUBMODULES_RECURSE ON
 )
 set(FETCHCONTENT_QUIET OFF)
-FetchContent_MakeAvailable(boost beast)
 
-include_directories(${boost_SOURCE_DIR}/boost ${boost_SOURCE_DIR}/libs/asio/include ${beast_SOURCE_DIR}/include)
+# Wymuszenie zbudowania wszystkich modułów Boost
+set(BOOST_BUILD_ALL TRUE)
+FetchContent_MakeAvailable(boost)
 
-
+# Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -33,11 +29,11 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
+file(GLOB BOOST_INCLUDE_DIRS "${boost_SOURCE_DIR}/libs/*/include" "${boost_SOURCE_DIR}/libs/*/*/include")
+
 target_include_directories(Exchange_Web_App PRIVATE
-    src/modules
     ${boost_SOURCE_DIR}/boost
-    ${boost_SOURCE_DIR}/libs/asio/include
-    ${beast_SOURCE_DIR}/libs/beast/include
+    ${BOOST_INCLUDE_DIRS}
 )
 
 set_target_properties(Exchange_Web_App PROPERTIES
