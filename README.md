@@ -1,6 +1,17 @@
 ## Server and client application for managing user accounts, currency exchange, and real-time currency data.
 
 
+## Application Overview
+
+The application consists of both server-side and client-side components. 
+
+- **Client-Side**: We used React to build the client-side of the application.
+
+- **Server-Side**: The server was developed in C++ using the Boost library.
+
+- **Additional**: Python was employed to read and fetch the current exchange rates and charts.
+
+
 ## Building the Application
 
 ### Using Git
@@ -65,10 +76,26 @@
 ### To start the React application, open a terminal in the project directory and run:
 
 ```bash
-Skopiuj kod
 npm run dev
 ```
 ### This will start the development server for the React app.
 
+
+## Application Screenshots and Descriptions
+
+1. **Login Screen**  
+   On the login screen, you can log in by entering your email and password or create a new account:
+   
+   ![Login Screen](https://i.imgur.com/i8P12rD.png)
+
+2. **Registration Form**  
+   During registration, you need to enter your email, username, and password twice. The password must meet the following requirements: at least 8 characters, at least one lowercase and uppercase letter, a special character, and a number:
+   
+   ![Registration Form](https://i.imgur.com/N503WMR.png)
+
+3. **User Dashboard**  
+   In the user menu, you can check the current exchange rate and view its graph over time. On the right side, you can also exchange currency and check your account balance:
+   
+   ![User Dashboard](https://i.imgur.com/JS6MChM.png)
 
 
