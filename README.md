@@ -96,6 +96,5 @@ npm run dev
 3. **User Dashboard**  
    In the user menu, you can check the current exchange rate and view its graph over time. On the right side, you can also exchange currency and check your account balance:
    
-   ![User Dashboard](https://i.imgur.com/JS6MChM.png)
-
+   ![User Dashboard](https://i.imgur.com/R3f700t.png)
 
