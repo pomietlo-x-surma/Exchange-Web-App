@@ -15,11 +15,9 @@ FetchContent_Declare(
 )
 set(FETCHCONTENT_QUIET OFF)
 
-# Wymuszenie zbudowania wszystkich modułów Boost
 set(BOOST_BUILD_ALL TRUE)
 FetchContent_MakeAvailable(boost)
 
-# Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -37,4 +35,4 @@ target_include_directories(Exchange_Web_App PRIVATE
 )
 
 set_target_properties(Exchange_Web_App PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../build)
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
