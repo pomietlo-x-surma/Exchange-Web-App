@@ -1,4 +1,4 @@
-# Server and client application for managing user accounts, currency exchange, and real-time currency data.
+## Server and client application for managing user accounts, currency exchange, and real-time currency data.
 
 
 ## Building the Application
@@ -57,4 +57,18 @@
     cmake --build .
     ```
 
+
 6. Set `Exchange-Web-App.cpp` as the startup item by right-clicking on it in Solution Explorer and selecting "Set as Startup Item".
+
+
+## Running the React Application
+### To start the React application, open a terminal in the project directory and run:
+
+```bash
+Skopiuj kod
+npm run dev
+```
+### This will start the development server for the React app.
+
+
+
