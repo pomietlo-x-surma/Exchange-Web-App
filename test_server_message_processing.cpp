@@ -1,0 +1,7 @@
+#define BOOST_TEST_MODULE AppTest
+#include <boost/test/included/unit_test.hpp>
+#include "../src/modules/server_message_processing.cpp"
+
+BOOST_AUTO_TEST_CASE(TestPositiveNumber) {
+    BOOST_CHECK_EQUAL(to_string_with_precision(2.312, 1), "2.3");
+}
