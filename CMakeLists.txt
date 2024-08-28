@@ -36,3 +36,4 @@ target_include_directories(Exchange_Web_App PRIVATE
 
 set_target_properties(Exchange_Web_App PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+add_subdirectory(tests)
