@@ -5,14 +5,15 @@ project(Exchange_Web_App_Tests)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-find_package(Boost 1.85.0 REQUIRED COMPONENTS unit_test_framework)
-
 add_executable(Exchange_Web_App_tests
     test_server_message_processing.cpp
+    ../src/modules/server_message_processing.cpp
 )
 
 target_include_directories(Exchange_Web_App_tests PRIVATE
-    ${Boost_INCLUDE_DIRS}
+    ${boost_SOURCE_DIR}/boost
+    ${boost_SOURCE_DIR}/libs/test/include
+    ../src/modules
 )
 
 target_link_libraries(Exchange_Web_App_tests PRIVATE
@@ -20,4 +21,5 @@ target_link_libraries(Exchange_Web_App_tests PRIVATE
 )
 
 enable_testing()
+
 add_test(NAME Exchange_Web_App_tests COMMAND Exchange_Web_App_tests)
