@@ -16,6 +16,12 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
+file(GLOB BOOST_INCLUDE_DIRS
+    "${boost_SOURCE_DIR}/boost"
+    "${boost_SOURCE_DIR}/libs/*/include"
+    "${boost_SOURCE_DIR}/libs/*/*/include"
+)
+
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -23,15 +29,11 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
-    
 )
 
 target_include_directories(Exchange_Web_App PRIVATE
-    ${boost_SOURCE_DIR}/boost
+    ${BOOST_INCLUDE_DIRS}
 )
-
-set_target_properties(Exchange_Web_App PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
 enable_testing()
 
