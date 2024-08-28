@@ -8,14 +8,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(Exchange_Web_App_tests
     test_server_message_processing.cpp
     ../src/modules/server_message_processing.cpp
+    ../src/modules/handling_CSV_file.cpp
+    ../src/modules/money_converter.cpp
+    ../src/modules/password_checker.cpp
+    ../src/modules/server_file.cpp
+)
+
+file(GLOB BOOST_INCLUDE_DIRS
+    "${boost_SOURCE_DIR}/boost"
+    "${boost_SOURCE_DIR}/libs/*/include"
+    "${boost_SOURCE_DIR}/libs/*/*/include"
 )
 
 target_include_directories(Exchange_Web_App_tests PRIVATE
-    ${boost_SOURCE_DIR}/boost
-    ${boost_SOURCE_DIR}/libs/test/include
-    ../src/modules
+    ${BOOST_INCLUDE_DIRS}
 )
-
 target_link_libraries(Exchange_Web_App_tests PRIVATE
     Boost::unit_test_framework
 )
