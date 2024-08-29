@@ -4,57 +4,57 @@
 
 std::string pass_check(const std::string& password)
 {
-	std::regex pattern_nalfa("[^a-zA-Z0-9\\s]");
-	std::regex pattern_liczba("[0-9]");
+	std::regex pattern_alpha("[^a-zA-Z0-9\\s]");
+	std::regex pattern_number("[0-9]");
 	std::regex pattern_AZ("[A-Z]");
 	std::regex pattern_az("[a-z]");
-	std::regex pattern_rozmiar(".{8,50}");
+	std::regex pattern_size(".{8,50}");
 
 
-	std::string nap = "";
+	std::string text = "";
 
 	if (password.find('\\0') != std::string::npos)
 	{
-		return "Haslo nie moze zawierac znaku '\\0'!";
+		return "Your password can't contain '\\0'!";
 	}
 
-	if (std::regex_search(password, pattern_nalfa) &&
-		std::regex_search(password, pattern_liczba) &&
+	if (std::regex_search(password, pattern_alpha) &&
+		std::regex_search(password, pattern_number) &&
 		std::regex_search(password, pattern_AZ) &&
 		std::regex_search(password, pattern_az) &&
-		std::regex_search(password, pattern_rozmiar))
+		std::regex_search(password, pattern_size))
 	{
-		return nap;
+		return text;
 	}
-	nap = "Haslo musi zawierac: ";
-	if (!std::regex_search(password, pattern_nalfa))
+	text = "Password must consist of: \n";
+	if (!std::regex_search(password, pattern_alpha))
 	{
-		nap += "przynajmniej jeden znak specjalny (np. !,@,#,$,%,^)! \n";
+		text += "at least one special character (np. !,@,#,$,%,^)! \n";
 	}
-	if (!std::regex_search(password, pattern_liczba))
+	if (!std::regex_search(password, pattern_number))
 	{
-		nap += "przynajmniej jedna liczbe! \n";
+		text += "at least one number! \n";
 	}
 	if (!std::regex_search(password, pattern_AZ))
 	{
-		nap += "przynajmniej\njedna wielka litere! \n";
+		text += "at least\none uppercase letter! \n";
 	}
 	if (!std::regex_search(password, pattern_az))
 	{
-		nap += +"przynajmniej\njedna mala litere! \n";
+		text += +"at least\none lowercase letter! \n";
 	}
-	if (!std::regex_search(password, pattern_rozmiar))
+	if (!std::regex_search(password, pattern_size))
 	{
 		if (password.length() < 8)
 		{
-			nap += "Miec dlugosc przynajmniej 8 znakow! ";
+			text += "It must have at least 8! \n";
 		}
 		else
 		{
-			nap += "Zbyt dlugie haslo! \n";
+			text += "Too long password! \n";
 		}
 	}
-	return nap;
+	return text;
 }
 
 bool email_check(const std::string& email)
