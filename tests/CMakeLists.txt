@@ -5,6 +5,8 @@ project(Exchange_Web_App_Tests)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+
 add_executable(Exchange_Web_App_tests
     test_server_message_processing.cpp
     ../src/modules/server_message_processing.cpp
@@ -29,4 +31,5 @@ target_link_libraries(Exchange_Web_App_tests PRIVATE
 
 enable_testing()
 
-add_test(NAME Exchange_Web_App_tests COMMAND Exchange_Web_App_tests)
+add_test(NAME Exchange_Web_App_tests 
+         COMMAND Exchange_Web_App_tests --log_level=test_suite)
