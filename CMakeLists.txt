@@ -31,6 +31,9 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
+set_target_properties(Exchange_Web_App PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+
+
 target_include_directories(Exchange_Web_App PRIVATE
     ${BOOST_INCLUDE_DIRS}
 )
