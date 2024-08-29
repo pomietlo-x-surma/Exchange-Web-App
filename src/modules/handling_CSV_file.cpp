@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <thread>
 
+
+//This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void Currency_gen()
 {
 	std::ofstream outfile("currencies.csv", std::ios_base::app);
@@ -29,7 +31,7 @@ void Currency_gen()
 	outfile.close();
 }
 
-
+//This function updates every row without creating new file every 10s (using a thread)
 void Currency_update()
 {
 	while (true)
@@ -46,18 +48,18 @@ void Currency_update()
 		{
 			for (const auto& second : currencies)
 			{
-				std::cout << "currency updated!\n";
 				std::this_thread::sleep_for(std::chrono::seconds(10));
 				if (first != second)
 				{
 					while (std::getline(infile, line))
 					{
+						//reading the file
 						std::stringstream ss(line);
 						std::string line_first, line_second;
 						ss >> line_first >> line_second;
-
 						if (line_first == first && line_second == second)
 						{
+							//getting currency and chart and writing it to a vector
 							std::string c1 = currency_comparison(first, second);
 							std::string c2 = currency_comparison(first, second, true);
 							std::string c1_new = currencies2[c1];
@@ -75,6 +77,8 @@ void Currency_update()
 			}
 		}
 		infile.close();
+
+		//writing vector to a file
 		std::ofstream outfile("currencies.csv", std::ios_base::trunc);
 		for (const auto& updated_line : lines)
 		{
@@ -84,7 +88,7 @@ void Currency_update()
 	}
 }
 
-
+//Writing email, login and password to a new-created user
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password,
                             const std::string& file_path)
 {
@@ -93,8 +97,7 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 	file.close();
 }
 
-
-//TODO POZMIENIAC dolar na usd itp w całym pliku
+//writing balance of a new user or updating its balance
 void WriteLogsToFile_Currencies(const std::string& login, const std::string& dolar,
                                 const std::string& euro, const std::string& zloty, const std::string& file_path,
                                 bool reg)
@@ -190,6 +193,7 @@ std::string correct_password_check(const std::string& input_email, const std::st
 	return "";
 }
 
+//checking if a user already exists
 bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path)
 {
 	;
