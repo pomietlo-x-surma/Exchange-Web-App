@@ -30,11 +30,11 @@ std::string check_register(const std::string& email, const std::string& login, c
 {
 	if (!(email_check(email) && login_check(login)))
 	{
-		return process_message("bledny E-mail lub haslo!");
+		return process_message("Incorrect E-mail or Password!");
 	}
 	if (check_login_email_existence(email, login))
 	{
-		return process_message("podany E-mail lub login juz istnije!");
+		return process_message("The specified email or login already exists!");
 	}
 	if (!pass_check(pass).empty())
 	{
@@ -42,7 +42,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 	}
 	if (pass != pass_rep)
 	{
-		return process_message("Hasla sa rozne!");
+		return process_message("Passwords don't match!");
 	}
 	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
 	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", "Users.csv", true);
@@ -51,7 +51,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 
 std::string check_logging(const std::string& email, const std::string& pass)
 {
-	if (correct_password_check(email, pass) != "")
+	if (!correct_password_check(email, pass).empty())
 	{
 		return process_message(correct_password_check(email, pass));
 	}
@@ -120,29 +120,29 @@ std::string exchange(const std::string& message)
 	if (currency1 != currency2)
 	{
 		std::string usd, pln, eur;
-		std::map<std::string, long double> saldo = {{"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0}};
-		std::string waluta11 = currencies[currency1];
-		std::string waluta22 = currencies[currency2];
+		std::map<std::string, long double> balance = {{"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0}};
+		std::string currency11 = currencies[currency1];
+		std::string currency22 = currencies[currency2];
 		std::istringstream(ReadLogs(login, "Users.csv")) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
-		saldo["USD"] = usd_value;
-		saldo["EUR"] = eur_value;
-		saldo["PLN"] = pln_value;
-		if (saldo[currency1] >= wart)
+		balance["USD"] = usd_value;
+		balance["EUR"] = eur_value;
+		balance["PLN"] = pln_value;
+		if (balance[currency1] >= wart)
 		{
-			saldo[currency1] -= wart;
-			saldo[currency2] += wart * stold(ReadLogs(currency1 + " " + currency2, "currencies.csv"));
+			balance[currency1] -= wart;
+			balance[currency2] += wart * stold(ReadLogs(currency1 + " " + currency2, "currencies.csv"));
 		}
 		else
 		{
-			return "ENie masz wystarczajacej srodkow na koncie!\n";
+			return "EYou do not have enough funds in your account!\n";
 		}
-		WriteLogsToFile_Currencies(login, to_string_with_precision(saldo["USD"]),
-		                           to_string_with_precision(saldo["EUR"]), to_string_with_precision(saldo["PLN"]),
+		WriteLogsToFile_Currencies(login, to_string_with_precision(balance["USD"]),
+		                           to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]),
 		                           "Users.csv", false
 		);
-		return "W  USD: " + to_string_with_precision(saldo["USD"]) + "  EUR: " + to_string_with_precision(saldo["EUR"])
-			+ "  PLN: " + to_string_with_precision(saldo["PLN"]);
+		return "W  USD: " + to_string_with_precision(balance["USD"]) + "  EUR: " + to_string_with_precision(balance["EUR"])
+			+ "  PLN: " + to_string_with_precision(balance["PLN"]);
 	}
 	if (currency1 == currency2)
 	{
@@ -162,6 +162,6 @@ std::string receive_text(const char& id, const std::string& message)
 	case '3': return exchange_rate(message);
 	case '4': return account_balance(message);
 	case '6': return exchange(message);
-	default: return "Index don't match!\n";
+	default : return "Index don't match!\n";
 	}
 }
