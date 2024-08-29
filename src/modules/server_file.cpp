@@ -10,8 +10,8 @@
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
-void serwer() {
-	std::cout << "Rozpoczynanie pracy serwera!\n";
+void server() {
+	std::cout << "Starting the server!\n";
 	try {
 		boost::asio::io_context ioc;
 		tcp::acceptor acceptor{ ioc, {tcp::v4(), 8080} };
@@ -25,17 +25,17 @@ void serwer() {
 					ws.accept();
 
 					//main loop
-					while (1) {
+					while (true) {
 						boost::beast::multi_buffer buffer;
 						ws.read(buffer);
 
-						//tekst odebrany
+						//received text
 						std::string received_message = boost::beast::buffers_to_string(buffer.data());
 						char id = received_message[0];
 						received_message = received_message.substr(2);
 						std::string response_message = receive_text(id, received_message);
 
-						//tekst zwrotny
+						//transmitted text
 						ws.text(ws.got_text());
 						ws.write(boost::asio::buffer(response_message));
 					}
