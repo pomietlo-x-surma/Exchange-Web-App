@@ -44,8 +44,8 @@ std::string check_register(const std::string& email, const std::string& login, c
 	{
 		return process_message("Passwords don't match!");
 	}
-	WriteLogsToFile_Passes(email, login, pass, "Dane.csv");
-	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", "Users.csv", true);
+	WriteLogsToFile_Passes(email, login, pass, "../database/Dane.csv");
+	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", "../database/Users.csv", true);
 	return "0" + login;
 }
 
@@ -90,13 +90,13 @@ std::string exchange_rate(const std::string& message)
 		{
 			return "Z1.0";
 		}
-		return "Z" + ReadLogs(currency1 + " " + currency2, "currencies.csv");
+		return "Z" + ReadLogs(currency1 + " " + currency2, "../database/currencies.csv");
 	}
 	if (currency1 == currency2)
 	{
 		return "ZZ" + to_string_with_precision(stold(value) / 10);
 	}
-	std::stringstream os(ReadLogs(currency1 + " " + currency2, "currencies.csv"));
+	std::stringstream os(ReadLogs(currency1 + " " + currency2, "../database/currencies.csv"));
 	std::getline(os, value_result, ' ');
 	return "ZZ" + to_string_with_precision(stold(value_result) * stold(value) / 10);
 }
@@ -106,7 +106,7 @@ std::string exchange_rate(const std::string& message)
 std::string account_balance(const std::string& message)
 {
 	std::string log, usd, pln, eur;
-	std::string result = ReadLogs(message, "Users.csv");
+	std::string result = ReadLogs(message, "../database/Users.csv");
 	std::istringstream(result) >> usd >> eur >> pln;
 	return "W  USD: " + usd + "  EUR: " + eur + "  PLN: " + pln + '\n';
 }
@@ -123,7 +123,7 @@ std::string exchange(const std::string& message)
 		std::map<std::string, long double> balance = {{"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0}};
 		std::string currency11 = currencies[currency1];
 		std::string currency22 = currencies[currency2];
-		std::istringstream(ReadLogs(login, "Users.csv")) >> usd >> eur >> pln;
+		std::istringstream(ReadLogs(login, "../database/Users.csv")) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
 		balance["EUR"] = eur_value;
@@ -131,7 +131,7 @@ std::string exchange(const std::string& message)
 		if (balance[currency1] >= wart)
 		{
 			balance[currency1] -= wart;
-			balance[currency2] += wart * stold(ReadLogs(currency1 + " " + currency2, "currencies.csv"));
+			balance[currency2] += wart * stold(ReadLogs(currency1 + " " + currency2, "../database/currencies.csv"));
 		}
 		else
 		{
@@ -139,7 +139,7 @@ std::string exchange(const std::string& message)
 		}
 		WriteLogsToFile_Currencies(login, to_string_with_precision(balance["USD"]),
 		                           to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]),
-		                           "Users.csv", false
+		                           "../database/Users.csv", false
 		);
 		return "W  USD: " + to_string_with_precision(balance["USD"]) + "  EUR: " + to_string_with_precision(balance["EUR"])
 			+ "  PLN: " + to_string_with_precision(balance["PLN"]);
