@@ -14,6 +14,12 @@ FetchContent_Declare(
   GIT_SUBMODULES_RECURSE ON
 )
 FetchContent_MakeAvailable(boost)
+file(GLOB BOOST_INCLUDE_DIRS
+    "${boost_SOURCE_DIR}/boost"
+    "${boost_SOURCE_DIR}/libs/*/include"
+    "${boost_SOURCE_DIR}/libs/*/*/include"
+)
+
 FetchContent_Declare(
   sqlite3
   GIT_REPOSITORY https://github.com/sqlite/sqlite.git
