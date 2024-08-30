@@ -13,7 +13,7 @@
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void Currency_gen()
 {
-	std::ofstream outfile("currencies.csv", std::ios_base::app);
+	std::ofstream outfile("../database/currencies.csv", std::ios_base::app);
 	std::array<std::string, 3> currencies = {"dollar", "euro", "zloty"};
 	std::unordered_map<std::string, std::string> currencies2 = {{"dollar", "USD"}, {"euro", "EUR"}, {"zloty", "PLN"}};
 	for (const auto& first : currencies)
@@ -37,7 +37,7 @@ void Currency_update()
 	while (true)
 	{
 		bool found = false;
-		std::ifstream infile("currencies.csv");
+		std::ifstream infile("../database/currencies.csv");
 		std::vector<std::string> lines;
 		std::string line;
 		std::array<std::string, 3> currencies = {"dollar", "euro", "zloty"};
@@ -79,7 +79,7 @@ void Currency_update()
 		infile.close();
 
 		//writing vector to a file
-		std::ofstream outfile("currencies.csv", std::ios_base::trunc);
+		std::ofstream outfile("../database/currencies.csv", std::ios_base::trunc);
 		for (const auto& updated_line : lines)
 		{
 			outfile << updated_line << '\n';
