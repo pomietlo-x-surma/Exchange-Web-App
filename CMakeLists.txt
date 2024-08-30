@@ -13,13 +13,17 @@ FetchContent_Declare(
   GIT_TAG        boost-1.85.0
   GIT_SUBMODULES_RECURSE ON
 )
-set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
-
-file(GLOB BOOST_INCLUDE_DIRS
-    "${boost_SOURCE_DIR}/boost"
-    "${boost_SOURCE_DIR}/libs/*/include"
-    "${boost_SOURCE_DIR}/libs/*/*/include"
+FetchContent_Declare(
+  sqlite3
+  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
+  GIT_TAG        version-3.43.0
+)
+set(FETCHCONTENT_QUIET OFF)
+FetchContent_MakeAvailable(sqlite3)
+set(BOOST_INCLUDE_DIRS
+    "${boost_SOURCE_DIR}"
+    "${boost_BINARY_DIR}"
 )
 
 add_executable(Exchange_Web_App
@@ -33,11 +37,8 @@ add_executable(Exchange_Web_App
 
 set_target_properties(Exchange_Web_App PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
-
-target_include_directories(Exchange_Web_App PRIVATE
-    ${BOOST_INCLUDE_DIRS}
-)
+target_link_libraries(Exchange_Web_App PRIVATE sqlite3)
+target_include_directories(Exchange_Web_App PRIVATE ${BOOST_INCLUDE_DIRS})
 
 enable_testing()
-
 add_subdirectory(tests)
