@@ -1,5 +1,5 @@
 #include <iostream>
-#include <unordered_map>
+#include <array>
 #include <string>
 #include <map>
 #include <fstream>
@@ -10,7 +10,7 @@
 #include "server_message_processing.hpp"
 
 
-std::unordered_map<std::string, std::string> currencies = {{"PLN", "zloty"}, {"EUR", "euro"}, {"USD", "dollar"}};
+std::array<std::string,3> currencies = {"USD","EUR", "PLN"};
 
 std::string to_string_with_precision(const long double& value, const char& precision)
 {
@@ -121,8 +121,6 @@ std::string exchange(const std::string& message)
 	{
 		std::string usd, pln, eur;
 		std::map<std::string, long double> balance = {{"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0}};
-		std::string currency11 = currencies[currency1];
-		std::string currency22 = currencies[currency2];
 		std::istringstream(ReadLogs(login, "../database/Users.csv")) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
