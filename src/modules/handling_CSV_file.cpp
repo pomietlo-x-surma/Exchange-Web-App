@@ -6,7 +6,6 @@
 #include "money_converter.hpp"
 #include <vector>
 #include <array>
-#include <unordered_map>
 #include <thread>
 
 
@@ -14,8 +13,7 @@
 void Currency_gen()
 {
 	std::ofstream outfile("../database/currencies.csv", std::ios_base::app);
-	std::array<std::string, 3> currencies = {"dollar", "euro", "zloty"};
-	std::unordered_map<std::string, std::string> currencies2 = {{"dollar", "USD"}, {"euro", "EUR"}, {"zloty", "PLN"}};
+	std::array<std::string, 3> currencies = {"USD", "EUR", "PLN"};
 	for (const auto& first : currencies)
 	{
 		for (const auto& second : currencies)
@@ -24,7 +22,7 @@ void Currency_gen()
 			{
 				std::string c1 = currency_comparison(first, second);
 				std::string c2 = currency_comparison(first, second, true);
-				outfile << currencies2[first] << " " << currencies2[second] << ',' << c1 + " " + c2 << '\n';
+				outfile << first << " " << second << ',' << c1 + " " + c2 << '\n';
 			}
 		}
 	}
@@ -41,9 +39,6 @@ void Currency_update()
 		std::vector<std::string> lines;
 		std::string line;
 		std::array<std::string, 3> currencies = {"dollar", "euro", "zloty"};
-		std::unordered_map<std::string, std::string> currencies2 = {
-			{"dollar", "USD"}, {"euro", "EUR"}, {"zloty", "PLN"}
-		};
 		for (const auto& first : currencies)
 		{
 			for (const auto& second : currencies)
@@ -62,9 +57,7 @@ void Currency_update()
 							//getting currency and chart and writing it to a vector
 							std::string c1 = currency_comparison(first, second);
 							std::string c2 = currency_comparison(first, second, true);
-							std::string c1_new = currencies2[c1];
-							std::string c2_new = currencies2[c2];
-							std::string result = first + " " + second + c1_new + " " + c2_new + '\n';
+							std::string result = first + " " + second + c1 + " " + c2 + '\n';
 							lines.push_back(result);
 							found = true;
 						}
@@ -103,7 +96,6 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
                                 bool reg)
 {
 	std::string new_entry = login + ',' + dolar + ' ' + euro + ' ' + zloty + '\n';
-	std::cout << new_entry << '\n';
 	if (reg)
 	{
 		std::ofstream file(file_path, std::ios_base::app);
