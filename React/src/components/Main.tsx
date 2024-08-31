@@ -270,7 +270,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
             color: "black",
             border: "white solid 0.5vw",
             borderRadius: "0.3vw",
-            fontSize: "2vw"
+            fontSize: "3vw",
+
           }}
         >{response2}</p>
         <div
