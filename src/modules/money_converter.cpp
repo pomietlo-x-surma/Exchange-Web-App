@@ -5,6 +5,11 @@
 #include <array>
 #include "money_converter.hpp"
 #include <sstream>
+#include <functional>
+
+
+
+std::function<std::string(const char*)> exec_func = exec;
 
 
 std::string exec(const char* cmd)
@@ -29,7 +34,7 @@ std::string currency_comparison(const std::string& currency1, const std::string&
 {
 	std::string money, code;
 	std::string command = "MoneyExchange.exe " + currency1 + " " + currency2;
-	std::string result = exec(command.c_str());
+	std::string result = exec_func(command.c_str());
 	std::stringstream ss(result);
 	ss >> money >> code;
 	if (chart)
