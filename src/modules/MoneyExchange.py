@@ -1,7 +1,6 @@
 import requests as r
 from bs4 import BeautifulSoup
-from PIL import Image
-from io import BytesIO
+import base64
 import sys
 
 curr = {
@@ -9,14 +8,13 @@ curr = {
     'USD': 'dollar',
     'EUR': 'euro',
     'GBP': 'pound',
-    # 'UAH': 'hryvna',
-    # 'TND': 'dinar',
 }
+
 
 def get_currency(currency1, currency2):
     try:
         if currency1 == currency2:
-            return 1.0, currency2, None
+            return 1.0, None
 
         if currency1 not in curr or currency2 not in curr:
             raise ValueError(f"Unsupported currency: {currency1} or {currency2}")
@@ -27,11 +25,8 @@ def get_currency(currency1, currency2):
         else:
             url_chart = f'https://mybank.pl/kursy-walut/{currency2.lower()}-{curr[currency2].lower()}/'
 
-        print(f"Fetching URL: {url}")
-
         page = r.get(url)
         page.raise_for_status()
-
 
         soup = BeautifulSoup(page.text, 'html.parser')
         res = soup.find_all('div', attrs={'class': 'YMlKec fxKbKc'})
@@ -40,8 +35,6 @@ def get_currency(currency1, currency2):
 
         res = float(res[0].text.replace(',', ''))
 
-        # Fetching the chart
-        print(f"Fetching URL: {url_chart}")
         page_2 = r.get(url_chart)
         page_2.raise_for_status()
 
@@ -55,7 +48,9 @@ def get_currency(currency1, currency2):
         if chart_img_response.status_code != 200:
             raise Exception(f"Failed to download chart image, status code: {chart_img_response.status_code}")
 
-        return res, currency2, chart_img_response.content
+        image_base64 = base64.b64encode(chart_img_response.content).decode('utf-8')
+
+        return res, image_base64
 
     except ValueError as ve:
         print(f"Error: {ve}")
@@ -66,29 +61,21 @@ def get_currency(currency1, currency2):
         return None
 
 
-
-
-
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: MoneyExchange.exe [curr[currency1]] [curr[currency2]]")
+        print("Usage: MoneyExchange.exe [Currency1] [Currency2]\nE.g MoneyExchange.py USD EUR")
     else:
         currency1 = sys.argv[1]
         currency2 = sys.argv[2]
         result = get_currency(currency1, currency2)
         if result:
-            print(f"Exchange Rate: {result[0]} {result[1]}")
-            if result[2]:
+            if result[1]:
                 try:
-                    img = Image.open(BytesIO(result[2]))
-                    file_name = "curr_chart.png"
-                    img.save(file_name)
-                    print(f"Chart saved as {file_name}")
+                    print(result[0])
+                    print(result[1])
                 except Exception as e:
                     print(f"An error occurred: {e}")
             else:
                 print("No chart found.")
         else:
             print("No data available.")
-
-
