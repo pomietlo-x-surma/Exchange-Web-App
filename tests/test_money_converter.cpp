@@ -7,7 +7,7 @@ std::string mock_exec(const char* cmd) {
 }
 
 BOOST_AUTO_TEST_CASE(TestCurrencyComparisonWithMockExec) {
-    exec_func = mock_func;
+    exec_func = mock_exec;
     
     std::string currency1 = "PLN";
     std::string currency2 = "USD";
