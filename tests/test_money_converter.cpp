@@ -19,3 +19,18 @@ BOOST_AUTO_TEST_CASE(TestCurrencyComparisonWithMockExec) {
 
     exec_func = exec;
 }
+
+
+
+BOOST_AUTO_TEST_CASE(test_currency_comparison_integration)
+{
+    std::string currency1 = "PLN";
+    std::string currency2 = "USD";
+
+    std::string result = currency_comparison(currency1, currency2, false);
+    BOOST_CHECK(!result.empty());
+    
+    std::string code_result = currency_comparison(currency1, currency2, true);
+    BOOST_CHECK(!code_result.empty()); 
+
+}
