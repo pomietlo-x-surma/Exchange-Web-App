@@ -10,9 +10,9 @@
 
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
-void Currency_gen()
-{
-	std::ofstream outfile("../database/currencies.csv", std::ios_base::app);
+void Currency_gen(){
+	std::cout << "generating...\n";
+	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	std::array<std::string, 3> currencies = {"USD", "EUR", "PLN"};
 	for (const auto& first : currencies)
 	{
@@ -27,6 +27,7 @@ void Currency_gen()
 		}
 	}
 	outfile.close();
+	std::cout << "Done generating currencies!\n";
 }
 
 //This function updates every row without creating new file every 10s (using a thread)
@@ -35,7 +36,7 @@ void Currency_update()
 	while (true)
 	{
 		bool found = false;
-		std::ifstream infile("../database/currencies.csv");
+		std::ifstream infile(path_to_currencies_csv);
 		std::vector<std::string> lines;
 		std::string line;
 		std::array<std::string, 3> currencies = {"dollar", "euro", "zloty"};
@@ -72,7 +73,7 @@ void Currency_update()
 		infile.close();
 
 		//writing vector to a file
-		std::ofstream outfile("../database/currencies.csv", std::ios_base::trunc);
+		std::ofstream outfile(path_to_currencies_csv, std::ios_base::trunc);
 		for (const auto& updated_line : lines)
 		{
 			outfile << updated_line << '\n';
