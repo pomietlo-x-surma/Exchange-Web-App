@@ -9,6 +9,10 @@
 #include <thread>
 
 
+bool is_file_empty(const std::string& file_path) {
+	std::ifstream infile(file_path, std::ios::ate | std::ios::binary);
+	return infile.tellg() == 0; 
+}
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void Currency_gen(){
 	std::cout << "generating...\n";
@@ -30,16 +34,21 @@ void Currency_gen(){
 	std::cout << "Done generating currencies!\n";
 }
 
+
 //This function updates every row without creating new file every 10s (using a thread)
-void Currency_update()
+void Currency_update();
 {
 	while (true)
 	{
+		if (is_file_empty(path_to_currencies_csv)) {
+			Currency_gen();
+		}
+
 		bool found = false;
 		std::ifstream infile(path_to_currencies_csv);
 		std::vector<std::string> lines;
 		std::string line;
-		std::array<std::string, 3> currencies = {"dollar", "euro", "zloty"};
+		std::array<std::string, 3> currencies = { "dollar", "euro", "zloty" };
 		for (const auto& first : currencies)
 		{
 			for (const auto& second : currencies)
@@ -49,13 +58,13 @@ void Currency_update()
 				{
 					while (std::getline(infile, line))
 					{
-						//reading the file
+						// Czytanie pliku
 						std::stringstream ss(line);
 						std::string line_first, line_second;
 						ss >> line_first >> line_second;
 						if (line_first == first && line_second == second)
 						{
-							//getting currency and chart and writing it to a vector
+							// Aktualizacja danych walut
 							std::string c1 = currency_comparison(first, second);
 							std::string c2 = currency_comparison(first, second, true);
 							std::string result = first + " " + second + c1 + " " + c2 + '\n';
@@ -72,7 +81,7 @@ void Currency_update()
 		}
 		infile.close();
 
-		//writing vector to a file
+		// Zapisywanie zaktualizowanych danych do pliku
 		std::ofstream outfile(path_to_currencies_csv, std::ios_base::trunc);
 		for (const auto& updated_line : lines)
 		{
@@ -81,6 +90,7 @@ void Currency_update()
 		outfile.close();
 	}
 }
+
 
 //Writing email, login and password to a new-created user
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password,
