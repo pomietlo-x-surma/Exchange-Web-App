@@ -1,7 +1,9 @@
-#include <boost/test/included/unit_test.hpp>
-#include "../src/modules/money_converter.cpp"  
+#pragma once
 
-std::string mock_exec(const char* cmd) {
+#include <boost/test/included/unit_test.hpp>
+#include "../src/modules/money_converter.hpp"  
+
+inline std::string mock_exec(const char* cmd) {
     return "4.56 chart";
 }
 
