@@ -33,8 +33,11 @@ add_executable(Exchange_Web_App
     ${SQLITE_SOURCE_FILES}
 )
 
-set_target_properties(Exchange_Web_App PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
-
+set_target_properties(Exchange_Web_App PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/build
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/build
+)
 target_include_directories(Exchange_Web_App PRIVATE
     ${BOOST_INCLUDE_DIRS}
     ${SQLITE_INCLUDE_DIRS}
