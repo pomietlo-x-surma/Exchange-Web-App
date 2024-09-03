@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include(FetchContent)
-include(ExternalProject)
 
 FetchContent_Declare(
   boost
@@ -16,18 +15,8 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-ExternalProject_Add(
-  sqlite
-  PREFIX ${CMAKE_BINARY_DIR}/sqlite
-  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        3.46.1
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND ""
-  INSTALL_COMMAND ""
-  UPDATE_COMMAND ""
-  LOG_DOWNLOAD ON
-)
-
+file(GLOB SQLITE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/sqlite")
+file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
 file(GLOB BOOST_INCLUDE_DIRS
     "${boost_SOURCE_DIR}/boost"
     "${boost_SOURCE_DIR}/libs/*/include"
@@ -41,16 +30,17 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
+    ${SQLITE_SOURCE_FILES}
 )
 
 set_target_properties(Exchange_Web_App PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
 target_include_directories(Exchange_Web_App PRIVATE
     ${BOOST_INCLUDE_DIRS}
-    ${CMAKE_BINARY_DIR}/sqlite/src/sqlite-prefix/include
+    ${SQLITE_INCLUDE_DIRS}
 )
 
-target_link_libraries(Exchange_Web_App PRIVATE ${CMAKE_BINARY_DIR}/sqlite/src/sqlite-prefix/lib/libsqlite3.a)
+target_link_libraries(Exchange_Web_App PRIVATE)
 
 enable_testing()
 add_subdirectory(tests)
