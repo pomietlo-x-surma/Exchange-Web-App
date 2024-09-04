@@ -115,9 +115,6 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 
-
-
-
 	std::ofstream file(file_path, std::ios_base::app);
 	file << email << ' ' << login << ' ' << password << '\n';
 	file.close();
@@ -129,9 +126,34 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
                                 const std::string& euro, const std::string& zloty, const std::string& file_path,
                                 bool reg)
 {
+
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+
+	int rc = sqlite3_open(path_to_database_db, &db);
+	//const char* sql_insert = "INSERT INTO user_balance (LOGIN USD EUR PLN) VALUES (?, ?, ?);";
+	//rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, 0);
+	//sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
+	//sqlite3_bind_text(stmt, 2, dolar.c_str(), -1, SQLITE_STATIC);
+	//sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
+	//sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
+	//rc = sqlite3_step(stmt);
+
+
 	std::string new_entry = login + ',' + dolar + ' ' + euro + ' ' + zloty + '\n';
 	if (reg)
 	{
+		const char* sql_insert = "INSERT INTO user_balance (LOGIN, \"USD\", \"EUR\", \"PLN\") VALUES (?, ?, ?, ?);";
+		rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, 0);
+		sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 2, dolar.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
+		rc = sqlite3_step(stmt);
+		sqlite3_finalize(stmt);
+		if (rc != SQLITE_DONE) {
+			std::cerr << "Error executing SQL statement: " << sqlite3_errmsg(db) << std::endl;
+		}
 		std::ofstream file(file_path, std::ios_base::app);
 		file << new_entry;
 		file.close();
@@ -148,7 +170,6 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 			std::stringstream ss(line);
 			std::string login_infile;
 			std::getline(ss, login_infile, ',');
-			std::cout << login_infile << "Z\n";
 			if (login_infile == login)
 			{
 				std::cout << line << "\n";
@@ -173,6 +194,7 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 			outfile.close();
 		}
 	}
+	sqlite3_close(db);
 }
 
 
