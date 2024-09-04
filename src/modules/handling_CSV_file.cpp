@@ -7,12 +7,14 @@
 #include <vector>
 #include <array>
 #include <thread>
+#include <sqlite3.h>
 
 
 bool is_file_empty(const std::string& file_path) {
 	std::ifstream infile(file_path, std::ios::ate | std::ios::binary);
-	return infile.tellg() == 0; 
+	return infile.tellg() == 0;
 }
+
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void Currency_gen(){
 	std::cout << "generating...\n";
@@ -36,7 +38,7 @@ void Currency_gen(){
 
 
 //This function updates every row without creating new file every 10s (using a thread)
-void Currency_update();
+void Currency_update()
 {
 	while (true)
 	{
@@ -96,9 +98,30 @@ void Currency_update();
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password,
                             const std::string& file_path)
 {
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+
+	int rc = sqlite3_open("../database/database.db", &db);
+
+	const char* sql_insert = "INSERT INTO user_auth (EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?);";
+	rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, 0);
+
+	sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, login.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 3, password.c_str(), -1, SQLITE_STATIC);
+
+	rc = sqlite3_step(stmt);
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+
+
+
 	std::ofstream file(file_path, std::ios_base::app);
 	file << email << ' ' << login << ' ' << password << '\n';
 	file.close();
+
 }
 
 //writing balance of a new user or updating its balance
@@ -199,7 +222,6 @@ std::string correct_password_check(const std::string& input_email, const std::st
 //checking if a user already exists
 bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path)
 {
-	;
 	std::string line, stored_email, stored_login, stored_pass;
 	std::ifstream file(file_path);
 	while (std::getline(file, line))
