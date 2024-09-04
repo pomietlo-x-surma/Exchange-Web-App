@@ -1,8 +1,11 @@
 #pragma once
 
-inline constexpr auto path_to_user_auth_csv = R"(../database/user_auth.csv)";
-inline constexpr auto path_to_user_balance_csv = R"(../database/user_balance.csv)";
-inline constexpr auto path_to_currencies_csv = R"(../database/currencies.csv)";
+constexpr auto path_to_user_auth_csv = R"(../database/user_auth.csv)";
+constexpr auto path_to_user_balance_csv = R"(../database/user_balance.csv)";
+constexpr auto path_to_currencies_csv = R"(../database/currencies.csv)";
+constexpr auto path_to_database_db = R"(../database/database.db)";
+
+
 
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password, const std::string& file_path = path_to_user_auth_csv);
 void WriteLogsToFile_Currencies(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty, const std::string& file_path = path_to_user_balance_csv, bool reg = false);
