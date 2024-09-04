@@ -101,7 +101,7 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 	sqlite3* db;
 	sqlite3_stmt* stmt;
 
-	int rc = sqlite3_open("../database/database.db", &db);
+	int rc = sqlite3_open(path_to_database_db, &db);
 
 	const char* sql_insert = "INSERT INTO user_auth (EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?);";
 	rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, 0);
