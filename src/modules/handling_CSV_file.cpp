@@ -150,39 +150,30 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 	}
 	else
 	{
-		std::ifstream infile(file_path);
-		std::vector<std::string> lines;
-		std::string line;
-		bool found = false;
+		const char* sql_update = R"(
+            UPDATE user_balance 
+            SET USD = ?, EUR = ?, PLN = ? 
+            WHERE LOGIN = ?;
+        )";
 
-		while (std::getline(infile, line))
-		{
-			std::stringstream ss(line);
-			std::string login_infile;
-			std::getline(ss, login_infile, ',');
-			if (login_infile == login)
-			{
-				std::cout << line << "\n";
-				lines.push_back(new_entry + "X");
-				found = true;
-			}
-			else
-			{
-				lines.push_back(line + '\n');
-			}
+		rc = sqlite3_prepare_v2(db, sql_update, -1, &stmt, 0);
+		if (rc != SQLITE_OK) {
+			std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+			sqlite3_close(db);
+			return;
 		}
 
-		infile.close();
+		sqlite3_bind_text(stmt, 1, dolar.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 2, euro.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 3, zloty.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 4, login.c_str(), -1, SQLITE_STATIC);
 
-		if (found)
-		{
-			std::ofstream outfile(file_path, std::ios_base::trunc);
-			for (const auto& updated_line : lines)
-			{
-				outfile << updated_line;
-			}
-			outfile.close();
+		rc = sqlite3_step(stmt);
+		if (rc != SQLITE_DONE) {
+			std::cerr << "Error executing SQL update statement: " << sqlite3_errmsg(db) << std::endl;
 		}
+
+		sqlite3_finalize(stmt);
 	}
 	sqlite3_close(db);
 }
