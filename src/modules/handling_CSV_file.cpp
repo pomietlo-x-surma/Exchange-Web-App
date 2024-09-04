@@ -126,19 +126,9 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
                                 const std::string& euro, const std::string& zloty, const std::string& file_path,
                                 bool reg)
 {
-
 	sqlite3* db;
 	sqlite3_stmt* stmt;
-
 	int rc = sqlite3_open(path_to_database_db, &db);
-	//const char* sql_insert = "INSERT INTO user_balance (LOGIN USD EUR PLN) VALUES (?, ?, ?);";
-	//rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, 0);
-	//sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
-	//sqlite3_bind_text(stmt, 2, dolar.c_str(), -1, SQLITE_STATIC);
-	//sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
-	//sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
-	//rc = sqlite3_step(stmt);
-
 
 	std::string new_entry = login + ',' + dolar + ' ' + euro + ' ' + zloty + '\n';
 	if (reg)
