@@ -10,7 +10,7 @@
 #include <sqlite3.h>
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
-void Currency_gen()
+void currency_gen()
 {
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
@@ -108,7 +108,7 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 }
 
 //writing balance of a new user or updating its balance
-void WriteLogsToFile_Currencies(const std::string& login, const std::string& dolar,
+void write_logs_currencies(const std::string& login, const std::string& dolar,
 	const std::string& euro, const std::string& zloty,
 	bool reg)
 {
