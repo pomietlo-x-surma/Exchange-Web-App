@@ -142,9 +142,27 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 }
 
 
-std::string ReadLogs(const std::string& login, const std::string& file_path)
+std::string read_logs_user_auth(const std::string& logs)
 {
-	std::ifstream infile(file_path);
+	std::ifstream infile(path_to_user_auth_csv);
+	std::string line;
+
+	while (std::getline(infile, line))
+	{
+		std::string email, login, pass;
+		std::stringstream ss(line);
+		ss << email << login << pass;
+		if (email == logs)
+		{
+			return logs;
+		}
+	}
+
+	return "";
+}
+std::string read_logs_currencies(const std::string& logs)
+{
+	std::ifstream infile(path_to_currencies_csv);
 	std::string line, log;
 
 	while (std::getline(infile, line))
@@ -153,8 +171,8 @@ std::string ReadLogs(const std::string& login, const std::string& file_path)
 		std::string login_infile;
 		std::getline(ss, login_infile, ',');
 		std::getline(ss, log);
-		std::cout << login << " " << log << "\n";
-		if (login_infile == login)
+		std::cout << login_infile << std::endl;
+		if (login_infile == logs)
 		{
 			std::getline(ss, log);
 			return log;
@@ -163,6 +181,26 @@ std::string ReadLogs(const std::string& login, const std::string& file_path)
 
 	return "";
 }
+
+std::string read_logs_user_balance(const std::string& logs)
+{
+	std::ifstream infile(path_to_user_balance_csv);
+	std::string line, log;
+	while (std::getline(infile, line))
+	{
+		std::stringstream ss(line);
+		std::string login_infile;
+		std::getline(ss, login_infile, ' ');
+		std::getline(ss, log);
+		if (login_infile == logs)
+		{
+			std::getline(ss, log);
+			return log;
+		}
+	}
+	return "";
+}
+
 
 
 std::string correct_password_check(const std::string& input_email, const std::string& input_pass,
