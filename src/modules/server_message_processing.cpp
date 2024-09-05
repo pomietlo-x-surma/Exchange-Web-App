@@ -10,7 +10,7 @@
 #include "server_message_processing.hpp"
 
 
-std::array<std::string,3> currencies = {"USD","EUR", "PLN"};
+std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
 
 std::string to_string_with_precision(const long double& value, const char& precision)
 {
@@ -26,7 +26,7 @@ std::string process_message(const std::string& received_message)
 }
 
 std::string check_register(const std::string& email, const std::string& login, const std::string& pass,
-                           const std::string& pass_rep)
+	const std::string& pass_rep)
 {
 	if (!(email_check(email) && login_check(login)))
 	{
@@ -45,7 +45,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 		return process_message("Passwords don't match!");
 	}
 	WriteLogsToFile_Passes(email, login, pass, path_to_user_auth_csv);
-	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", path_to_user_balance_csv, true);
+	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", true);
 	return "0" + login;
 }
 
@@ -98,6 +98,7 @@ std::string exchange_rate(const std::string& message)
 	}
 	std::stringstream os(ReadLogs(currency1 + " " + currency2, path_to_currencies_csv));
 	std::getline(os, value_result, ' ');
+	std::cout << value_result << std::endl;
 	return "ZZ" + to_string_with_precision(stold(value_result) * stold(value) / 10);
 }
 
@@ -120,8 +121,8 @@ std::string exchange(const std::string& message)
 	if (currency1 != currency2)
 	{
 		std::string usd, pln, eur;
-		std::map<std::string, long double> balance = {{"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0}};
-		std::istringstream(ReadLogs(login, path_to_user_balance_csv)) >> usd >> eur >> pln;
+		std::map<std::string, long double> balance = { {"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0} };
+		std::istringstream(ReadLogs(login, path_to_user_auth_csv)) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
 		balance["EUR"] = eur_value;
@@ -136,8 +137,8 @@ std::string exchange(const std::string& message)
 			return "EYou do not have enough funds in your account!\n";
 		}
 		WriteLogsToFile_Currencies(login, to_string_with_precision(balance["USD"]),
-		                           to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]),
-									path_to_user_balance_csv, false
+			to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]),
+			false
 		);
 		return "W  USD: " + to_string_with_precision(balance["USD"]) + "  EUR: " + to_string_with_precision(balance["EUR"])
 			+ "  PLN: " + to_string_with_precision(balance["PLN"]);
@@ -160,6 +161,6 @@ std::string receive_text(const char& id, const std::string& message)
 	case '3': return exchange_rate(message);
 	case '4': return account_balance(message);
 	case '6': return exchange(message);
-	default : return "Index don't match!\n";
+	default: return "Index don't match!\n";
 	}
 }
