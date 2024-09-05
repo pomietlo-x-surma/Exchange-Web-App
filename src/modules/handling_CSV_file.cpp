@@ -7,17 +7,11 @@
 #include <vector>
 #include <array>
 #include <thread>
-#include <sqlite3.h>
 
-
-bool is_file_empty(const std::string& file_path) {
-	std::ifstream infile(file_path, std::ios::ate | std::ios::binary);
-	return infile.tellg() == 0;
-}
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
-void Currency_gen() {
-	std::cout << "generating...\n";
+void Currency_gen()
+{
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 	for (const auto& first : currencies)
@@ -33,19 +27,13 @@ void Currency_gen() {
 		}
 	}
 	outfile.close();
-	std::cout << "Done generating currencies!\n";
 }
-
 
 //This function updates every row without creating new file every 10s (using a thread)
 void Currency_update()
 {
 	while (true)
 	{
-		if (is_file_empty(path_to_currencies_csv)) {
-			Currency_gen();
-		}
-
 		bool found = false;
 		std::ifstream infile(path_to_currencies_csv);
 		std::vector<std::string> lines;
@@ -60,13 +48,13 @@ void Currency_update()
 				{
 					while (std::getline(infile, line))
 					{
-						// Czytanie pliku
+						//reading the file
 						std::stringstream ss(line);
 						std::string line_first, line_second;
 						ss >> line_first >> line_second;
 						if (line_first == first && line_second == second)
 						{
-							// Aktualizacja danych walut
+							//getting currency and chart and writing it to a vector
 							std::string c1 = currency_comparison(first, second);
 							std::string c2 = currency_comparison(first, second, true);
 							std::string result = first + " " + second + c1 + " " + c2 + '\n';
@@ -83,7 +71,7 @@ void Currency_update()
 		}
 		infile.close();
 
-		// Zapisywanie zaktualizowanych danych do pliku
+		//writing vector to a file
 		std::ofstream outfile(path_to_currencies_csv, std::ios_base::trunc);
 		for (const auto& updated_line : lines)
 		{
@@ -93,81 +81,20 @@ void Currency_update()
 	}
 }
 
-
 //Writing email, login and password to a new-created user
 void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password,
 	const std::string& file_path)
 {
-	sqlite3* db;
-	sqlite3_stmt* stmt;
-
-	int rc = sqlite3_open(path_to_database_db, &db);
-
-	const char* sql_insert = "INSERT INTO user_auth (EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?);";
-	rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, 0);
-
-	sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 2, login.c_str(), -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 3, password.c_str(), -1, SQLITE_STATIC);
-
-	rc = sqlite3_step(stmt);
-
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
-
 	std::ofstream file(file_path, std::ios_base::app);
 	file << email << ' ' << login << ' ' << password << '\n';
 	file.close();
 }
 
-//TODO UPROSCIC
 //writing balance of a new user or updating its balance
 void WriteLogsToFile_Currencies(const std::string& login, const std::string& dolar,
 	const std::string& euro, const std::string& zloty,
 	bool reg)
 {
-		sqlite3* db;
-		sqlite3_stmt* stmt;
-		int rc = sqlite3_open(path_to_database_db, &db);
-		if (rc != SQLITE_OK) {
-			std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << std::endl;
-			return;
-		}
-
-		const char* sql;
-		if (reg) {
-			sql = "INSERT INTO user_balance (LOGIN, USD, EUR, PLN) VALUES (?, ?, ?, ?);";
-		}
-		else {
-			sql = "UPDATE user_balance SET USD = ?, EUR = ?, PLN = ? WHERE LOGIN = ?;";
-		}
-
-		rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
-		if (rc != SQLITE_OK) {
-			std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-			sqlite3_close(db);
-			return;
-		}
-
-		if (reg) {
-			sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
-			sqlite3_bind_text(stmt, 2, dolar.c_str(), -1, SQLITE_STATIC);
-			sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
-			sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
-		}
-		else {
-			sqlite3_bind_text(stmt, 1, dolar.c_str(), -1, SQLITE_STATIC);
-			sqlite3_bind_text(stmt, 2, euro.c_str(), -1, SQLITE_STATIC);
-			sqlite3_bind_text(stmt, 3, zloty.c_str(), -1, SQLITE_STATIC);
-			sqlite3_bind_text(stmt, 4, login.c_str(), -1, SQLITE_STATIC);
-		}
-
-		rc = sqlite3_step(stmt);
-		if (rc != SQLITE_DONE) {
-			std::cerr << (reg ? "Error executing SQL insert statement: " : "Error executing SQL update statement: ")
-				<< sqlite3_errmsg(db) << std::endl;
-		}
-
 	std::string new_entry = login + ',' + dolar + ' ' + euro + ' ' + zloty + '\n';
 	if (reg)
 	{
@@ -187,6 +114,7 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 			std::stringstream ss(line);
 			std::string login_infile;
 			std::getline(ss, login_infile, ',');
+			std::cout << login_infile << "Z\n";
 			if (login_infile == login)
 			{
 				std::cout << line << "\n";
@@ -211,12 +139,7 @@ void WriteLogsToFile_Currencies(const std::string& login, const std::string& dol
 			outfile.close();
 		}
 	}
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
 }
-
-
-
 
 
 std::string ReadLogs(const std::string& login, const std::string& file_path)
@@ -230,6 +153,7 @@ std::string ReadLogs(const std::string& login, const std::string& file_path)
 		std::string login_infile;
 		std::getline(ss, login_infile, ',');
 		std::getline(ss, log);
+		std::cout << login << " " << log << "\n";
 		if (login_infile == login)
 		{
 			std::getline(ss, log);
@@ -265,6 +189,7 @@ std::string correct_password_check(const std::string& input_email, const std::st
 //checking if a user already exists
 bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path)
 {
+	;
 	std::string line, stored_email, stored_login, stored_pass;
 	std::ifstream file(file_path);
 	while (std::getline(file, line))
