@@ -122,7 +122,7 @@ std::string exchange(const std::string& message)
 	{
 		std::string usd, pln, eur;
 		std::map<std::string, long double> balance = { {"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0} };
-		std::istringstream(read_logs_user_auth(login)) >> usd >> eur >> pln;
+		std::istringstream(read_logs_user_balance(login)) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
 		balance["EUR"] = eur_value;
