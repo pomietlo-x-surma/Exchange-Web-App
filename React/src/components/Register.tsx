@@ -27,8 +27,8 @@ const Register: React.FC = () => {
       if (typeof message.data === "string") {
         if (message.data[0] === "0") {
           const log = message.data.substring(1);
+          localStorage.setItem("username", message.data);
           navigate(`/Main/${log}`);
-          window.location.reload();
         } else {
           setResponse(message.data);
         }
