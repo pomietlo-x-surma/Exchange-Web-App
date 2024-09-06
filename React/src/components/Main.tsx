@@ -31,6 +31,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
     };
 
     client.onmessage = (message: IMessageEvent) => {
+      console.log(message.data);
       if (typeof message.data === "string" && message.data.slice(0, 2) == "ZZ"){
         setResponse2(message.data.substring(2));
       }
@@ -46,7 +47,6 @@ const Main: React.FC<MainProps> = ({ username }) => {
         setMessage2(message.data.substring(1));
       } 
       else if (typeof message.data === "string" && message.data[0] == "W"){
-        console.log(message.data);
         setState(message.data.substring(1));
         setError(" ");
       }
@@ -208,7 +208,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
         </p>
         <p //result box
           style={{
-            fontSize: "3vw",
+            fontSize: "2.5vw",
             left: "31vw",
             top: "13vw",
             position: "absolute",
@@ -226,30 +226,20 @@ const Main: React.FC<MainProps> = ({ username }) => {
         <input
           placeholder="Wpisz kwote"
           type="number" 
-          step="0.01"
-          onChange={(e) => {
-            const value = e.target.value;
-            if (value.includes('.')) {
-              const [integerPart, decimalPart] = value.split('.');
-              if (decimalPart && decimalPart.length > 2) {
-                return;}
-            }
-            setMessage2(value);
-            
-          }}
+          step="1"
+          onChange={(e) => setMessage2(e.target.value)}
           style={{
+            position: "relative",
             height: "3vw",
-            width: "9vw",
-            left: "63vw",
-            top: "-30.5vw",
+            width: "11.5vw",
+            left: "55vw",
+            top: "-29.5vw",
             zIndex: 20,
             margin: "0vw",
-            fontSize: "1.5vw",
-            padding: "0.5vw"
           }}
         />
-        <div className="currencychange" style={{ left: "53.5vw", top: "-5vw" }}>
-          <p className="dropdown-button" style={{padding: "0.5vw"}}>{selectedCurrency3}</p>
+        <div className="currencychange" style={{ left: "44.5vw", top: "-5vw" }}>
+          <p className="dropdown-button">{selectedCurrency3}</p>
           <div className="dropdown-content">
             <a onClick={() => handleSelect3("USD")}>USD</a>
             <a onClick={() => handleSelect3("PLN")}>PLN</a>
@@ -259,8 +249,8 @@ const Main: React.FC<MainProps> = ({ username }) => {
         <p
           style={{
             position: "relative",
-            left: "55vw",
-            top: "-40.5vw",
+            left: "51vw",
+            top: "-40vw",
             fontSize: "9vw",
             margin: "0vw",
           }}
@@ -270,10 +260,10 @@ const Main: React.FC<MainProps> = ({ username }) => {
         <p
           style={{
             position: "relative",
-            height: "4vw",
-            width: "10vw",
-            left: "88vw",
-            top: "-49vw",
+            height: "5vw",
+            width: "14vw",
+            left: "85vw",
+            top: "-48.7vw",
             zIndex: 10,
             margin: "0vw",
             backgroundColor: "gray",
@@ -281,22 +271,22 @@ const Main: React.FC<MainProps> = ({ username }) => {
             border: "white solid 0.5vw",
             borderRadius: "0.3vw",
             fontSize: "3vw",
-            paddingBottom: "0.5vw"
+
           }}
         >{response2}</p>
         <div
           className="currencychange"
           style={{ left: "74.5vw", top: "-24.5vw" }}
         >
-          <p className="dropdown-button" style ={{left: "6vw", top: "-29.5vw", padding: "0.5vw"}}>{selectedCurrency4}</p>
+          <p className="dropdown-button">{selectedCurrency4}</p>
           <div className="dropdown-content">
             <a onClick={() => handleSelect4("USD")}>USD</a>
             <a onClick={() => handleSelect4("PLN")}>PLN</a>
             <a onClick={() => handleSelect4("EUR")}>EUR</a>
           </div>
         </div>
-        <p style={{fontSize: "2vw", left: "50vw", top: "-60vw", position:"relative", margin: "-3vw" }}>{error}</p>
-        <button onClick={handleSend} style={{position: "relative", top:"-58vw", left: "67vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw", zIndex: 100, margin: "0vw" }}>dokonaj tranzakcji</button>
+        <p style={{fontSize: "2vw", left: "50vw", top: "-61vw", position:"relative", margin: "-3vw" }}>{error}</p>
+        <button onClick={handleSend} style={{position: "relative", top:"-58vw", left: "63vw", fontSize: "2vw", padding: "0.5vw", border: "solid white 0.2vw", borderRadius: "0.5vw", zIndex: 100, margin: "0vw" }}>dokonaj tranzakcji</button>
       </h3>
     </>
   );
