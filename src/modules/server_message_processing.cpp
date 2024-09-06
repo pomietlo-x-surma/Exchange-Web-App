@@ -71,7 +71,6 @@ std::string login_user(const std::string& message)
 //1
 std::string register_user(const std::string& message)
 {
-	std::cout << message << "\n";
 	std::stringstream sa(message);
 	std::string email, login, pass, pass_rep;
 	sa >> email >> login >> pass >> pass_rep;
@@ -98,7 +97,6 @@ std::string exchange_rate(const std::string& message)
 	}
 	std::stringstream os(read_logs_currencies(currency1 + " " + currency2));
 	std::getline(os, value_result, ' ');
-	std::cout << value_result << std::endl;
 	return "ZZ" + to_string_with_precision(stold(value_result) * stold(value) / 10);
 }
 
@@ -122,7 +120,7 @@ std::string exchange(const std::string& message)
 	{
 		std::string usd, pln, eur;
 		std::map<std::string, long double> balance = { {"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0} };
-		std::istringstream(read_logs_user_balance(login)) >> usd >> eur >> pln;
+		std::istringstream(read_logs_user_auth(login)) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
 		balance["EUR"] = eur_value;
