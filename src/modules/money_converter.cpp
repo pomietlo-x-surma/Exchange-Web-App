@@ -28,8 +28,6 @@ std::string exec(const char* cmd)
 	return result;
 }
 
-
-//function saving currencies requested by user
 std::string currency_comparison(const std::string& currency1, const std::string& currency2, bool chart)
 {
 	std::string money, code;
