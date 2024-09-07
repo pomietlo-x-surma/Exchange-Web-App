@@ -122,7 +122,7 @@ void write_logs_to_file_user_balance(const std::string& login, const std::string
 	sqlite3_stmt* stmt;
 	int rc = sqlite3_open(path_to_database_db, &db);
 	if (rc != SQLITE_OK) {
-		std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << std::endl;
+		std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << '\n';
 		return;
 	}
 
@@ -136,7 +136,7 @@ void write_logs_to_file_user_balance(const std::string& login, const std::string
 
 	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
 	if (rc != SQLITE_OK) {
-		std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+		std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << '\n';
 		sqlite3_close(db);
 		return;
 	}
@@ -157,7 +157,7 @@ void write_logs_to_file_user_balance(const std::string& login, const std::string
 	rc = sqlite3_step(stmt);
 	if (rc != SQLITE_DONE) {
 		std::cerr << (reg ? "Error executing SQL insert statement: " : "Error executing SQL update statement: ")
-			<< sqlite3_errmsg(db) << std::endl;
+			<< sqlite3_errmsg(db) << '\n';
 	}
 
 
