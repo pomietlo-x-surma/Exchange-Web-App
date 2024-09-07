@@ -18,7 +18,6 @@ bool is_file_empty(const std::string& path){
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void Currency_gen()
 {
-
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 	for (const auto& first : currencies)
@@ -39,6 +38,9 @@ void Currency_gen()
 //This function updates every row without creating new file every 10s (using a thread)
 void Currency_update()
 {
+	if (is_file_empty(path_to_currencies_csv)) {
+		Currency_gen();
+	}
 	while (true)
 	{
 		bool found = false;
