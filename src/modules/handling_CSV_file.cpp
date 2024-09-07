@@ -143,12 +143,12 @@ void write_logs_to_file_user_balance(const std::string& login, const std::string
 
 	if (reg) {
 		sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
-		sqlite3_bind_text(stmt, 2, dolar.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 2, dollar.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
 	}
 	else {
-		sqlite3_bind_text(stmt, 1, dolar.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 1, dollar.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 2, euro.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 3, zloty.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 4, login.c_str(), -1, SQLITE_STATIC);
@@ -163,7 +163,7 @@ void write_logs_to_file_user_balance(const std::string& login, const std::string
 
 
 
-	std::string new_entry = login + ' ' + dolar + ' ' + euro + ' ' + zloty + '\n';
+	std::string new_entry = login + ' ' + dollar + ' ' + euro + ' ' + zloty + '\n';
 	if (reg)
 	{
 		std::ofstream file(path_to_user_balance_csv, std::ios_base::app);
