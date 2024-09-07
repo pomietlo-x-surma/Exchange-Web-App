@@ -16,7 +16,7 @@ bool is_file_empty(const std::string& path){
 }
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
-void Currency_gen()
+void currency_generation()
 {
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
@@ -36,10 +36,10 @@ void Currency_gen()
 }
 
 //This function updates every row without creating new file every 10s (using a thread)
-void Currency_update()
+void currency_update()
 {
 	if (is_file_empty(path_to_currencies_csv)) {
-		Currency_gen();
+		currency_generation();
 	}
 	while (true)
 	{
@@ -91,7 +91,7 @@ void Currency_update()
 }
 
 //Writing email, login and password to a new-created user
-void WriteLogsToFile_Passes(const std::string& email, const std::string& login, const std::string& password,
+void write_logs_to_file_user_auth(const std::string& email, const std::string& login, const std::string& password,
 	const std::string& file_path)
 {
 	sqlite3* db;
@@ -117,10 +117,7 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 }
 
 //writing balance of a new user or updating its balance
-void WriteLogsToFile_Currencies(const std::string& login, const std::string& dolar,
-	const std::string& euro, const std::string& zloty,
-	bool reg)
-{
+void write_logs_to_file_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty, bool reg){
 	sqlite3* db;
 	sqlite3_stmt* stmt;
 	int rc = sqlite3_open(path_to_database_db, &db);
