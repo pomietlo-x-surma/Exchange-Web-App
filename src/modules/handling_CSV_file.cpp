@@ -9,9 +9,16 @@
 #include <thread>
 #include <sqlite3.h>
 
+bool is_file_empty(const std::string& path){
+	std::ifstream file(path, std::ios::binary | std::ios::ate);
+	return file.tellg() == 0;
+
+}
+
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
-void currency_gen()
+void Currency_gen()
 {
+
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 	for (const auto& first : currencies)
@@ -108,7 +115,7 @@ void WriteLogsToFile_Passes(const std::string& email, const std::string& login, 
 }
 
 //writing balance of a new user or updating its balance
-void write_logs_currencies(const std::string& login, const std::string& dolar,
+void WriteLogsToFile_Currencies(const std::string& login, const std::string& dolar,
 	const std::string& euro, const std::string& zloty,
 	bool reg)
 {
@@ -157,7 +164,7 @@ void write_logs_currencies(const std::string& login, const std::string& dolar,
 
 
 
-	std::string new_entry = login + ',' + dolar + ' ' + euro + ' ' + zloty + '\n';
+	std::string new_entry = login + ' ' + dolar + ' ' + euro + ' ' + zloty + '\n';
 	if (reg)
 	{
 		std::ofstream file(path_to_user_balance_csv, std::ios_base::app);
@@ -175,7 +182,7 @@ void write_logs_currencies(const std::string& login, const std::string& dolar,
 		{
 			std::stringstream ss(line);
 			std::string login_infile;
-			std::getline(ss, login_infile, ',');
+			std::getline(ss, login_infile, ' ');
 			if (login_infile == login)
 			{
 				lines.push_back(new_entry + "X");
