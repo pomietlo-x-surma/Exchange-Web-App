@@ -301,28 +301,24 @@ std::string read_logs_user_balance(const std::string& logs)
 	sqlite3_stmt* stmt = nullptr;
 	std::string result;
 
-	// Przygotowanie zapytania SQL
-	std::string sql_query = "SELECT LOGIN, USD, EUR, PLN FROM user_balance WHERE LOGIN = ?;";
+	std::string sql_query = "SELECT * FROM user_balance WHERE LOGIN = ?;";
 
 	if (!database_preparing(sql_query, &db, &stmt)) {
 		return "blad12313";
 	}
 
-	// Bindowanie wartości 'logs' do zapytania
 	sqlite3_bind_text(stmt, 1, logs.c_str(), -1, SQLITE_STATIC);
 
-	// Wykonanie zapytania
 	int rc = sqlite3_step(stmt);
+	std::cout << "ok\n";
 	if (rc == SQLITE_ROW) {
-		// Odczyt danych z wiersza
+		std::cout << "git111\n";
 		std::string login = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
 		double usd = sqlite3_column_double(stmt, 1);
 		double eur = sqlite3_column_double(stmt, 2);
 		double pln = sqlite3_column_double(stmt, 3);
-
-		// Formatowanie wyniku
-		result = "Login: " + login + "\nUSD: " + std::to_string(usd) +
-			"\nEUR: " + std::to_string(eur) + "\nPLN: " + std::to_string(pln);
+		result = std::to_string(usd) + " "+ std::to_string(eur) + " "+ std::to_string(pln);
+		std::cout << result << '\n';
 	}
 	else if (rc == SQLITE_DONE) {
 		result = "No matching records found.";
