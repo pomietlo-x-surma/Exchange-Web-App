@@ -9,6 +9,21 @@
 #include <thread>
 #include <sqlite3.h>
 
+bool database_preparing(const auto sql_query, sqlite3** db, sqlite3_stmt** stmt){
+	int rc = sqlite3_open(path_to_database_db, db);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
+		return false;
+	}
+	rc = sqlite3_prepare_v2(*db, sql_query, -1, stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Błąd SQL przy przygotowaniu zapytania: " << sqlite3_errmsg(*db) << std::endl;
+		sqlite3_close(*db);
+		return false;
+	}
+	return true;
+}
+
 
 
 bool is_file_empty(const std::string& path){
@@ -353,7 +368,6 @@ std::string read_logs_user_balance(const std::string& logs)
 std::string correct_password_check(const std::string& input_email, const std::string& input_pass,
 	const std::string& file_path)
 {
-	;
 	std::ifstream file(file_path);
 	std::string line;
 	while (std::getline(file, line))
@@ -374,7 +388,23 @@ std::string correct_password_check(const std::string& input_email, const std::st
 //checking if a user already exists
 bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path)
 {
-	;
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+	bool exists = false;
+	database_preparing("SELECT 1 FROM user_auth WHERE EMAIL = ? OR LOGIN = ? LIMIT 1;", &db, &stmt);
+
+	sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, login.c_str(), -1, SQLITE_STATIC);
+
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		exists = true;
+	}
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+
+
 	std::string line, stored_email, stored_login, stored_pass;
 	std::ifstream file(file_path);
 	while (std::getline(file, line))
@@ -386,5 +416,5 @@ bool check_login_email_existence(const std::string& email, const std::string& lo
 			return true;
 		}
 	}
-	return false;
+	return exists;
 }
