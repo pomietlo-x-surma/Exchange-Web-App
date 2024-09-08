@@ -44,8 +44,8 @@ std::string check_register(const std::string& email, const std::string& login, c
 	{
 		return process_message("Passwords don't match!");
 	}
-	WriteLogsToFile_Passes(email, login, pass, path_to_user_auth_csv);
-	WriteLogsToFile_Currencies(login, "100", "0.0", "0.0", true);
+	write_logs_to_file_user_auth(email, login, pass, path_to_user_auth_csv);
+	write_logs_to_file_user_balance(login, "100", "0.0", "0.0", true);
 	return "0" + login;
 }
 
@@ -120,7 +120,7 @@ std::string exchange(const std::string& message)
 	{
 		std::string usd, pln, eur;
 		std::map<std::string, long double> balance = { {"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0} };
-		std::istringstream(read_logs_user_auth(login)) >> usd >> eur >> pln;
+		std::istringstream(read_logs_user_balance(login)) >> usd >> eur >> pln;
 		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
 		balance["EUR"] = eur_value;
@@ -134,7 +134,7 @@ std::string exchange(const std::string& message)
 		{
 			return "EYou do not have enough funds in your account!\n";
 		}
-		WriteLogsToFile_Currencies(login, to_string_with_precision(balance["USD"]),
+		write_logs_to_file_user_balance(login, to_string_with_precision(balance["USD"]),
 			to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]),
 			false
 		);
