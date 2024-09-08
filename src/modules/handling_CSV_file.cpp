@@ -9,13 +9,13 @@
 #include <thread>
 #include <sqlite3.h>
 
-bool database_preparing(const auto sql_query, sqlite3** db, sqlite3_stmt** stmt){
+bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt){
 	int rc = sqlite3_open(path_to_database_db, db);
 	if (rc != SQLITE_OK) {
 		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
 		return false;
 	}
-	rc = sqlite3_prepare_v2(*db, sql_query, -1, stmt, nullptr);
+	rc = sqlite3_prepare_v2(*db, sql_query.c_str(), -1, stmt, nullptr);
 	if (rc != SQLITE_OK) {
 		std::cerr << "Błąd SQL przy przygotowaniu zapytania: " << sqlite3_errmsg(*db) << std::endl;
 		sqlite3_close(*db);
@@ -125,9 +125,10 @@ void write_logs_to_file_user_auth(const std::string& email, const std::string& l
 	sqlite3_bind_text(stmt, 3, password.c_str(), -1, SQLITE_STATIC);
 
 	rc = sqlite3_step(stmt);
-
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
+
+
 
 	std::ofstream file(file_path, std::ios_base::app);
 	file << email << ' ' << login << ' ' << password << '\n';
@@ -176,7 +177,6 @@ void write_logs_to_file_user_balance(const std::string& login, const std::string
 		std::cerr << (reg ? "Error executing SQL insert statement: " : "Error executing SQL update statement: ")
 			<< sqlite3_errmsg(db) << '\n';
 	}
-	std::cout << "sqlite2: " << rc << '\n';
 
 
 
@@ -232,24 +232,14 @@ std::string read_logs_user_auth(const std::string& logs)
 {
 
 
-	sqlite3* db;
-	sqlite3_stmt* stmt;
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
 	std::string result;
-	int rc = sqlite3_open(path_to_database_db, &db);
-	if (rc) {
-		std::cerr << "Nie można otworzyć bazy danych: " << sqlite3_errmsg(db) << std::endl;
+
+
+	if (!database_preparing("SELECT EMAIL, LOGIN, PASSWORD FROM user_auth WHERE LOGIN = ?;", &db, &stmt)) {
 		return "";
 	}
-
-	std::string sql_query = "SELECT * FROM user_auth WHERE LOGIN = ?;";
-	rc = sqlite3_prepare_v2(db, sql_query.c_str(), -1, &stmt, nullptr);
-	if (rc != SQLITE_OK) {
-		std::cerr << "Błąd SQL przy przygotowaniu: " << sqlite3_errmsg(db) << std::endl;
-		sqlite3_close(db);
-		return "";
-	}
-
-
 
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		std::string login = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
@@ -261,11 +251,11 @@ std::string read_logs_user_auth(const std::string& logs)
 			"\nEUR: " + std::to_string(eur) + "\nPLN: " + std::to_string(pln);
 	}
 
-	std::cout << "sqlite3: " << result << std::endl;
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 
-	//return result;
+	return result;
+
 	std::ifstream infile(path_to_user_auth_csv);
 	std::string line;
 
@@ -282,10 +272,9 @@ std::string read_logs_user_auth(const std::string& logs)
 	return "";
 }
 
-
+//dac do bazy danych
 std::string read_logs_currencies(const std::string& logs)
 {
-
 
 	std::ifstream infile(path_to_currencies_csv);
 	std::string line, log;
@@ -308,43 +297,44 @@ std::string read_logs_currencies(const std::string& logs)
 
 std::string read_logs_user_balance(const std::string& logs)
 {
-	sqlite3* db;
-	sqlite3_stmt* stmt;
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
 	std::string result;
-	int rc = sqlite3_open(path_to_database_db, &db);
-	if (rc) {
-		std::cerr << "Nie można otworzyć bazy danych: " << sqlite3_errmsg(db) << std::endl;
-		return "";
-	}
-	std::string sql_query = "SELECT * FROM user_balance WHERE LOGIN = ?;";
-	if (sqlite3_prepare_v2(db, sql_query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-	}
-	if (sqlite3_open(path_to_database_db, &db) != SQLITE_OK) {
-		std::cerr << "Nie można otworzyć bazy danych: " << sqlite3_errmsg(db) << std::endl;
-		return "";
-	}
-	if (sqlite3_prepare_v2(db, sql_query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-		std::cerr << "Nie można przygotować zapytania: " << sqlite3_errmsg(db) << std::endl;
-		sqlite3_close(db);
-		return "";
+
+	// Przygotowanie zapytania SQL
+	std::string sql_query = "SELECT LOGIN, USD, EUR, PLN FROM user_balance WHERE LOGIN = ?;";
+
+	if (!database_preparing(sql_query, &db, &stmt)) {
+		return "blad12313";
 	}
 
+	// Bindowanie wartości 'logs' do zapytania
+	sqlite3_bind_text(stmt, 1, logs.c_str(), -1, SQLITE_STATIC);
 
-
-
-	if (sqlite3_step(stmt) == SQLITE_ROW) {
+	// Wykonanie zapytania
+	int rc = sqlite3_step(stmt);
+	if (rc == SQLITE_ROW) {
+		// Odczyt danych z wiersza
 		std::string login = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
 		double usd = sqlite3_column_double(stmt, 1);
 		double eur = sqlite3_column_double(stmt, 2);
 		double pln = sqlite3_column_double(stmt, 3);
 
-		result = "Login: " + login + "\nUSD: " + std::to_string(usd) + "\nEUR: " + std::to_string(eur) + "\nPLN: " +
-			std::to_string(pln);
+		// Formatowanie wyniku
+		result = "Login: " + login + "\nUSD: " + std::to_string(usd) +
+			"\nEUR: " + std::to_string(eur) + "\nPLN: " + std::to_string(pln);
+	}
+	else if (rc == SQLITE_DONE) {
+		result = "No matching records found.";
+	}
+	else {
+		result = "Error occurred.";
 	}
 
-	std::cout << "sqlite4: " << result << std::endl;
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
+
+	return result;
 
 	std::ifstream infile(path_to_user_balance_csv);
 	std::string line, log;
@@ -368,6 +358,31 @@ std::string read_logs_user_balance(const std::string& logs)
 std::string correct_password_check(const std::string& input_email, const std::string& input_pass,
 	const std::string& file_path)
 {
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+	std::string result;
+
+	std::string sql_query = "SELECT EMAIL, LOGIN, PASSWORD FROM user_auth WHERE EMAIL = ? AND PASSWORD = ?;";
+
+	if (!database_preparing(sql_query, &db, &stmt)) {
+		return "bladd\n";
+	}
+		sqlite3_bind_text(stmt, 1, input_email.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_text(stmt, 2, input_pass.c_str(), -1, SQLITE_STATIC);
+		int rc = sqlite3_step(stmt);
+		std::cout << SQLITE_ROW <<  " " << rc <<  std::endl;
+		if (rc == SQLITE_ROW) {
+			const unsigned char* login = sqlite3_column_text(stmt, 1);
+			result = std::string(reinterpret_cast<const char*>(login));
+		}
+		else {
+			result = "";
+		}
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+	return result;
+
+
 	std::ifstream file(file_path);
 	std::string line;
 	while (std::getline(file, line))
@@ -391,7 +406,9 @@ bool check_login_email_existence(const std::string& email, const std::string& lo
 	sqlite3* db = nullptr;
 	sqlite3_stmt* stmt = nullptr;
 	bool exists = false;
-	database_preparing("SELECT 1 FROM user_auth WHERE EMAIL = ? OR LOGIN = ? LIMIT 1;", &db, &stmt);
+	if (!database_preparing("SELECT * FROM user_auth WHERE EMAIL = ? OR LOGIN = ? LIMIT 1;", &db, &stmt)) {
+		return false;
+	}
 
 	sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
 	sqlite3_bind_text(stmt, 2, login.c_str(), -1, SQLITE_STATIC);
@@ -402,7 +419,7 @@ bool check_login_email_existence(const std::string& email, const std::string& lo
 
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
-
+	return exists;
 
 
 	std::string line, stored_email, stored_login, stored_pass;
@@ -416,5 +433,4 @@ bool check_login_email_existence(const std::string& email, const std::string& lo
 			return true;
 		}
 	}
-	return exists;
 }
