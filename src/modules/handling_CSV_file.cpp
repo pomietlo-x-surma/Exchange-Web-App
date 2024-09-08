@@ -130,9 +130,6 @@ void write_logs_to_file_user_auth(const std::string& email, const std::string& l
 
 
 
-	std::ofstream file(file_path, std::ios_base::app);
-	file << email << ' ' << login << ' ' << password << '\n';
-	file.close();
 }
 
 //writing balance of a new user or updating its balance
@@ -237,7 +234,7 @@ std::string read_logs_user_auth(const std::string& logs)
 	std::string result;
 
 
-	if (!database_preparing("SELECT EMAIL, LOGIN, PASSWORD FROM user_auth WHERE LOGIN = ?;", &db, &stmt)) {
+	if (!database_preparing("SELECT * FROM user_auth WHERE LOGIN = ?;", &db, &stmt)) {
 		return "";
 	}
 
@@ -331,22 +328,6 @@ std::string read_logs_user_balance(const std::string& logs)
 	sqlite3_close(db);
 
 	return result;
-
-	std::ifstream infile(path_to_user_balance_csv);
-	std::string line, log;
-	while (std::getline(infile, line))
-	{
-		std::stringstream ss(line);
-		std::string login_infile;
-		std::getline(ss, login_infile, ' ');
-		std::getline(ss, log);
-		if (login_infile == logs)
-		{
-			std::getline(ss, log);
-			return log;
-		}
-	}
-	return "";
 }
 
 
@@ -358,7 +339,7 @@ std::string correct_password_check(const std::string& input_email, const std::st
 	sqlite3_stmt* stmt = nullptr;
 	std::string result;
 
-	std::string sql_query = "SELECT EMAIL, LOGIN, PASSWORD FROM user_auth WHERE EMAIL = ? AND PASSWORD = ?;";
+	std::string sql_query = "SELECT * FROM user_auth WHERE EMAIL = ? AND PASSWORD = ?;";
 
 	if (!database_preparing(sql_query, &db, &stmt)) {
 		return "bladd\n";
