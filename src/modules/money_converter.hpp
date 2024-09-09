@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <functional>
 
 extern std::function<std::string(const char* cmd)> exec_func;
 std::string exec(const char* cmd);
