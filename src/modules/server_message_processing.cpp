@@ -45,7 +45,7 @@ std::string check_register(const std::string& email, const std::string& login, c
 		return process_message("Passwords don't match!");
 	}
 	write_logs_to_file_user_auth(email, login, pass, path_to_user_auth_csv);
-	updating_user_balance(login, "100", "0.0", "0.0", true);
+	appending_user_balance(login, "100", "0.0", "0.0");
 	return "0" + login;
 }
 
@@ -135,11 +135,8 @@ std::string exchange(const std::string& message)
 			return "EYou do not have enough funds in your account!\n";
 		}
 		updating_user_balance(login, to_string_with_precision(balance["USD"]),
-			to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]),
-			false
-		);
-		return "W  USD: " + to_string_with_precision(balance["USD"]) + "  EUR: " + to_string_with_precision(balance["EUR"])
-			+ "  PLN: " + to_string_with_precision(balance["PLN"]);
+			to_string_with_precision(balance["EUR"]), to_string_with_precision(balance["PLN"]));
+		return account_balance(login);
 	}
 	if (currency1 == currency2)
 	{
