@@ -10,7 +10,6 @@
 #include "server_message_processing.hpp"
 
 
-std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
 
 std::string to_string_with_precision(const long double& value, const char& precision)
 {
@@ -119,9 +118,9 @@ std::string exchange(const std::string& message)
 	if (currency1 != currency2)
 	{
 		std::string usd, pln, eur;
-		std::map<std::string, long double> balance = { {"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0} };
+		std::map<std::string, double> balance = { {"USD", 0.0}, {"EUR", 0.0}, {"PLN", 0.0} };
 		std::istringstream(read_logs_user_balance(login)) >> usd >> eur >> pln;
-		long double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
+		double usd_value = stold(usd), eur_value = stold(eur), pln_value = stold(pln), wart = stold(value);
 		balance["USD"] = usd_value;
 		balance["EUR"] = eur_value;
 		balance["PLN"] = pln_value;
