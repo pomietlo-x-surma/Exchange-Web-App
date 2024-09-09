@@ -1,5 +1,6 @@
 #pragma once
 
+#define BOOST_TEST_MODULE AppTest
 #include <boost/test/included/unit_test.hpp>
 #include "../src/modules/money_converter.hpp"  
 
