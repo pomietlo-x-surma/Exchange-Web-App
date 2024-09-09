@@ -7,7 +7,7 @@
 #include <vector>
 #include <array>
 #include <thread>
-#include <sqlite3.h>
+#include "sqlite3.h"
 
 bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt){
 	int rc = sqlite3_open(path_to_database_db, db);
