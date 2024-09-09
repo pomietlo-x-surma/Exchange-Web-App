@@ -11,7 +11,7 @@
 
 int main() {
     sqlite3* db;
-    int rc = sqlite3_open("example.db", &db);
+    int rc = sqlite3_open("../database/example.db", &db);
 
     if (rc) {
         std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;

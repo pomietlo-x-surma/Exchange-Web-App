@@ -1,0 +1,24 @@
+# ninja log v5
+48	86	0	C:/Users/User/source/repos/Exchange-Web-App/out/build/x64-Debug/CMakeFiles/cmake.verify_globs	2ac5400bba632990
+189	3430	7473355531583380	_deps/boost-build/libs/atomic/CMakeFiles/boost_atomic.dir/src/lock_pool.cpp.obj	717e57ebbdad26b1
+6179	15245	7473355649894314	_deps/boost-build/libs/cobalt/CMakeFiles/boost_cobalt.dir/src/main.cpp.obj	b9dc004a9ca76ade
+1610	10812	7473355604965655	_deps/boost-build/libs/chrono/CMakeFiles/boost_chrono.dir/src/process_cpu_clocks.cpp.obj	501f9a07066125a7
+225	1569	7473355507182915	_deps/boost-build/libs/atomic/CMakeFiles/boost_atomic.dir/src/find_address_sse41.cpp.obj	5d1d5698dc37a559
+3433	5854	7473355544103379	_deps/boost-build/libs/atomic/libboost_atomic-vc144-mt-gd-x64-1_85.lib	94bc705c61be9fea
+231	3384	7473355526663374	_deps/boost-build/libs/atomic/CMakeFiles/boost_atomic.dir/src/wait_on_address.cpp.obj	34f3d1bb47a11ba1
+181	5847	7473355552413370	CMakeFiles/Exchange_Web_App.dir/sqlite/sqlite3.c.obj	31efa7e0c580249e
+195	1795	7473355515423397	_deps/boost-build/libs/atomic/CMakeFiles/boost_atomic.dir/src/find_address_sse2.cpp.obj	d59aa7efbf465fe7
+134	5867	7473355554083376	CMakeFiles/Exchange_Web_App.dir/src/modules/money_converter.cpp.obj	c432b42a0361e18f
+119	6179	7473355556063384	CMakeFiles/Exchange_Web_App.dir/src/main/Exchange_Web_App.cpp.obj	6182eb2c9d296bc6
+125	6188	7473355556463358	CMakeFiles/Exchange_Web_App.dir/src/modules/handling_CSV_file.cpp.obj	bde965559e124588
+236	6923	7473355565963372	_deps/boost-build/libs/charconv/CMakeFiles/boost_charconv.dir/src/from_chars.cpp.obj	c9b98bbd04723add
+241	6925	7473355566373394	_deps/boost-build/libs/charconv/CMakeFiles/boost_charconv.dir/src/to_chars.cpp.obj	9b1cd942157a45b1
+145	7455	7473355567353807	CMakeFiles/Exchange_Web_App.dir/src/modules/password_checker.cpp.obj	e5ad501705c6893
+247	8696	7473355581455688	_deps/boost-build/libs/chrono/CMakeFiles/boost_chrono.dir/src/chrono.cpp.obj	8c0803ad3cfe7ede
+3385	10815	7473355604855660	_deps/boost-build/libs/cobalt/CMakeFiles/boost_cobalt.dir/src/detail/exception.cpp.obj	69f1b0a2fb874644
+5854	16161	7473355659052481	_deps/boost-build/libs/cobalt/CMakeFiles/boost_cobalt.dir/src/channel.cpp.obj	652afe1eb4a829d9
+1795	11574	7473355613148525	_deps/boost-build/libs/chrono/CMakeFiles/boost_chrono.dir/src/thread_clock.cpp.obj	26248a0b37eb1fda
+5867	12873	7473355626076205	_deps/boost-build/libs/cobalt/CMakeFiles/boost_cobalt.dir/src/error.cpp.obj	b76d68f602a2ad3f
+6189	14230	7473355639697450	_deps/boost-build/libs/cobalt/CMakeFiles/boost_cobalt.dir/src/this_thread.cpp.obj	bb113976bd626792
+5847	15084	7473355648228192	_deps/boost-build/libs/cobalt/CMakeFiles/boost_cobalt.dir/src/detail/util.cpp.obj	9799d0e7f9bb352
+171	25369	7473355750813969	CMakeFiles/Exchange_Web_App.dir/src/modules/server_file.cpp.obj	67a9dd4a7bb2f9c
