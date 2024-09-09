@@ -131,9 +131,14 @@ void write_logs_to_file_user_auth(const std::string& email, const std::string& l
 
 
 }
+void appending_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty){
+	
+}
+
+
 
 //writing balance of a new user or updating its balance
-void write_logs_to_file_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty, bool reg){
+void updating_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty, bool reg){
 	sqlite3* db;
 	sqlite3_stmt* stmt;
 	int rc = sqlite3_open(path_to_database_db, &db);
@@ -307,9 +312,7 @@ std::string read_logs_user_balance(const std::string& logs)
 	sqlite3_bind_text(stmt, 1, logs.c_str(), -1, SQLITE_STATIC);
 
 	int rc = sqlite3_step(stmt);
-	std::cout << "ok\n";
 	if (rc == SQLITE_ROW) {
-		std::cout << "git111\n";
 		std::string login = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
 		double usd = sqlite3_column_double(stmt, 1);
 		double eur = sqlite3_column_double(stmt, 2);
@@ -358,23 +361,6 @@ std::string correct_password_check(const std::string& input_email, const std::st
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 	return result;
-
-
-	std::ifstream file(file_path);
-	std::string line;
-	while (std::getline(file, line))
-	{
-		std::stringstream ss(line);
-		std::string stored_email, stored_login, stored_pass;
-		ss >> stored_email >> stored_login >> stored_pass;
-		if ((stored_email == input_email) && (stored_pass == input_pass))
-		{
-			file.close();
-			return stored_login;
-		}
-	}
-	file.close();
-	return "";
 }
 
 //checking if a user already exists
@@ -397,17 +383,4 @@ bool check_login_email_existence(const std::string& email, const std::string& lo
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 	return exists;
-
-
-	std::string line, stored_email, stored_login, stored_pass;
-	std::ifstream file(file_path);
-	while (std::getline(file, line))
-	{
-		std::stringstream ss(line);
-		ss >> stored_email >> stored_login >> stored_pass;
-		if (stored_login == login || stored_email == email)
-		{
-			return true;
-		}
-	}
 }
