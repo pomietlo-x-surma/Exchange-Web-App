@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
 
 add_executable(Exchange_Web_App_tests
     test_server_message_processing.cpp
+    test_money_converter.cpp
     ../src/modules/server_message_processing.cpp
     ../src/modules/handling_CSV_file.cpp
     ../src/modules/money_converter.cpp
