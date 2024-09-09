@@ -17,7 +17,7 @@ bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt
 	}
 	rc = sqlite3_prepare_v2(*db, sql_query.c_str(), -1, stmt, nullptr);
 	if (rc != SQLITE_OK) {
-		std::cerr << "Błąd SQL przy przygotowaniu zapytania: " << sqlite3_errmsg(*db) << std::endl;
+		std::cerr << "sqlite3 error: " << sqlite3_errmsg(*db) << std::endl;
 		sqlite3_close(*db);
 		return false;
 	}
@@ -32,11 +32,11 @@ bool is_file_empty(const std::string& path){
 
 }
 
+std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void currency_generation()
 {
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
-	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 	for (const auto& first : currencies)
 	{
 		for (const auto& second : currencies)
@@ -65,7 +65,6 @@ void currency_update()
 		std::ifstream infile(path_to_currencies_csv);
 		std::vector<std::string> lines;
 		std::string line;
-		std::array<std::string, 3> currencies = { "dollar", "euro", "zloty" };
 		for (const auto& first : currencies)
 		{
 			for (const auto& second : currencies)
@@ -127,45 +126,37 @@ void write_logs_to_file_user_auth(const std::string& email, const std::string& l
 	rc = sqlite3_step(stmt);
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
-
-
-
 }
 void appending_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty){
-	
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+
+	if(!database_preparing("INSERT INTO user_balance (LOGIN, USD, EUR, PLN) VALUES (?,?,?,?)", &db, &stmt)) {
+		return;
+	}
+	sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, dollar.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
+
+	int rc = sqlite3_step(stmt);
+	if (rc != SQLITE_DONE) {
+		std::cerr << "Błąd przy wstawianiu danych: " << sqlite3_errmsg(db) << '\n';
+	}
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
 }
 
 
 
 //writing balance of a new user or updating its balance
-void updating_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty, bool reg){
-	sqlite3* db;
-	sqlite3_stmt* stmt;
-	int rc = sqlite3_open(path_to_database_db, &db);
-	if (rc != SQLITE_OK) {
-		std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << '\n';
-		std::cout << "sqlite1: blad1\n";
-	}
+void updating_user_balance(const std::string& login, const std::string& dollar, const std::string& euro, const std::string& zloty){
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt=nullptr;
 
-	const char* sql;
-	if (reg) {
-		sql = "INSERT INTO user_balance (LOGIN, USD, EUR, PLN) VALUES (?, ?, ?, ?);";
-	}
-	else {
-		sql = "UPDATE user_balance SET USD = ?, EUR = ?, PLN = ? WHERE LOGIN = ?;";
-	}
-
-	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
-	if (rc != SQLITE_OK) {
-		std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << '\n';
-		sqlite3_close(db);
-	}
-
-	if (reg) {
-		sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
-		sqlite3_bind_text(stmt, 2, dollar.c_str(), -1, SQLITE_STATIC);
-		sqlite3_bind_text(stmt, 3, euro.c_str(), -1, SQLITE_STATIC);
-		sqlite3_bind_text(stmt, 4, zloty.c_str(), -1, SQLITE_STATIC);
+	if (!database_preparing("UPDATE user_balance SET USD = ? , EUR = ? , PLN = ? WHERE LOGIN = ? ;",&db, &stmt)) {
+		std::cout << "error\n";
 	}
 	else {
 		sqlite3_bind_text(stmt, 1, dollar.c_str(), -1, SQLITE_STATIC);
@@ -173,106 +164,14 @@ void updating_user_balance(const std::string& login, const std::string& dollar, 
 		sqlite3_bind_text(stmt, 3, zloty.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 4, login.c_str(), -1, SQLITE_STATIC);
 	}
-
-	rc = sqlite3_step(stmt);
+	int rc = sqlite3_step(stmt);
 	if (rc != SQLITE_DONE) {
-		std::cerr << (reg ? "Error executing SQL insert statement: " : "Error executing SQL update statement: ")
-			<< sqlite3_errmsg(db) << '\n';
-	}
-
-
-
-
-	std::string new_entry = login + ' ' + dollar + ' ' + euro + ' ' + zloty + '\n';
-	if (reg)
-	{
-		std::ofstream file(path_to_user_balance_csv, std::ios_base::app);
-		file << new_entry;
-		file.close();
-	}
-	else
-	{
-		std::ifstream infile(path_to_user_balance_csv);
-		std::vector<std::string> lines;
-		std::string line;
-		bool found = false;
-
-		while (std::getline(infile, line))
-		{
-			std::stringstream ss(line);
-			std::string login_infile;
-			std::getline(ss, login_infile, ' ');
-			if (login_infile == login)
-			{
-				lines.push_back(new_entry + "X");
-				found = true;
-			}
-			else
-			{
-				lines.push_back(line + '\n');
-			}
-		}
-
-		infile.close();
-
-		if (found)
-		{
-			std::ofstream outfile(path_to_user_balance_csv, std::ios_base::trunc);
-			for (const auto& updated_line : lines)
-			{
-				outfile << updated_line;
-			}
-			outfile.close();
-		}
+		std::cerr << "sqlite error:  " << sqlite3_errmsg(db) << '\n';
 	}
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 }
 
-
-std::string read_logs_user_auth(const std::string& logs)
-{
-
-
-	sqlite3* db = nullptr;
-	sqlite3_stmt* stmt = nullptr;
-	std::string result;
-
-
-	if (!database_preparing("SELECT * FROM user_auth WHERE LOGIN = ?;", &db, &stmt)) {
-		return "";
-	}
-
-	if (sqlite3_step(stmt) == SQLITE_ROW) {
-		std::string login = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-		double usd = sqlite3_column_double(stmt, 1);
-		double eur = sqlite3_column_double(stmt, 2);
-		double pln = sqlite3_column_double(stmt, 3);
-
-		result = "Login: " + login + "\nUSD: " + std::to_string(usd) +
-			"\nEUR: " + std::to_string(eur) + "\nPLN: " + std::to_string(pln);
-	}
-
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
-
-	return result;
-
-	std::ifstream infile(path_to_user_auth_csv);
-	std::string line;
-
-	while (std::getline(infile, line))
-	{
-		std::string email, login, pass;
-		std::stringstream ss(line);
-		ss << email << login << pass;
-		if (email == logs)
-		{
-			return logs;
-		}
-	}
-	return "";
-}
 
 //dac do bazy danych
 std::string read_logs_currencies(const std::string& logs)
@@ -306,7 +205,7 @@ std::string read_logs_user_balance(const std::string& logs)
 	std::string sql_query = "SELECT * FROM user_balance WHERE LOGIN = ?;";
 
 	if (!database_preparing(sql_query, &db, &stmt)) {
-		return "blad12313";
+		return "error";
 	}
 
 	sqlite3_bind_text(stmt, 1, logs.c_str(), -1, SQLITE_STATIC);
@@ -321,10 +220,10 @@ std::string read_logs_user_balance(const std::string& logs)
 		std::cout << result << '\n';
 	}
 	else if (rc == SQLITE_DONE) {
-		result = "No matching records found.";
+		result = "No matching records found";
 	}
 	else {
-		result = "Error occurred.";
+		result = "Error occurred";
 	}
 
 	sqlite3_finalize(stmt);
@@ -345,12 +244,11 @@ std::string correct_password_check(const std::string& input_email, const std::st
 	std::string sql_query = "SELECT * FROM user_auth WHERE EMAIL = ? AND PASSWORD = ?;";
 
 	if (!database_preparing(sql_query, &db, &stmt)) {
-		return "bladd\n";
+		return "error\n";
 	}
 		sqlite3_bind_text(stmt, 1, input_email.c_str(), -1, SQLITE_STATIC);
 		sqlite3_bind_text(stmt, 2, input_pass.c_str(), -1, SQLITE_STATIC);
 		int rc = sqlite3_step(stmt);
-		std::cout << SQLITE_ROW <<  " " << rc <<  std::endl;
 		if (rc == SQLITE_ROW) {
 			const unsigned char* login = sqlite3_column_text(stmt, 1);
 			result = std::string(reinterpret_cast<const char*>(login));
