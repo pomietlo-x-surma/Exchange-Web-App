@@ -32,10 +32,10 @@ bool is_file_empty(const std::string& path){
 
 }
 
-std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 void currency_generation()
 {
+	std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	for (const auto& first : currencies)
 	{
@@ -61,6 +61,7 @@ void currency_update()
 	}
 	while (true)
 	{
+		std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
 		bool found = false;
 		std::ifstream infile(path_to_currencies_csv);
 		std::vector<std::string> lines;
