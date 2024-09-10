@@ -38,7 +38,7 @@ jobs:
         fi
 
     - name: Configure CMake
-      run: cmake -S . -B build -G "${{ matrix.cmake_generator }}"
+      run: cmake -S . -B build -G "${{ matrix.cmake_generator }}" -DSQLITE3_INCLUDE_DIR=/usr/include -DSQLITE3_LIBRARIES=/usr/lib/x86_64-linux-gnu/libsqlite3.so
 
     - name: Build project
       run: cmake --build build --config Release
