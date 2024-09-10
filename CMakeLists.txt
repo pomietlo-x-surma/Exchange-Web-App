@@ -15,10 +15,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(boost)
 
-# Wykrywanie komponentów Boost
-find_package(Boost REQUIRED COMPONENTS system thread coroutine log)
+# Wykrywanie komponentów Boost, w tym Boost.Beast i Boost.Asio
+find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
-# SQLite3 (przy założeniu, że pliki źródłowe są lokalne)
+# Znajdowanie SQLite3
+find_package(SQLite3 REQUIRED)
+
+# SQLite3 (jeśli pliki źródłowe są lokalne)
 file(GLOB SQLITE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/sqlite")
 file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
 
@@ -51,7 +54,9 @@ target_link_libraries(Exchange_Web_App PRIVATE
     Boost::thread
     Boost::coroutine
     Boost::log
-    SQLite3::SQLite3
+    Boost::beast
+    Boost::asio
+    SQLite::SQLite3
 )
 
 enable_testing()
