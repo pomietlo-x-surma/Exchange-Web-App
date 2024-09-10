@@ -23,22 +23,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up CMake
-      uses: lukka/get-cmake@v3
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        ./vcpkg/bootstrap-vcpkg.sh  # Linux/MacOS
+        .\vcpkg\bootstrap-vcpkg.bat  # Windows
 
     - name: Install dependencies
       run: |
-        if [[ $RUNNER_OS == 'Linux' ]]; then
-          sudo apt-get update
-          sudo apt-get install -y libboost-all-dev sqlite3 libsqlite3-dev
-        elif [[ $RUNNER_OS == 'Windows' ]]; then
-          choco install boost-msvc-14.2 sqlite
-        elif [[ $RUNNER_OS == 'macOS' ]]; then
-          brew install boost sqlite
-        fi
+        ./vcpkg/vcpkg install boost
+        ./vcpkg/vcpkg install sqlite3
+      if: runner.os != 'Windows'
+
+    - name: Install dependencies on Windows
+      run: |
+        .\vcpkg\vcpkg install boost:x64-windows
+        .\vcpkg\vcpkg install sqlite3:x64-windows
+      if: runner.os == 'Windows'
 
     - name: Configure CMake
-      run: cmake -S . -B build -G "${{ matrix.cmake_generator }}" -DSQLITE3_INCLUDE_DIR=/usr/include -DSQLITE3_LIBRARIES=/usr/lib/x86_64-linux-gnu/libsqlite3.so
+      run: cmake -S . -B build -G "${{ matrix.cmake_generator }}" -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: Build project
       run: cmake --build build --config Release
