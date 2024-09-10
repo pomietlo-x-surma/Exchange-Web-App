@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -14,6 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Print GitHub Workspace Directory
+        run: |
+          echo "GitHub workspace directory:"
+          dir
+
+      - name: Print Environment Variables
+        run: |
+          echo "Printing environment variables:"
+          set
+
       - name: Set up vcpkg
         run: |
           echo "Cloning vcpkg repository..."
@@ -21,56 +31,48 @@ jobs:
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
           echo "Installing packages..."
-          .\vcpkg\vcpkg install boost sqlite3
-        shell: pwsh
+          .\vcpkg\vcpkg install boost sqlite3 --recurse
+          echo "Vcpkg setup completed."
 
-      - name: Reinstall sqlite3 using vcpkg
+      - name: Verify vcpkg Installation
         run: |
-          echo "Reinstalling sqlite3..."
-          .\vcpkg\vcpkg remove sqlite3
-          .\vcpkg\vcpkg install sqlite3
-        shell: pwsh
+          echo "Listing vcpkg directory:"
+          dir .\vcpkg
 
-      - name: Check for sqlite3.h file
-        run: |
-          echo "Checking if sqlite3.h exists..."
-          dir .\vcpkg\installed\x64-windows\include\sqlite3.h
-        shell: pwsh
-
-      - name: Install sqlite3 with core and tool features
+      - name: Install sqlite3 with additional features
         run: |
           echo "Installing sqlite3 with additional features..."
-          .\vcpkg\vcpkg install sqlite3[core,tool]
-        shell: pwsh
-
-      - name: Install Visual Studio Build Tools
-        run: |
-          echo "Installing Visual Studio Build Tools..."
-          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --quiet --norestart"
+          .\vcpkg\vcpkg install sqlite3[core,tool,json1] --recurse
         shell: pwsh
 
       - name: Configure CMake
         run: |
           echo "Creating build directory..."
-          if (Test-Path build) {
-            Remove-Item -Recurse -Force build
-          }
           mkdir build
           cd build
           echo "Configuring CMake..."
-          cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-        shell: pwsh
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          echo "CMake configuration completed."
+        shell: cmd
+
+      - name: Verify Build Directory
+        run: |
+          echo "Listing build directory:"
+          dir build
+        shell: cmd
 
       - name: Build
         run: |
           cd build
           echo "Building project..."
-          cmake --build . --config Debug
-        shell: pwsh
+          cmake --build .
+          echo "Build completed."
+        shell: cmd
 
       - name: Run Tests
         run: |
           cd build
           echo "Running tests..."
           ctest -C Debug --output-on-failure
-        shell: pwsh
+          echo "Tests completed."
+        shell: cmd
