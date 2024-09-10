@@ -39,6 +39,12 @@ jobs:
           echo "Listing vcpkg directory:"
           dir .\vcpkg
 
+      - name: Install sqlite3 with additional features
+        run: |
+          echo "Installing sqlite3 with additional features..."
+          .\vcpkg\vcpkg install sqlite3[core,tool,json1] --recurse
+        shell: pwsh
+
       - name: Configure CMake
         run: |
           echo "Creating build directory..."
