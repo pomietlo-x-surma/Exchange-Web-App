@@ -40,6 +40,12 @@ jobs:
           echo "Listing vcpkg directory:"
           dir .\vcpkg
 
+      - name: Install Visual Studio Build Tools
+        run: |
+          echo "Installing Visual Studio Build Tools..."
+          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --quiet --norestart"
+        shell: pwsh
+
       - name: Configure CMake
         run: |
           echo "Creating build directory..."
@@ -49,7 +55,7 @@ jobs:
           mkdir build
           cd build
           echo "Configuring CMake..."
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
           echo "CMake configuration completed."
         shell: pwsh
 
@@ -63,7 +69,7 @@ jobs:
         run: |
           cd build
           echo "Building project..."
-          cmake --build .
+          cmake --build . --config Debug
           echo "Build completed."
         shell: pwsh
 
