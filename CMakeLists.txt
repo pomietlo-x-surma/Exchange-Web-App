@@ -19,6 +19,10 @@ endif()
 find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
 
+if(NOT SQLite3_FOUND)
+    message(FATAL_ERROR "SQLite3 not found")
+endif()
+
 file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
 
 add_executable(Exchange_Web_App
