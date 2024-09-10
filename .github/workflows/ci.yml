@@ -14,24 +14,59 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Print GitHub Workspace Directory
+        run: |
+          echo "GitHub workspace directory:"
+          dir
+
+      - name: Print Environment Variables
+        run: |
+          echo "Printing environment variables:"
+          set
+
       - name: Set up vcpkg
         run: |
+          echo "Cloning vcpkg repository..."
           git clone https://github.com/microsoft/vcpkg.git
+          echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
+          echo "Installing packages..."
           .\vcpkg\vcpkg install boost sqlite3
+          echo "Vcpkg setup completed."
+
+      - name: Verify vcpkg Installation
+        run: |
+          echo "Listing vcpkg directory:"
+          dir .\vcpkg
 
       - name: Configure CMake
         run: |
+          echo "Creating build directory..."
           mkdir build
           cd build
+          echo "Configuring CMake..."
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          echo "CMake configuration completed."
+        shell: cmd
+
+      - name: Verify Build Directory
+        run: |
+          echo "Listing build directory:"
+          dir build
+        shell: cmd
 
       - name: Build
         run: |
           cd build
+          echo "Building project..."
           cmake --build .
+          echo "Build completed."
+        shell: cmd
 
       - name: Run Tests
         run: |
           cd build
+          echo "Running tests..."
           ctest -C Debug --output-on-failure
+          echo "Tests completed."
+        shell: cmd
