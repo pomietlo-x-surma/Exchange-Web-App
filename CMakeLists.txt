@@ -4,9 +4,16 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Użyj vcpkg, jeśli jest dostępny
-if(DEFINED ENV{VCPKG_ROOT})
-    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+# Pobierz vcpkg automatycznie, jeśli nie jest już zainstalowany
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    if(DEFINED ENV{VCPKG_ROOT})
+        set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+    else()
+        message(STATUS "Cloning vcpkg...")
+        execute_process(COMMAND git clone https://github.com/microsoft/vcpkg.git ${CMAKE_BINARY_DIR}/vcpkg)
+        execute_process(COMMAND ${CMAKE_BINARY_DIR}/vcpkg/bootstrap-vcpkg.bat)
+        set(CMAKE_TOOLCHAIN_FILE "${CMAKE_BINARY_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    endif()
 endif()
 
 find_package(Boost REQUIRED)
@@ -22,12 +29,6 @@ add_executable(Exchange_Web_App
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
     ${SQLITE_SOURCE_FILES}
-)
-
-set_target_properties(Exchange_Web_App PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/build
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/build
 )
 
 target_link_libraries(Exchange_Web_App PRIVATE Boost::Boost SQLite::SQLite3)
