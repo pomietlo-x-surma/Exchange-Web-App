@@ -14,23 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Print GitHub Workspace Directory
-        run: |
-          echo "GitHub workspace directory:"
-          dir
-
-      - name: Check for sqlite3.h file
-        run: |
-          echo "Checking if sqlite3.h exists..."
-          dir .\vcpkg\installed\x64-windows\include\sqlite3.h
-        shell: pwsh
-
-      - name: Print Environment Variables
-        run: |
-          echo "Printing environment variables:"
-          Get-ChildItem Env:
-        shell: pwsh
-
       - name: Set up vcpkg
         run: |
           echo "Cloning vcpkg repository..."
@@ -39,12 +22,26 @@ jobs:
           .\vcpkg\bootstrap-vcpkg.bat
           echo "Installing packages..."
           .\vcpkg\vcpkg install boost sqlite3
-          echo "Vcpkg setup completed."
+        shell: pwsh
 
-      - name: Verify vcpkg Installation
+      - name: Reinstall sqlite3 using vcpkg
         run: |
-          echo "Listing vcpkg directory:"
-          dir .\vcpkg
+          echo "Reinstalling sqlite3..."
+          .\vcpkg\vcpkg remove sqlite3
+          .\vcpkg\vcpkg install sqlite3
+        shell: pwsh
+
+      - name: Check for sqlite3.h file
+        run: |
+          echo "Checking if sqlite3.h exists..."
+          dir .\vcpkg\installed\x64-windows\include\sqlite3.h
+        shell: pwsh
+
+      - name: Install sqlite3 with core and tool features
+        run: |
+          echo "Installing sqlite3 with additional features..."
+          .\vcpkg\vcpkg install sqlite3[core,tool]
+        shell: pwsh
 
       - name: Install Visual Studio Build Tools
         run: |
@@ -62,13 +59,6 @@ jobs:
           cd build
           echo "Configuring CMake..."
           cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-          echo "CMake configuration completed."
-        shell: pwsh
-
-      - name: Verify Build Directory
-        run: |
-          echo "Listing build directory:"
-          dir build
         shell: pwsh
 
       - name: Build
@@ -76,7 +66,6 @@ jobs:
           cd build
           echo "Building project..."
           cmake --build . --config Debug
-          echo "Build completed."
         shell: pwsh
 
       - name: Run Tests
@@ -84,5 +73,4 @@ jobs:
           cd build
           echo "Running tests..."
           ctest -C Debug --output-on-failure
-          echo "Tests completed."
         shell: pwsh
