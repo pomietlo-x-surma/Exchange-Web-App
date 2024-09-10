@@ -46,6 +46,7 @@ set_target_properties(Exchange_Web_App PROPERTIES
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${SQLITE_INCLUDE_DIRS}
+    ${SQLITE3_INCLUDE_DIRS}
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
