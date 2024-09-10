@@ -15,16 +15,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(boost)
 
+# Wykrywanie komponentów Boost
+find_package(Boost REQUIRED COMPONENTS system thread coroutine log)
+
 # SQLite3 (przy założeniu, że pliki źródłowe są lokalne)
 file(GLOB SQLITE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/sqlite")
 file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
-
-# Dodanie katalogów Boost do include
-file(GLOB BOOST_INCLUDE_DIRS
-    "${boost_SOURCE_DIR}/boost"
-    "${boost_SOURCE_DIR}/libs/*/include"
-    "${boost_SOURCE_DIR}/libs/*/*/include"
-)
 
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
@@ -36,19 +32,26 @@ add_executable(Exchange_Web_App
     ${SQLITE_SOURCE_FILES}
 )
 
+# Właściwości katalogów wyjściowych
 set_target_properties(Exchange_Web_App PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/build
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/build
 )
 
+# Dodanie katalogów do ścieżek nagłówków
 target_include_directories(Exchange_Web_App PRIVATE
-    ${BOOST_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
     ${SQLITE_INCLUDE_DIRS}
 )
 
+# Linkowanie z bibliotekami Boost i SQLite3
 target_link_libraries(Exchange_Web_App PRIVATE
-    Boost::Boost
+    Boost::system
+    Boost::thread
+    Boost::coroutine
+    Boost::log
+    SQLite3::SQLite3
 )
 
 enable_testing()
