@@ -1,38 +1,54 @@
-name: CI Pipeline
+name: Build and Package
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            cmake_generator: "Unix Makefiles"
+          - os: windows-latest
+            cmake_generator: "Visual Studio 16 2019"
+          - os: macos-latest
+            cmake_generator: "Xcode"
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install Boost
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libboost-all-dev
+    - name: Set up CMake
+      uses: lukka/get-cmake@v3
 
-    - name: Install SQLite
+    - name: Install dependencies
       run: |
-        sudo apt-get install -y sqlite3 libsqlite3-dev
+        if [[ $RUNNER_OS == 'Linux' ]]; then
+          sudo apt-get update
+          sudo apt-get install -y libboost-all-dev sqlite3 libsqlite3-dev
+        elif [[ $RUNNER_OS == 'Windows' ]]; then
+          choco install boost-msvc-14.2 sqlite
+        elif [[ $RUNNER_OS == 'macOS' ]]; then
+          brew install boost sqlite
+        fi
 
-    - name: Build Project
-      run: |
-        mkdir build
-        cd build
-        cmake ..
-        make
+    - name: Configure CMake
+      run: cmake -S . -B build -G "${{ matrix.cmake_generator }}"
 
-    - name: Run tests
+    - name: Build project
+      run: cmake --build build --config Release
+
+    - name: Package artifacts
       run: |
-        cd build
-        make test
+        zip -r app_with_deps_${{ matrix.os }}.zip build/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: app_with_deps_${{ matrix.os }}
+        path: app_with_deps_${{ matrix.os }}.zip
