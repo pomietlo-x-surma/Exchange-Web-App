@@ -19,6 +19,12 @@ jobs:
           echo "GitHub workspace directory:"
           dir
 
+      - name: Check for sqlite3.h file
+        run: |
+          echo "Checking if sqlite3.h exists..."
+          dir .\vcpkg\installed\x64-windows\include\sqlite3.h
+        shell: pwsh
+
       - name: Print Environment Variables
         run: |
           echo "Printing environment variables:"
