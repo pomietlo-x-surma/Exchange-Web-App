@@ -22,7 +22,9 @@ jobs:
       - name: Print Environment Variables
         run: |
           echo "Printing environment variables:"
-          set
+          Get-ChildItem Env:
+        shell: pwsh
+
 
       - name: Set up vcpkg
         run: |
