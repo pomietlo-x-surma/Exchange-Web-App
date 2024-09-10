@@ -22,7 +22,8 @@ jobs:
       - name: Print Environment Variables
         run: |
           echo "Printing environment variables:"
-          set
+          Get-ChildItem Env:
+        shell: pwsh
 
       - name: Set up vcpkg
         run: |
@@ -47,13 +48,13 @@ jobs:
           echo "Configuring CMake..."
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
           echo "CMake configuration completed."
-        shell: cmd
+        shell: pwsh
 
       - name: Verify Build Directory
         run: |
           echo "Listing build directory:"
           dir build
-        shell: cmd
+        shell: pwsh
 
       - name: Build
         run: |
@@ -61,7 +62,7 @@ jobs:
           echo "Building project..."
           cmake --build .
           echo "Build completed."
-        shell: cmd
+        shell: pwsh
 
       - name: Run Tests
         run: |
@@ -69,4 +70,4 @@ jobs:
           echo "Running tests..."
           ctest -C Debug --output-on-failure
           echo "Tests completed."
-        shell: cmd
+        shell: pwsh
