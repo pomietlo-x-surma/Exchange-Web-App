@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Restore cache before vcpkg setup
+      # Przywróć cache przed instalacją vcpkg
       - name: Restore vcpkg cache
         uses: actions/cache@v3
         with:
@@ -27,40 +27,59 @@ jobs:
 
       - name: Set up vcpkg
         run: |
+          echo "Cloning vcpkg repository..."
           git clone https://github.com/microsoft/vcpkg.git
+          echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
+          echo "Installing packages..."
           .\vcpkg\vcpkg install boost sqlite3
-        shell: pwsh
+          echo "Vcpkg setup completed."
+
+      - name: Debug vcpkg cache directory
+        run: |
+          echo "Checking vcpkg_installed directory:"
+          dir vcpkg_installed
+          echo "Checking vcpkg/downloads directory:"
+          dir vcpkg/downloads
+        shell: cmd
 
       - name: Install Ninja
         run: |
+          echo "Installing Ninja..."
           choco install ninja
-        shell: pwsh
+          echo "Ninja installed."
 
       - name: Configure CMake
         run: |
+          echo "Checking if build directory exists..."
           if not exist build mkdir build
           cd build
+          echo "Configuring CMake..."
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          echo "CMake configuration completed."
         shell: cmd
 
-      # Save cache after successful vcpkg setup but before the build
+      # Zapisz cache po instalacji vcpkg, ale przed budowaniem
       - name: Save vcpkg cache
         uses: actions/cache@v3
         with:
           path: |
             vcpkg_installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite
+          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
 
       - name: Build
         run: |
           cd build
+          echo "Building project..."
           cmake --build .
+          echo "Build completed."
         shell: cmd
 
       - name: Run Tests
         run: |
           cd build
+          echo "Running tests..."
           ctest -C Debug --output-on-failure
+          echo "Tests completed."
         shell: cmd
