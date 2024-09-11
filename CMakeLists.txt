@@ -13,16 +13,18 @@ FetchContent_Declare(
   GIT_TAG        boost-1.85.0
   GIT_SUBMODULES_RECURSE ON
 )
+set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-# Wykrywanie komponentów Boost, w tym Boost.Beast i Boost.Asio
+# Wykrywanie komponentów Boost
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
 # Znajdowanie SQLite3
 find_package(SQLite3 REQUIRED)
 
-# Dodanie katalogów do ścieżek nagłówków
-include_directories(${CMAKE_SOURCE_DIR}/sqlite)
+# Znajdź pliki źródłowe SQLite
+file(GLOB SQLITE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/sqlite")
+file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
 
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
@@ -31,7 +33,7 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
-    ${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c
+    ${SQLITE_SOURCE_FILES}
 )
 
 # Właściwości katalogów wyjściowych
@@ -44,7 +46,7 @@ set_target_properties(Exchange_Web_App PROPERTIES
 # Dodanie katalogów do ścieżek nagłówków
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite
+    ${SQLITE_INCLUDE_DIRS}
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
