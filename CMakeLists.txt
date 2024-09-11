@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
 project(Exchange_Web_App)
 
+# Ustawienie standardu C++
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Włączenie FetchContent dla Boost
 include(FetchContent)
 
-# FetchContent dla Boost
+# Pobranie Boost
 FetchContent_Declare(
   boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -19,15 +21,6 @@ FetchContent_MakeAvailable(boost)
 # Wykrywanie komponentów Boost
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
-# Tworzenie biblioteki SQLite3 lokalnie
-add_library(sqlite3 STATIC sqlite/sqlite3.c)
-
-# Ustawianie ścieżek do plików nagłówkowych
-target_include_directories(Exchange_Web_App PRIVATE
-    ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite  # <-- Dodanie katalogu sqlite
-)
-
 # Tworzenie pliku wykonywalnego z biblioteką SQLite i Boost
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
@@ -36,7 +29,15 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
-    sqlite/sqlite3.c  # <-- Dodanie sqlite3.c jako część projektu
+)
+
+# Tworzenie biblioteki SQLite3 lokalnie
+add_library(sqlite3 STATIC sqlite/sqlite3.c)
+
+# Ustawianie ścieżek do plików nagłówkowych
+target_include_directories(Exchange_Web_App PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/sqlite  # Dodanie katalogu sqlite
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
