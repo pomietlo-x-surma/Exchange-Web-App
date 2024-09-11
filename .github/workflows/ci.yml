@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            vcpkg_installed
+            vcpkg/installed
             vcpkg/downloads
           key: ${{ runner.os }}-vcpkg-boost-sqlite
           restore-keys: |
@@ -35,12 +35,13 @@ jobs:
           .\vcpkg\vcpkg install boost sqlite3
           echo "Vcpkg setup completed."
 
+      # Kroki debugowania: sprawdzenie ścieżek
       - name: Debug vcpkg cache directory
         run: |
-          echo "Checking vcpkg_installed directory:"
-          dir vcpkg_installed
+          echo "Checking vcpkg/installed directory:"
+          dir "vcpkg\installed"
           echo "Checking vcpkg/downloads directory:"
-          dir vcpkg/downloads
+          dir "vcpkg\downloads"
         shell: cmd
 
       - name: Install Ninja
@@ -64,7 +65,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            vcpkg_installed
+            vcpkg/installed
             vcpkg/downloads
           key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
 
