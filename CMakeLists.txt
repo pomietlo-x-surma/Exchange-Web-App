@@ -20,7 +20,7 @@ find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
 # Znajdowanie SQLite3
 find_package(SQLite3 REQUIRED)
-
+find_package(Boost 1.85 REQUIRED COMPONENTS system thread coroutine log beast asio)
 # SQLite3 (jeśli pliki źródłowe są lokalne)
 file(GLOB SQLITE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/sqlite")
 file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
