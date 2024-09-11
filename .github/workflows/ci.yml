@@ -1,11 +1,3 @@
-name: CI
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
 jobs:
   build:
     runs-on: windows-latest
@@ -14,13 +6,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache vcpkg
+      # Restore cache before vcpkg setup
+      - name: Restore vcpkg cache
         uses: actions/cache@v3
         with:
           path: |
             vcpkg_installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
+          key: ${{ runner.os }}-vcpkg-boost-sqlite
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
@@ -42,6 +35,15 @@ jobs:
           cd build
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
         shell: cmd
+
+      # Save cache after successful vcpkg setup but before the build
+      - name: Save vcpkg cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            vcpkg_installed
+            vcpkg/downloads
+          key: ${{ runner.os }}-vcpkg-boost-sqlite
 
       - name: Build
         run: |
