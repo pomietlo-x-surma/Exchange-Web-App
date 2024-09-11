@@ -13,9 +13,9 @@ std::string pass_check(const std::string& password)
 
 	std::string text = "";
 
-	if (password.find('\\0') != std::string::npos)
+	if (password.find('\0') != std::string::npos)
 	{
-		return "Your password can't contain '\\0'!";
+		return "Your password can't contain '\0'!";
 	}
 
 	if (std::regex_search(password, pattern_alpha) &&
@@ -64,7 +64,7 @@ bool email_check(const std::string& email)
 	{
 		return true;
 	}
-	if (email.find('\\0') != std::string::npos)
+	if (email.find('\0') != std::string::npos)
 	{
 		return false;
 	}
@@ -78,7 +78,7 @@ bool login_check(const std::string& user)
 	{
 		return true;
 	}
-	if (user.find('\\0') != std::string::npos)
+	if (user.find('\0') != std::string::npos)
 	{
 		return false;
 	}
