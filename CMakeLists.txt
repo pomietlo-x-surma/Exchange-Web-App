@@ -18,15 +18,17 @@ FetchContent_MakeAvailable(boost)
 
 # Wykrywanie komponentów Boost
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
+
+# Tworzenie biblioteki SQLite3 lokalnie
 add_library(sqlite3 STATIC sqlite/sqlite3.c)
-target_include_directories(sqlite3 PUBLIC sqlite/)
-# Znajdowanie SQLite3
-find_package(SQLite3 REQUIRED)
 
-# Znajdź pliki źródłowe SQLite
-file(GLOB SQLITE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/sqlite")
-file(GLOB SQLITE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c")
+# Ustawianie ścieżek do plików nagłówkowych
+target_include_directories(Exchange_Web_App PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/sqlite  # <-- Dodanie katalogu sqlite
+)
 
+# Tworzenie pliku wykonywalnego z biblioteką SQLite i Boost
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -34,20 +36,7 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
-    ${SQLITE_SOURCE_FILES}
-)
-
-# Właściwości katalogów wyjściowych
-set_target_properties(Exchange_Web_App PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/build
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/build
-)
-
-# Dodanie katalogów do ścieżek nagłówków
-target_include_directories(Exchange_Web_App PRIVATE
-    ${Boost_INCLUDE_DIRS}
-    ${SQLITE_INCLUDE_DIRS}
+    sqlite/sqlite3.c  # <-- Dodanie sqlite3.c jako część projektu
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
@@ -58,8 +47,9 @@ target_link_libraries(Exchange_Web_App PRIVATE
     Boost::log
     Boost::beast
     Boost::asio
-    SQLite::SQLite3
+    sqlite3
 )
 
+# Ustawienia testów
 enable_testing()
 add_subdirectory(tests)
