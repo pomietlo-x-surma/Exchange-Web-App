@@ -18,7 +18,8 @@ FetchContent_MakeAvailable(boost)
 
 # Wykrywanie komponentów Boost
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
-
+add_library(sqlite3 STATIC sqlite/sqlite3.c)
+target_include_directories(sqlite3 PUBLIC sqlite/)
 # Znajdowanie SQLite3
 find_package(SQLite3 REQUIRED)
 
