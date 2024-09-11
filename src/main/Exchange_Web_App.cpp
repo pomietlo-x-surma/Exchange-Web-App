@@ -71,7 +71,7 @@ int creating_auth() {
 
 int creating_balance() {
     sqlite3* db;
-    int rc = sqlite3_open("example.db", &db);
+    char* err_msg = 0;
 
     int rc = sqlite3_open(path_to_database_db, &db);
     if (rc) {
