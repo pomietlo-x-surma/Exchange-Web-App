@@ -7,6 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
+
   build:
     runs-on: windows-latest
 
@@ -21,8 +22,9 @@ jobs:
           path: |
             vcpkg/installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite
+          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
+            ${{ runner.os }}-vcpkg-boost-sqlite-
             ${{ runner.os }}-vcpkg-
 
       - name: Set up vcpkg
@@ -34,9 +36,9 @@ jobs:
           echo "Installing packages..."
           .\vcpkg\vcpkg install boost sqlite3
           echo "Vcpkg setup completed."
-
+      
       # Kroki debugowania: sprawdzenie ścieżek
-      - name: Debug vcpkg cache directory
+      - name: Debug vcpkg cache directories
         run: |
           echo "Checking vcpkg/installed directory:"
           dir "vcpkg\installed"
