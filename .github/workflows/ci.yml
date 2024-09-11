@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -25,7 +25,6 @@ jobs:
           Get-ChildItem Env:
         shell: pwsh
 
-
       - name: Set up vcpkg
         run: |
           echo "Cloning vcpkg repository..."
@@ -33,24 +32,19 @@ jobs:
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
           echo "Installing packages..."
-          .\vcpkg\vcpkg install boost sqlite3 --recurse
+          .\vcpkg\vcpkg install boost sqlite3
           echo "Vcpkg setup completed."
 
-      - name: Verify vcpkg Installation
+      - name: Install Ninja
         run: |
-          echo "Listing vcpkg directory:"
-          dir .\vcpkg
-
-      - name: Install sqlite3 with additional features
-        run: |
-          echo "Installing sqlite3 with additional features..."
-          .\vcpkg\vcpkg install sqlite3[core,tool,json1] --recurse
-        shell: pwsh
+          echo "Installing Ninja..."
+          choco install ninja
+          echo "Ninja installed."
 
       - name: Configure CMake
         run: |
-          echo "Creating build directory..."
-          mkdir build
+          echo "Checking if build directory exists..."
+          if not exist build mkdir build
           cd build
           echo "Configuring CMake..."
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
