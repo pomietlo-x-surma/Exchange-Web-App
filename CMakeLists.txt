@@ -1,14 +1,15 @@
+# CMake minimum version
 cmake_minimum_required(VERSION 3.15)
 project(Exchange_Web_App)
 
-# Ustawienie standardu C++ i wersji
+# Ustawienia standardu C++
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Włączenie FetchContent dla Boost
+# Ustawienie FetchContent
 include(FetchContent)
 
-# Pobranie Boost
+# Pobieranie Boost
 FetchContent_Declare(
   boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -18,14 +19,11 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-# Wykrywanie komponentów Boost
-find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
-
-# Pobranie SQLite3
+# Pobieranie SQLite3
 FetchContent_Declare(
   sqlite
   GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        trunk  # Lub użyj odpowiedniej gałęzi/tagu
+  GIT_TAG        release-3.43.0  # Użyj odpowiedniego tagu wersji
 )
 FetchContent_MakeAvailable(sqlite)
 
@@ -44,7 +42,7 @@ add_library(sqlite3 STATIC
     ${sqlite_SOURCE_DIR}/sqlite3.c
 )
 
-# Ustawianie ścieżek do plików nagłówkowych
+# Ustawienia ścieżek do plików nagłówkowych
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${sqlite_SOURCE_DIR}  # Dodaj katalog z plikami nagłówkowymi SQLite3
