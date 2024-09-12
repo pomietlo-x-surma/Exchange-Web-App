@@ -4,6 +4,5 @@
   "dependencies": [
     "boost",
     "sqlite3"
-  ],
-  "builtin-baseline": "d1a5a66a4bbdfc5b6f77a5f0cba54ff3a4f4f53a"
+  ]
 }
