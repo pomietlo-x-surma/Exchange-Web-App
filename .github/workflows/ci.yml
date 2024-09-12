@@ -41,6 +41,8 @@ jobs:
         shell: pwsh
         run: |
           & "${env:GITHUB_WORKSPACE}/vcpkg/vcpkg" install
+          # Debugowanie zawartości folderu z zainstalowanymi pakietami
+          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed" -Recurse
 
       # Cache dla zależności CMake
       - name: Cache CMake files
@@ -61,7 +63,12 @@ jobs:
       - name: Debug vcpkg install
         shell: pwsh
         run: |
-          dir "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include"
+          # Sprawdź, czy katalogi istnieją i zawierają pliki nagłówkowe
+          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include") {
+            Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
+          } else {
+            Write-Output "Directory ${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include does not exist."
+          }
 
       # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
@@ -71,3 +78,5 @@ jobs:
           Set-Location -Path build
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="${env:GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
           cmake --build .
+          # Debugowanie wyników budowy
+          Get-ChildItem -Path build -Recurse
