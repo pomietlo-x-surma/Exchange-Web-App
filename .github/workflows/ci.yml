@@ -51,6 +51,7 @@ jobs:
           path: |
             build/CMakeCache.txt
             build/CMakeFiles
+            build/Makefile
           key: ${{ runner.os }}-cmake-cache-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-cmake-cache-
