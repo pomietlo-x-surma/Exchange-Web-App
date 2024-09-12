@@ -37,7 +37,7 @@ add_library(sqlite3 STATIC sqlite/sqlite3.c)
 # Ustawianie ścieżek do plików nagłówkowych
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite  # Dodanie katalogu sqlite
+    ${CMAKE_SOURCE_DIR}/sqlite  # Dodaj katalog sqlite
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
