@@ -19,12 +19,12 @@ jobs:
 
       # Cache dla zainstalowanych pakietów vcpkg
       - name: Cache vcpkg
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: |
             vcpkg/installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
@@ -36,9 +36,14 @@ jobs:
           vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
           runVcpkgInstall: true
 
+      # Instalacja zależności vcpkg
+      - name: Install vcpkg dependencies
+        run: |
+          ${GITHUB_WORKSPACE}/vcpkg/vcpkg install
+
       # Cache dla zależności CMake
       - name: Cache CMake files
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: |
             build/CMakeCache.txt
@@ -50,6 +55,11 @@ jobs:
       # Instalacja narzędzia Ninja
       - name: Install Ninja
         run: choco install ninja
+
+      # Debugowanie ścieżek do plików nagłówkowych
+      - name: Debug vcpkg install
+        run: |
+          dir ${GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include
 
       # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
