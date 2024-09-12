@@ -13,11 +13,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Krok do pobrania kodu z repozytorium
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Cache dla zainstalowanych pakietów vcpkg
       - name: Cache vcpkg
         uses: actions/cache@v4
         with:
@@ -28,7 +26,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
-      # Krok do instalacji i konfiguracji vcpkg
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
@@ -36,42 +33,36 @@ jobs:
           vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
           runVcpkgInstall: true
 
-      # Instalacja zależności vcpkg
       - name: Install vcpkg dependencies
         shell: pwsh
         run: |
           & "${env:GITHUB_WORKSPACE}/vcpkg/vcpkg" install
-          # Debugowanie zawartości folderu z zainstalowanymi pakietami
-          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed" -Recurse
+          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
 
-      # Cache dla zależności CMake
+      - name: Debug vcpkg include directory
+        shell: pwsh
+        run: |
+          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include/sqlite3.h") {
+            Write-Output "File sqlite3.h found!"
+          } else {
+            Write-Output "File sqlite3.h not found!"
+          }
+          
+          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
+
       - name: Cache CMake files
         uses: actions/cache@v4
         with:
           path: |
             build/CMakeCache.txt
             build/CMakeFiles
-            build/Makefile
           key: ${{ runner.os }}-cmake-cache-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-cmake-cache-
 
-      # Instalacja narzędzia Ninja
       - name: Install Ninja
         run: choco install ninja
 
-      # Debugowanie ścieżek do plików nagłówkowych
-      - name: Debug vcpkg install
-        shell: pwsh
-        run: |
-          # Sprawdź, czy katalogi istnieją i zawierają pliki nagłówkowe
-          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include") {
-            Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
-          } else {
-            Write-Output "Directory ${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include does not exist."
-          }
-
-      # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
         shell: pwsh
         run: |
@@ -79,5 +70,4 @@ jobs:
           Set-Location -Path build
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="${env:GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
           cmake --build .
-          # Debugowanie wyników budowy
           Get-ChildItem -Path build -Recurse
