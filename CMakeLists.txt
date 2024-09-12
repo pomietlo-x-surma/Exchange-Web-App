@@ -24,7 +24,7 @@ add_library(sqlite3 STATIC
     ${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c  # Lokalna ścieżka do pliku sqlite3.c
 )
 
-# Tworzenie pliku wykonywalnego - to musi być pierwsze
+# Tworzenie pliku wykonywalnego - to musi być przed target_include_directories
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
