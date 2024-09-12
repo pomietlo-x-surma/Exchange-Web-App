@@ -26,6 +26,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-boost-sqlite-
             ${{ runner.os }}-vcpkg-
+          fail-on-cache-miss: false
+
+      - name: Check directories
+        run: |
+          echo "Checking vcpkg/installed directory:"
+          dir vcpkg\installed
+          echo "Checking vcpkg/downloads directory:"
+          dir vcpkg\downloads
+        shell: cmd
 
       - name: Set up vcpkg
         run: |
@@ -51,6 +60,7 @@ jobs:
           echo "Installing Ninja..."
           choco install ninja
           echo "Ninja installed."
+        shell: cmd
 
       - name: Configure CMake
         run: |
