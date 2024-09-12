@@ -24,20 +24,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
-          vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
-          runVcpkgInstall: true
+      - name: Install vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          ./vcpkg/bootstrap-vcpkg.bat
+          ./vcpkg/vcpkg install boost-system boost-thread boost-coroutine boost-log boost-beast boost-asio
 
       - name: Install Ninja
         run: choco install ninja
 
-      - name: Build project
-        shell: pwsh
+      - name: Configure and Build with CMake
         run: |
-          if (-not (Test-Path build)) { New-Item -ItemType Directory -Path build }
-          Set-Location -Path build
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          mkdir build
+          cd build
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
           cmake --build .
+
+      - name: Run Tests
+        run: |
+          cd build
+          ctest --output-on-failure
