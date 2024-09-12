@@ -34,7 +34,7 @@ jobs:
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
           echo "Installing packages..."
-          .\vcpkg\vcpkg install boost sqlite3
+          .\vcpkg\vcpkg install
           echo "Vcpkg setup completed."
       
       # Kroki debugowania: sprawdzenie ścieżek
