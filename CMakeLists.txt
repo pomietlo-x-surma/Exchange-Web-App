@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(boost)
 FetchContent_Declare(
   sqlite3
   GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        version-3420000  # Użyj odpowiedniej wersji
+  GIT_TAG        trunk  # Użyj domyślnej gałęzi
 )
 FetchContent_MakeAvailable(sqlite3)
 
