@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache@v4.0.2
         with:
           path: vcpkg/installed
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
@@ -28,7 +28,7 @@ jobs:
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           ./vcpkg/bootstrap-vcpkg.bat
-          ./vcpkg/vcpkg install boost-system boost-thread boost-coroutine boost-log boost-beast boost-asio
+          ./vcpkg/vcpkg install
 
       - name: Install Ninja
         run: choco install ninja
