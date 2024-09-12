@@ -19,11 +19,11 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-# Pobieranie SQLite3
+# Pobieranie SQLite3 z głównej gałęzi
 FetchContent_Declare(
   sqlite
   GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        release-3.46.1  # Ustaw poprawny tag wersji SQLite3
+  GIT_TAG        main  # Pobieranie z głównej gałęzi
 )
 FetchContent_MakeAvailable(sqlite)
 
