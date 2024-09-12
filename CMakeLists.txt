@@ -21,8 +21,7 @@ FetchContent_MakeAvailable(boost)
 # Pobranie SQLite3
 FetchContent_Declare(
   sqlite3
-  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        trunk  # Możesz zmienić na konkretną wersję, jeśli chcesz
+  URL https://www.sqlite.org/2024/sqlite-autoconf-3420000.tar.gz  # Zamień na najnowszą wersję
 )
 FetchContent_MakeAvailable(sqlite3)
 
