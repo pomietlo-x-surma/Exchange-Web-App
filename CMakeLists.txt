@@ -24,13 +24,7 @@ add_library(sqlite3 STATIC
     ${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c  # Lokalna ścieżka do pliku sqlite3.c
 )
 
-# Ustawienia ścieżek do plików nagłówkowych
-target_include_directories(Exchange_Web_App PRIVATE
-    ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite  # Ścieżka do plików nagłówkowych SQLite
-)
-
-# Tworzenie pliku wykonywalnego
+# Tworzenie pliku wykonywalnego - to musi być pierwsze
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -38,6 +32,12 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
+)
+
+# Dopiero po zdefiniowaniu pliku wykonywalnego, ustawiamy ścieżki do plików nagłówkowych
+target_include_directories(Exchange_Web_App PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/sqlite  # Ścieżka do plików nagłówkowych SQLite
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
