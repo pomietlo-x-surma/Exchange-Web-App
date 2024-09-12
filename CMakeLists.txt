@@ -21,6 +21,14 @@ FetchContent_MakeAvailable(boost)
 # Wykrywanie komponentów Boost
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
+# Pobranie SQLite3
+FetchContent_Declare(
+  sqlite
+  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
+  GIT_TAG        trunk  # Lub użyj odpowiedniej gałęzi/tagu
+)
+FetchContent_MakeAvailable(sqlite)
+
 # Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
@@ -31,15 +39,15 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
-# Tworzenie biblioteki SQLite3 lokalnie
+# Dodaj bibliotekę SQLite3
 add_library(sqlite3 STATIC
-    sqlite/sqlite3.c
+    ${sqlite_SOURCE_DIR}/sqlite3.c
 )
 
 # Ustawianie ścieżek do plików nagłówkowych
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite  # Dodaj katalog z plikami nagłówkowymi SQLite3
+    ${sqlite_SOURCE_DIR}  # Dodaj katalog z plikami nagłówkowymi SQLite3
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
