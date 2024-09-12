@@ -44,6 +44,17 @@ jobs:
           # Debugowanie zawartości folderu z zainstalowanymi pakietami
           Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed" -Recurse
 
+      # Debugowanie ścieżek do plików nagłówkowych
+      - name: Debug vcpkg install
+        shell: pwsh
+        run: |
+          # Sprawdź, czy katalogi istnieją i zawierają pliki nagłówkowe
+          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include") {
+            Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
+          } else {
+            Write-Output "Directory ${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include does not exist."
+          }
+
       # Cache dla zależności CMake
       - name: Cache CMake files
         uses: actions/cache@v4
@@ -59,17 +70,6 @@ jobs:
       - name: Install Ninja
         run: choco install ninja
 
-      # Debugowanie ścieżek do plików nagłówkowych
-      - name: Debug vcpkg install
-        shell: pwsh
-        run: |
-          # Sprawdź, czy katalogi istnieją i zawierają pliki nagłówkowe
-          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include") {
-            Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
-          } else {
-            Write-Output "Directory ${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include does not exist."
-          }
-
       # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
         shell: pwsh
@@ -80,11 +80,3 @@ jobs:
           cmake --build .
           # Debugowanie wyników budowy
           Get-ChildItem -Path build -Recurse
-
-      # Debugowanie plików nagłówkowych podczas budowy
-      - name: Debug build include paths
-        shell: pwsh
-        run: |
-          # Debugowanie ścieżek do plików nagłówkowych używanych podczas budowy
-          cmake --system-information | Out-File -FilePath "${env:GITHUB_WORKSPACE}/build/system_info.txt"
-          Get-Content "${env:GITHUB_WORKSPACE}/build/system_info.txt" | Select-String "CMAKE_INCLUDE_PATH"
