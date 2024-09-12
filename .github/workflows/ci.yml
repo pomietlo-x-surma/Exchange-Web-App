@@ -1,97 +1,61 @@
-name: CI
+name: Build and Test
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      # Przywróć cache przed instalacją vcpkg
-      - name: Restore vcpkg cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            vcpkg/installed
-            vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-boost-sqlite-
-            ${{ runner.os }}-vcpkg-
-        id: cache-vcpkg
+    - name: Setup vcpkg
+      uses: microsoft/setup-vcpkg@v1
+      with:
+        vcpkgCommitId: a88ac64b8a0a9b43f4fd347fc32f3374a3700d52
 
-      - name: Set up vcpkg
-        run: |
-          echo "Cloning vcpkg repository..."
-          git clone https://github.com/microsoft/vcpkg.git
-          echo "Bootstrapping vcpkg..."
-          .\vcpkg\bootstrap-vcpkg.bat
-          echo "Installing packages..."
-          .\vcpkg\vcpkg install
-          echo "Vcpkg setup completed."
-      
-      # Kroki debugowania: sprawdzenie ścieżek
-      - name: Debug vcpkg cache directories
-        run: |
-          echo "Checking vcpkg/installed directory:"
-          dir "vcpkg\installed"
-          echo "Checking vcpkg/downloads directory:"
-          dir "vcpkg\downloads"
-        shell: cmd
+    - name: Restore vcpkg cache
+      uses: actions/cache@v4.0.2
+      with:
+        path: |
+          vcpkg/installed
+          vcpkg/downloads
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
 
-      - name: Install Ninja
-        run: |
-          echo "Installing Ninja..."
-          choco install ninja
-          echo "Ninja installed."
-      
-      - name: Configure CMake
-        run: |
-          echo "Checking if build directory exists..."
-          if not exist build mkdir build
-          cd build
-          echo "Configuring CMake..."
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-          echo "CMake configuration completed."
-        shell: cmd
+    - name: Install dependencies using vcpkg
+      run: |
+        vcpkg install
+        vcpkg integrate install
 
-      # Zapisz cache po instalacji vcpkg, ale przed budowaniem
-      - name: Save vcpkg cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            vcpkg/installed
-            vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
-        id: cache-vcpkg-save
+    - name: Configure CMake
+      run: |
+        if not exist build mkdir build
+        cd build
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 
-      - name: Build
-        run: |
-          cd build
-          echo "Building project..."
-          cmake --build .
-          echo "Build completed."
-        shell: cmd
+    - name: Build with Ninja
+      run: |
+        cd build
+        cmake --build .
 
-      - name: Run Tests
-        run: |
-          cd build
-          echo "Running tests..."
-          ctest -C Debug --output-on-failure
-          echo "Tests completed."
-        shell: cmd
+    - name: Save vcpkg cache
+      uses: actions/cache@v4.0.2
+      with:
+        path: |
+          vcpkg/installed
+          vcpkg/downloads
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
 
-      - name: Check if cache is available after saving
-        run: |
-          echo "Checking if cache is available after saving..."
-          # Sprawdź dostępność cache
-          dir "vcpkg\installed"
-          dir "vcpkg\downloads"
-        shell: cmd
+    - name: Run tests
+      run: |
+        cd build
+        ctest --verbose
