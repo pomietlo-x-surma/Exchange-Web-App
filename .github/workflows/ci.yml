@@ -13,17 +13,22 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # Krok do pobrania kodu z repozytorium
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Cache dla zainstalowanych pakietów vcpkg
       - name: Cache vcpkg
         uses: actions/cache@v4.0.2
         with:
-          path: vcpkg/installed
+          path: |
+            vcpkg/installed
+            vcpkg/downloads
           key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
+      # Krok do instalacji i konfiguracji vcpkg
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
@@ -31,9 +36,22 @@ jobs:
           vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
           runVcpkgInstall: true
 
+      # Cache dla zależności CMake
+      - name: Cache CMake files
+        uses: actions/cache@v4.0.2
+        with:
+          path: |
+            build/CMakeCache.txt
+            build/CMakeFiles
+          key: ${{ runner.os }}-cmake-cache-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-cache-
+
+      # Instalacja narzędzia Ninja
       - name: Install Ninja
         run: choco install ninja
 
+      # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
         shell: pwsh
         run: |
