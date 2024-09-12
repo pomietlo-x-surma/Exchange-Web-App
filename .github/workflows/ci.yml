@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Cache vcpkg
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: vcpkg/installed
           key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
@@ -27,9 +27,10 @@ jobs:
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
-          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgJsonGlob: '**/vcpkg.json'
-          vcpkgGitCommitId: 'd1a5a66a4bbdfc5b6f77a5f0cba54ff3a4f4f53a' # Ustaw tutaj baseline commit ID
+          vcpkg-directory: ${{ github.workspace }}/vcpkg
+          vcpkg-commit-id: b8a9371
+          vcpkg-json-path: ${{ github.workspace }}/vcpkg.json
+          run-vcpkg-step: true
 
       - name: Build project
         run: |
