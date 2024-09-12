@@ -14,9 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Wyświetl wygenerowany klucz cache
+      # Wyświetl wygenerowany klucz cache poprawnie
       - name: Display generated cache key
-        run: echo "Generated cache key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}"
+        run: |
+          echo "Generated cache key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}"
 
       # Przywróć cache przed instalacją vcpkg
       - name: Restore vcpkg cache
