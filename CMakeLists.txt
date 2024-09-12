@@ -5,7 +5,7 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Włączenie FetchContent dla Boost
+# Włączenie FetchContent dla Boost i SQLite3
 include(FetchContent)
 
 # Pobranie Boost
@@ -17,6 +17,14 @@ FetchContent_Declare(
 )
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
+
+# Pobranie SQLite3
+FetchContent_Declare(
+  sqlite3
+  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
+  GIT_TAG        trunk  # Możesz zmienić na konkretną wersję, jeśli chcesz
+)
+FetchContent_MakeAvailable(sqlite3)
 
 # Wykrywanie komponentów Boost
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
@@ -31,13 +39,15 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
-# Tworzenie biblioteki SQLite3 lokalnie
-add_library(sqlite3 STATIC sqlite/sqlite3.c)
-
-# Ustawianie ścieżek do plików nagłówkowych
+# Ustawienie ścieżek do plików nagłówkowych
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite  # Dodaj katalog sqlite
+    ${sqlite3_SOURCE_DIR}  # Dodaj katalog sqlite3 z FetchContent
+)
+
+# Tworzenie biblioteki SQLite3 z FetchContent
+add_library(sqlite3 STATIC
+    ${sqlite3_SOURCE_DIR}/sqlite3.c
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
