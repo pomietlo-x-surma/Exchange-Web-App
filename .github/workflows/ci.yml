@@ -38,8 +38,9 @@ jobs:
 
       # Instalacja zależności vcpkg
       - name: Install vcpkg dependencies
+        shell: pwsh
         run: |
-          ${GITHUB_WORKSPACE}/vcpkg/vcpkg install
+          & "${env:GITHUB_WORKSPACE}/vcpkg/vcpkg" install
 
       # Cache dla zależności CMake
       - name: Cache CMake files
@@ -58,8 +59,9 @@ jobs:
 
       # Debugowanie ścieżek do plików nagłówkowych
       - name: Debug vcpkg install
+        shell: pwsh
         run: |
-          dir ${GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include
+          dir "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include"
 
       # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
@@ -67,5 +69,5 @@ jobs:
         run: |
           if (-not (Test-Path build)) { New-Item -ItemType Directory -Path build }
           Set-Location -Path build
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="${env:GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
           cmake --build .
