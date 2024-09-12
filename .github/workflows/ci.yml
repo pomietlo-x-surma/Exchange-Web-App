@@ -61,6 +61,7 @@ jobs:
           echo "Configuring CMake..."
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
           echo "CMake configuration completed."
+        shell: cmd
 
       # Krok 7: Zbuduj projekt
       - name: Build
@@ -69,6 +70,7 @@ jobs:
           echo "Building project..."
           cmake --build .
           echo "Build completed."
+        shell: cmd
 
       # Krok 8: Uruchom testy
       - name: Run Tests
@@ -77,3 +79,4 @@ jobs:
           echo "Running tests..."
           ctest -C Debug --output-on-failure
           echo "Tests completed."
+        shell: cmd
