@@ -31,6 +31,9 @@ jobs:
           vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
           runVcpkgInstall: true
 
+      - name: Install Ninja
+        run: choco install ninja
+
       - name: Build project
         shell: pwsh
         run: |
