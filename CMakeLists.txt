@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(Exchange_Web_App)
 
-# Ustawienie standardu C++
+# Ustawienie standardu C++ i wersji
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -54,3 +54,14 @@ target_link_libraries(Exchange_Web_App PRIVATE
 # Ustawienia testów
 enable_testing()
 add_subdirectory(tests)
+
+# Dodaj bibliotekę sqlite3 do testów
+target_link_libraries(Exchange_Web_App_tests PRIVATE
+    sqlite3
+    Boost::system
+    Boost::thread
+    Boost::coroutine
+    Boost::log
+    Boost::beast
+    Boost::asio
+)
