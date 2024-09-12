@@ -1,5 +1,5 @@
 {
-  "name": "exchange-web-app",
+  "name": "Exchange-Web-App",
   "version": "1.0.0",
   "dependencies": [
     "boost",
