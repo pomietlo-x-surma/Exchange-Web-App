@@ -1,4 +1,3 @@
-
 # CMake minimum version
 cmake_minimum_required(VERSION 3.15)
 project(Exchange_Web_App)
@@ -7,9 +6,10 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Pobieranie Boost
+# Pobieranie Boost i SQLite z vcpkg
 include(FetchContent)
 
+# Pobieranie i konfiguracja Boost
 FetchContent_Declare(
   boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -19,11 +19,9 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-# Zakładam, że pliki sqlite3.c i sqlite3.h są lokalnie w katalogu sqlite
-# Dodajemy je do kompilacji bez FetchContent
-add_library(sqlite3 STATIC
-    ${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c  # Lokalna ścieżka do pliku sqlite3.c
-)
+# Zakładamy, że pliki sqlite3.c i sqlite3.h są pobierane za pomocą vcpkg
+find_package(SQLite3 REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
 # Tworzenie pliku wykonywalnego - to musi być przed target_include_directories
 add_executable(Exchange_Web_App
@@ -35,10 +33,10 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
-# Dopiero po zdefiniowaniu pliku wykonywalnego, ustawiamy ścieżki do plików nagłówkowych
+# Ustawienie ścieżek do plików nagłówkowych i bibliotek Boost oraz SQLite
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/sqlite  # Ścieżka do plików nagłówkowych SQLite
+    ${SQLite3_INCLUDE_DIRS}
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
@@ -49,7 +47,7 @@ target_link_libraries(Exchange_Web_App PRIVATE
     Boost::log
     Boost::beast
     Boost::asio
-    sqlite3
+    SQLite::SQLite3
 )
 
 # Ustawienia testów
