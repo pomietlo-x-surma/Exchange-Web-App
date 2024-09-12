@@ -7,13 +7,16 @@ on:
     branches: [ master ]
 
 jobs:
-
   build:
     runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # Wyświetl wygenerowany klucz cache
+      - name: Display generated cache key
+        run: echo "Generated cache key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}"
 
       # Przywróć cache przed instalacją vcpkg
       - name: Restore vcpkg cache
@@ -50,9 +53,16 @@ jobs:
           git clone https://github.com/microsoft/vcpkg.git
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
+          echo "Updating vcpkg..."
+          .\vcpkg\vcpkg update
           echo "Installing packages..."
           .\vcpkg\vcpkg install boost sqlite3
           echo "Vcpkg setup completed."
+
+      # Wyświetl zainstalowane pakiety w vcpkg
+      - name: Check installed packages
+        run: .\vcpkg\vcpkg list
+        shell: cmd
       
       # Kroki debugowania: sprawdzenie ścieżek
       - name: Debug vcpkg cache directories
