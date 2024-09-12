@@ -23,7 +23,7 @@ FetchContent_MakeAvailable(boost)
 FetchContent_Declare(
   sqlite
   GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        <valid-tag-here>  # Zamień na prawidłowy tag wersji, np. "release-3.43.0"
+  GIT_TAG        release-3.46.1  # Ustaw poprawny tag wersji SQLite3
 )
 FetchContent_MakeAvailable(sqlite)
 
