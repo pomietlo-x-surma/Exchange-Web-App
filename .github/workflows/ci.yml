@@ -14,24 +14,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Wyświetl wygenerowany klucz cache poprawnie
-      - name: Display generated cache key
-        run: |
-          echo "Generated cache key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}"
-
-      # Przywróć cache przed instalacją vcpkg
+      # Restore cache before installing vcpkg
       - name: Restore vcpkg cache
         uses: actions/cache@v3
         with:
           path: |
             vcpkg/installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+          key: ${{ runner.os }}-vcpkg-boost-sqlite
           restore-keys: |
             ${{ runner.os }}-vcpkg-boost-sqlite-
             ${{ runner.os }}-vcpkg-
-          fail-on-cache-miss: false
+          fail-on-cache-miss: true # Will fail if cache is not found (for debug purposes)
 
+      # Check directories
       - name: Check directories
         run: |
           echo "Checking vcpkg/installed directory:"
@@ -54,72 +50,34 @@ jobs:
           git clone https://github.com/microsoft/vcpkg.git
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
-          echo "Updating vcpkg..."
-          .\vcpkg\vcpkg update
           echo "Installing packages..."
           .\vcpkg\vcpkg install boost sqlite3
           echo "Vcpkg setup completed."
 
-      # Wyświetl zainstalowane pakiety w vcpkg
+      # Debug vcpkg list
       - name: Check installed packages
         run: .\vcpkg\vcpkg list
         shell: cmd
-      
-      # Kroki debugowania: sprawdzenie ścieżek
-      - name: Debug vcpkg cache directories
-        run: |
-          echo "Checking vcpkg/installed directory:"
-          if exist vcpkg\installed (
-            dir "vcpkg\installed"
-          ) else (
-            echo "vcpkg/installed directory does not exist."
-          )
-          echo "Checking vcpkg/downloads directory:"
-          if exist vcpkg\downloads (
-            dir "vcpkg\downloads"
-          ) else (
-            echo "vcpkg/downloads directory does not exist."
-          )
-        shell: cmd
 
-      - name: Install Ninja
-        run: |
-          echo "Installing Ninja..."
-          choco install ninja
-          echo "Ninja installed."
-        shell: cmd
-
-      - name: Configure CMake
-        run: |
-          echo "Checking if build directory exists..."
-          if not exist build mkdir build
-          cd build
-          echo "Configuring CMake..."
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-          echo "CMake configuration completed."
-        shell: cmd
-
-      # Zapisz cache po instalacji vcpkg, ale przed budowaniem
+      # Save cache after vcpkg installation
       - name: Save vcpkg cache
         uses: actions/cache@v3
         with:
           path: |
             vcpkg/installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+          key: ${{ runner.os }}-vcpkg-boost-sqlite
 
       - name: Build
         run: |
+          if not exist build mkdir build
           cd build
-          echo "Building project..."
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
           cmake --build .
-          echo "Build completed."
         shell: cmd
 
       - name: Run Tests
         run: |
           cd build
-          echo "Running tests..."
           ctest -C Debug --output-on-failure
-          echo "Tests completed."
         shell: cmd
