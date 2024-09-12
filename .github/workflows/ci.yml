@@ -11,17 +11,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Krok 1: Pobierz kod źródłowy z repozytorium
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Krok 2: Sprawdź obecność cache przed przywracaniem
-      - name: Check vcpkg cache before restoring
-        run: |
-          echo "Checking if cache is available before restoring..."
-        shell: cmd
-
-      # Krok 3: Przywróć cache dla vcpkg
+      # Przywróć cache przed instalacją vcpkg
       - name: Restore vcpkg cache
         uses: actions/cache@v3
         with:
@@ -32,47 +25,33 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-boost-sqlite-
             ${{ runner.os }}-vcpkg-
-          fail-on-cache-miss: false
+        id: cache-vcpkg
 
-      # Krok 4: Zainstaluj i skonfiguruj vcpkg
       - name: Set up vcpkg
         run: |
           echo "Cloning vcpkg repository..."
           git clone https://github.com/microsoft/vcpkg.git
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
-          echo "Installing packages from vcpkg.json..."
-          .\vcpkg\vcpkg install
-        shell: cmd
-
-      # Krok 5: Zapisz cache po zainstalowaniu pakietów
-      - name: Save vcpkg cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            vcpkg/installed
-            vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-boost-sqlite-
-            ${{ runner.os }}-vcpkg-
-          fail-on-cache-miss: false
-
-      # Krok 6: Sprawdź obecność cache po zapisaniu
-      - name: Check vcpkg cache after saving
+          echo "Installing packages..."
+          .\vcpkg\vcpkg install boost sqlite3
+          echo "Vcpkg setup completed."
+      
+      # Kroki debugowania: sprawdzenie ścieżek
+      - name: Debug vcpkg cache directories
         run: |
-          echo "Checking if cache is available after saving..."
+          echo "Checking vcpkg/installed directory:"
+          dir "vcpkg\installed"
+          echo "Checking vcpkg/downloads directory:"
+          dir "vcpkg\downloads"
         shell: cmd
 
-      # Krok 7: Instalacja Ninja (jeśli potrzebujesz tego narzędzia)
       - name: Install Ninja
         run: |
           echo "Installing Ninja..."
           choco install ninja
           echo "Ninja installed."
-        shell: cmd
-
-      # Krok 8: Skonfiguruj CMake z użyciem Ninja
+      
       - name: Configure CMake
         run: |
           echo "Checking if build directory exists..."
@@ -83,7 +62,16 @@ jobs:
           echo "CMake configuration completed."
         shell: cmd
 
-      # Krok 9: Zbuduj projekt
+      # Zapisz cache po instalacji vcpkg, ale przed budowaniem
+      - name: Save vcpkg cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            vcpkg/installed
+            vcpkg/downloads
+          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+        id: cache-vcpkg-save
+
       - name: Build
         run: |
           cd build
@@ -92,11 +80,18 @@ jobs:
           echo "Build completed."
         shell: cmd
 
-      # Krok 10: Uruchom testy
       - name: Run Tests
         run: |
           cd build
           echo "Running tests..."
           ctest -C Debug --output-on-failure
           echo "Tests completed."
+        shell: cmd
+
+      - name: Check if cache is available after saving
+        run: |
+          echo "Checking if cache is available after saving..."
+          # Sprawdź dostępność cache
+          dir "vcpkg\installed"
+          dir "vcpkg\downloads"
         shell: cmd
