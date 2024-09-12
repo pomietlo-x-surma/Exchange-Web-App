@@ -31,9 +31,17 @@ jobs:
       - name: Check directories
         run: |
           echo "Checking vcpkg/installed directory:"
-          dir vcpkg\installed
+          if exist vcpkg\installed (
+            dir vcpkg\installed
+          ) else (
+            echo "vcpkg/installed directory does not exist."
+          )
           echo "Checking vcpkg/downloads directory:"
-          dir vcpkg\downloads
+          if exist vcpkg\downloads (
+            dir vcpkg\downloads
+          ) else (
+            echo "vcpkg/downloads directory does not exist."
+          )
         shell: cmd
 
       - name: Set up vcpkg
@@ -50,9 +58,17 @@ jobs:
       - name: Debug vcpkg cache directories
         run: |
           echo "Checking vcpkg/installed directory:"
-          dir "vcpkg\installed"
+          if exist vcpkg\installed (
+            dir "vcpkg\installed"
+          ) else (
+            echo "vcpkg/installed directory does not exist."
+          )
           echo "Checking vcpkg/downloads directory:"
-          dir "vcpkg\downloads"
+          if exist vcpkg\downloads (
+            dir "vcpkg\downloads"
+          ) else (
+            echo "vcpkg/downloads directory does not exist."
+          )
         shell: cmd
 
       - name: Install Ninja
