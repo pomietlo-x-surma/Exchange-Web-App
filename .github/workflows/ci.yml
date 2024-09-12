@@ -23,12 +23,13 @@ jobs:
           key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-vcpkg-
-      
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
-          vcpkg-json-path: '${{ github.workspace }}/vcpkg.json'
-          run-vcpkg-step: true
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgJsonGlob: '**/vcpkg.json'
+          vcpkgGitCommitId: 'd1a5a66a4bbdfc5b6f77a5f0cba54ff3a4f4f53a' # Ustaw tutaj baseline commit ID
 
       - name: Build project
         run: |
