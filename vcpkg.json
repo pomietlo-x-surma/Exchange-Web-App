@@ -1,8 +1,13 @@
 {
   "name": "exchange-web-app",
-  "version": "1.0.0",
+  "version-string": "1.0.0",
   "dependencies": [
-    "boost",
+    "boost-system",
+    "boost-thread",
+    "boost-coroutine",
+    "boost-log",
+    "boost-beast",
+    "boost-asio",
     "sqlite3"
   ]
 }
