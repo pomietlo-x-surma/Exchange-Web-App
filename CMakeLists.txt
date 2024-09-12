@@ -27,6 +27,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sqlite)
 
+# Sprawdź strukturę katalogów SQLite
+# Możliwe zmiany w ścieżkach mogą być potrzebne w zależności od struktury repozytorium
+
 # Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
