@@ -18,11 +18,11 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-# Pobranie SQLite3
+# Pobranie SQLite3 z gałęzi master
 FetchContent_Declare(
   sqlite3
   GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        trunk  # Użyj domyślnej gałęzi
+  GIT_TAG        master
 )
 FetchContent_MakeAvailable(sqlite3)
 
@@ -47,7 +47,7 @@ add_library(sqlite3 STATIC
 # Ustawienie ścieżek do plików nagłówkowych
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ${sqlite3_SOURCE_DIR}  # Dodaj katalog sqlite3 z FetchContent
+    ${CMAKE_SOURCE_DIR}/sqlite  # Dodaj katalog sqlite
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
