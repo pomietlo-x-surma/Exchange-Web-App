@@ -6,10 +6,9 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Ustawienie FetchContent
+# Pobieranie Boost
 include(FetchContent)
 
-# Pobieranie Boost
 FetchContent_Declare(
   boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -19,16 +18,17 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(boost)
 
-# Pobieranie SQLite3
-FetchContent_Declare(
-  sqlite
-  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        version-3.46.1  # Ustaw odpowiednią wersję
+# Zakładam, że pliki sqlite3.c i sqlite3.h są lokalnie w katalogu `sqlite`
+# Dodajemy je do kompilacji bez FetchContent
+add_library(sqlite3 STATIC
+    ${CMAKE_SOURCE_DIR}/sqlite/sqlite3.c  # Lokalna ścieżka do pliku sqlite3.c
 )
-FetchContent_MakeAvailable(sqlite)
 
-# Sprawdź strukturę katalogów SQLite
-# Możliwe zmiany w ścieżkach mogą być potrzebne w zależności od struktury repozytorium
+# Ustawienia ścieżek do plików nagłówkowych
+target_include_directories(Exchange_Web_App PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/sqlite  # Ścieżka do plików nagłówkowych SQLite
+)
 
 # Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
@@ -38,17 +38,6 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
-)
-
-# Dodaj bibliotekę SQLite3
-add_library(sqlite3 STATIC
-    ${sqlite_SOURCE_DIR}/sqlite3.c
-)
-
-# Ustawienia ścieżek do plików nagłówkowych
-target_include_directories(Exchange_Web_App PRIVATE
-    ${Boost_INCLUDE_DIRS}
-    ${sqlite_SOURCE_DIR}  # Dodaj katalog z plikami nagłówkowymi SQLite3
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
