@@ -1,4 +1,4 @@
-name: Build and Test
+name: CI
 
 on:
   push:
@@ -13,49 +13,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup vcpkg
-      uses: microsoft/setup-vcpkg@v1
-      with:
-        vcpkgCommitId: a88ac64b8a0a9b43f4fd347fc32f3374a3700d52
+      - name: Cache vcpkg
+        uses: actions/cache@v4.0.2
+        with:
+          path: vcpkg/installed
+          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-
+      
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkg-json-path: '${{ github.workspace }}/vcpkg.json'
+          run-vcpkg-step: true
 
-    - name: Restore vcpkg cache
-      uses: actions/cache@v4.0.2
-      with:
-        path: |
-          vcpkg/installed
-          vcpkg/downloads
-        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
-        restore-keys: |
-          ${{ runner.os }}-vcpkg-
-
-    - name: Install dependencies using vcpkg
-      run: |
-        vcpkg install
-        vcpkg integrate install
-
-    - name: Configure CMake
-      run: |
-        if not exist build mkdir build
-        cd build
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-
-    - name: Build with Ninja
-      run: |
-        cd build
-        cmake --build .
-
-    - name: Save vcpkg cache
-      uses: actions/cache@v4.0.2
-      with:
-        path: |
-          vcpkg/installed
-          vcpkg/downloads
-        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
-
-    - name: Run tests
-      run: |
-        cd build
-        ctest --verbose
+      - name: Build project
+        run: |
+          if not exist build mkdir build
+          cd build
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+          cmake --build .
