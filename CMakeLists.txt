@@ -21,7 +21,8 @@ FetchContent_MakeAvailable(boost)
 # Pobranie SQLite3
 FetchContent_Declare(
   sqlite3
-  URL https://www.sqlite.org/2024/sqlite-autoconf-3420000.tar.gz  # Zamień na najnowszą wersję
+  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
+  GIT_TAG        version-3420000  # Użyj odpowiedniej wersji
 )
 FetchContent_MakeAvailable(sqlite3)
 
@@ -38,15 +39,15 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
+# Tworzenie biblioteki SQLite3 z FetchContent
+add_library(sqlite3 STATIC
+    ${sqlite3_SOURCE_DIR}/sqlite3.c
+)
+
 # Ustawienie ścieżek do plików nagłówkowych
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${sqlite3_SOURCE_DIR}  # Dodaj katalog sqlite3 z FetchContent
-)
-
-# Tworzenie biblioteki SQLite3 z FetchContent
-add_library(sqlite3 STATIC
-    ${sqlite3_SOURCE_DIR}/sqlite3.c
 )
 
 # Linkowanie z bibliotekami Boost i SQLite3
