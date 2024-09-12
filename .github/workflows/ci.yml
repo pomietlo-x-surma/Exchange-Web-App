@@ -37,18 +37,18 @@ jobs:
         shell: pwsh
         run: |
           & "${env:GITHUB_WORKSPACE}/vcpkg/vcpkg" install
-          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
+          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed" -Recurse
 
-      - name: Debug vcpkg include directory
+      - name: Debug vcpkg installation
         shell: pwsh
         run: |
-          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include/sqlite3.h") {
-            Write-Output "File sqlite3.h found!"
+          # Sprawdź, czy katalogi istnieją
+          if (Test-Path "${env:GITHUB_WORKSPACE}/vcpkg/installed") {
+            Write-Output "Directory vcpkg/installed exists."
+            Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed" -Recurse
           } else {
-            Write-Output "File sqlite3.h not found!"
+            Write-Output "Directory vcpkg/installed does not exist."
           }
-          
-          Get-ChildItem -Path "${env:GITHUB_WORKSPACE}/vcpkg/installed/x64-windows/include" -Recurse
 
       - name: Cache CMake files
         uses: actions/cache@v4
