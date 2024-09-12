@@ -11,67 +11,69 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # Krok 1: Pobierz kod źródłowy z repozytorium
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Przywróć cache przed instalacją vcpkg
+      # Krok 2: Przywróć cache dla vcpkg
       - name: Restore vcpkg cache
         uses: actions/cache@v3
         with:
           path: |
             vcpkg/installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite
+          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-boost-sqlite-
             ${{ runner.os }}-vcpkg-
-          fail-on-cache-miss: false
 
-      # Install Ninja build system
-      - name: Install Ninja
-        run: |
-          echo "Installing Ninja..."
-          choco install ninja
-          echo "Ninja installed."
-
-      # Set up vcpkg
+      # Krok 3: Skonfiguruj i zainstaluj vcpkg
       - name: Set up vcpkg
         run: |
           echo "Cloning vcpkg repository..."
           git clone https://github.com/microsoft/vcpkg.git
           echo "Bootstrapping vcpkg..."
           .\vcpkg\bootstrap-vcpkg.bat
-          echo "Installing packages..."
-          .\vcpkg\vcpkg install boost sqlite3
-          echo "Vcpkg setup completed."
+          echo "Installing packages from vcpkg.json..."
+          .\vcpkg\vcpkg install
 
-      # Save cache po instalacji vcpkg
+      # Krok 4: Zapisz cache po zainstalowaniu pakietów
       - name: Save vcpkg cache
         uses: actions/cache@v3
         with:
           path: |
             vcpkg/installed
             vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-boost-sqlite
+          key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
 
-      # Configure and build using CMake and Ninja
+      # Krok 5: Instalacja Ninja (jeśli potrzebujesz tego narzędzia)
+      - name: Install Ninja
+        run: |
+          echo "Installing Ninja..."
+          choco install ninja
+          echo "Ninja installed."
+
+      # Krok 6: Skonfiguruj CMake z użyciem Ninja
       - name: Configure CMake
         run: |
+          echo "Checking if build directory exists..."
           if not exist build mkdir build
           cd build
-          echo "Configuring CMake with Ninja..."
+          echo "Configuring CMake..."
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ..
           echo "CMake configuration completed."
-        shell: cmd
 
+      # Krok 7: Zbuduj projekt
       - name: Build
         run: |
           cd build
+          echo "Building project..."
           cmake --build .
-        shell: cmd
+          echo "Build completed."
 
+      # Krok 8: Uruchom testy
       - name: Run Tests
         run: |
           cd build
+          echo "Running tests..."
           ctest -C Debug --output-on-failure
-        shell: cmd
+          echo "Tests completed."
