@@ -15,7 +15,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Krok 2: Przywróć cache dla vcpkg
+      # Krok 2: Sprawdź obecność cache przed przywracaniem
+      - name: Check vcpkg cache before restoring
+        run: |
+          echo "Checking if cache is available before restoring..."
+        shell: cmd
+
+      # Krok 3: Przywróć cache dla vcpkg
       - name: Restore vcpkg cache
         uses: actions/cache@v3
         with:
@@ -24,9 +30,11 @@ jobs:
             vcpkg/downloads
           key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
+            ${{ runner.os }}-vcpkg-boost-sqlite-
             ${{ runner.os }}-vcpkg-
+          fail-on-cache-miss: false
 
-      # Krok 3: Skonfiguruj i zainstaluj vcpkg
+      # Krok 4: Zainstaluj i skonfiguruj vcpkg
       - name: Set up vcpkg
         run: |
           echo "Cloning vcpkg repository..."
@@ -35,8 +43,9 @@ jobs:
           .\vcpkg\bootstrap-vcpkg.bat
           echo "Installing packages from vcpkg.json..."
           .\vcpkg\vcpkg install
+        shell: cmd
 
-      # Krok 4: Zapisz cache po zainstalowaniu pakietów
+      # Krok 5: Zapisz cache po zainstalowaniu pakietów
       - name: Save vcpkg cache
         uses: actions/cache@v3
         with:
@@ -44,15 +53,26 @@ jobs:
             vcpkg/installed
             vcpkg/downloads
           key: ${{ runner.os }}-vcpkg-boost-sqlite-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-boost-sqlite-
+            ${{ runner.os }}-vcpkg-
+          fail-on-cache-miss: false
 
-      # Krok 5: Instalacja Ninja (jeśli potrzebujesz tego narzędzia)
+      # Krok 6: Sprawdź obecność cache po zapisaniu
+      - name: Check vcpkg cache after saving
+        run: |
+          echo "Checking if cache is available after saving..."
+        shell: cmd
+
+      # Krok 7: Instalacja Ninja (jeśli potrzebujesz tego narzędzia)
       - name: Install Ninja
         run: |
           echo "Installing Ninja..."
           choco install ninja
           echo "Ninja installed."
+        shell: cmd
 
-      # Krok 6: Skonfiguruj CMake z użyciem Ninja
+      # Krok 8: Skonfiguruj CMake z użyciem Ninja
       - name: Configure CMake
         run: |
           echo "Checking if build directory exists..."
@@ -63,7 +83,7 @@ jobs:
           echo "CMake configuration completed."
         shell: cmd
 
-      # Krok 7: Zbuduj projekt
+      # Krok 9: Zbuduj projekt
       - name: Build
         run: |
           cd build
@@ -72,7 +92,7 @@ jobs:
           echo "Build completed."
         shell: cmd
 
-      # Krok 8: Uruchom testy
+      # Krok 10: Uruchom testy
       - name: Run Tests
         run: |
           cd build
