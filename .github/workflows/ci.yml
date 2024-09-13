@@ -65,7 +65,11 @@ jobs:
       # 6. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         run: |
-          vcpkg install --triplet x64-windows
+          vcpkg install --triplet x64-windows || {
+            echo "vcpkg install failed. Displaying log:"
+            cat "C:/Users/Ciapat/source/repos/Exchange-Web-App1231231/out/build/x64-Debug/vcpkg-manifest-install.log"
+            exit 1
+          }
 
       # 7. Budowanie projektu
       - name: Build project
