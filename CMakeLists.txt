@@ -8,8 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Zakładamy, że Boost i SQLite3 są pobierane za pomocą vcpkg
 find_package(SQLite3 REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
-
+find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio unit_test_framework)
 # Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
