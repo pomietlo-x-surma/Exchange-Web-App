@@ -10,12 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_package(SQLite3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio unit_test_framework)
 
-find_package(SQLite3 REQUIRED)
-
-# Link SQLite3 to your targets
-target_link_libraries(Exchange_Web_App PRIVATE SQLite::SQLite3)
-target_link_libraries(Exchange_Web_App_tests PRIVATE SQLite::SQLite3)
-
 # Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
@@ -24,18 +18,15 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
-    src/modules/sqlite3.h
 )
-if (WIN32)
-    target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
-endif()
+
 # Ustawienie ścieżek do plików nagłówkowych i bibliotek Boost oraz SQLite
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${SQLite3_INCLUDE_DIRS}
 )
 
-# Linkowanie z bibliotekami Boost i SQLite3
+# Linkowanie z bibliotekami Boost, SQLite3 oraz Windows Sockets
 target_link_libraries(Exchange_Web_App PRIVATE
     Boost::system
     Boost::thread
@@ -43,22 +34,42 @@ target_link_libraries(Exchange_Web_App PRIVATE
     Boost::log
     Boost::beast
     Boost::asio
-    SQLite::SQLite3 # Adjusted to SQLite::SQLite3 if this works
-    ws2_32
+    SQLite::SQLite3
 )
+
+# Linkowanie Windows Sockets tylko dla systemu Windows
+if (WIN32)
+    target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
+endif()
 
 # Ustawienia testów
 enable_testing()
 add_subdirectory(tests)
 
+# Tworzenie testów
+add_executable(Exchange_Web_App_tests
+    tests/test_server_message_processing.cpp
+    tests/test_money_converter.cpp
+)
+
+# Ustawienie ścieżek do plików nagłówkowych dla testów
+target_include_directories(Exchange_Web_App_tests PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${SQLite3_INCLUDE_DIRS}
+)
+
 # Linkowanie bibliotek dla testów
 target_link_libraries(Exchange_Web_App_tests PRIVATE
-    sqlite3
     Boost::system
     Boost::thread
     Boost::coroutine
     Boost::log
     Boost::beast
     Boost::asio
-    ws2_32
+    SQLite::SQLite3
 )
+
+# Linkowanie Windows Sockets dla testów w systemie Windows
+if (WIN32)
+    target_link_libraries(Exchange_Web_App_tests PRIVATE ws2_32)
+endif()
