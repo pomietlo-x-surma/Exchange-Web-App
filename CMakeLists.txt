@@ -19,7 +19,9 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
     src/modules/sqlite3.h
 )
-
+if (WIN32)
+    target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
+endif()
 # Ustawienie ścieżek do plików nagłówkowych i bibliotek Boost oraz SQLite
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
