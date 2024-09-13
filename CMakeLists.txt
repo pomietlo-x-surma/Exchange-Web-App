@@ -35,6 +35,7 @@ target_link_libraries(Exchange_Web_App PRIVATE
     Boost::beast
     Boost::asio
     SQLite::SQLite3 # Adjusted to SQLite::SQLite3 if this works
+    ws2_32
 )
 
 # Ustawienia testów
@@ -50,4 +51,5 @@ target_link_libraries(Exchange_Web_App_tests PRIVATE
     Boost::log
     Boost::beast
     Boost::asio
+    ws2_32
 )
