@@ -6,24 +6,11 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Pobieranie Boost i SQLite z vcpkg
-include(FetchContent)
-
-# Pobieranie i konfiguracja Boost
-FetchContent_Declare(
-  boost
-  GIT_REPOSITORY https://github.com/boostorg/boost.git
-  GIT_TAG        boost-1.85.0
-  GIT_SUBMODULES_RECURSE ON
-)
-set(FETCHCONTENT_QUIET OFF)
-FetchContent_MakeAvailable(boost)
-
-# Zakładamy, że pliki sqlite3.c i sqlite3.h są pobierane za pomocą vcpkg
+# Zakładamy, że Boost i SQLite3 są pobierane za pomocą vcpkg
 find_package(SQLite3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
 
-# Tworzenie pliku wykonywalnego - to musi być przed target_include_directories
+# Tworzenie pliku wykonywalnego
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -48,14 +35,14 @@ target_link_libraries(Exchange_Web_App PRIVATE
     Boost::log
     Boost::beast
     Boost::asio
-    SQLite::SQLite3
+    SQLite::SQLite3 # Adjusted to SQLite::SQLite3 if this works
 )
 
 # Ustawienia testów
 enable_testing()
 add_subdirectory(tests)
 
-# Dodaj bibliotekę sqlite3 do testów
+# Linkowanie bibliotek dla testów
 target_link_libraries(Exchange_Web_App_tests PRIVATE
     sqlite3
     Boost::system
