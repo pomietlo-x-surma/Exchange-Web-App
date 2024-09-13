@@ -73,12 +73,26 @@ jobs:
         shell: pwsh
         run: echo $env:PATH
 
-      # 10. Instalacja zależności za pomocą vcpkg w trybie manifestu
+      # 10. Weryfikacja bieżącego katalogu przed instalacją
+      - name: Verify current directory before install
+        shell: cmd
+        run: |
+          echo "Current directory before install:"
+          cd
+          echo "Contents of current directory:"
+          dir
+
+      # 11. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         shell: cmd
         run: |
           cd /d "%GITHUB_WORKSPACE%"
-          vcpkg install --triplet x64-windows || (
+          echo "Current directory for vcpkg install:"
+          cd
+          echo "Listing files before vcpkg install:"
+          dir
+          echo "Running vcpkg install with triplet x64-windows"
+          vcpkg install --triplet x64-windows --debug || (
             echo "vcpkg install failed. Displaying log:"
             if exist "build\x64-Debug\vcpkg-manifest-install.log" (
               type "build\x64-Debug\vcpkg-manifest-install.log"
@@ -88,48 +102,52 @@ jobs:
             exit /b 1
           )
 
-      # 11. Weryfikacja zainstalowanych pakietów
+      # 12. Weryfikacja zainstalowanych pakietów
       - name: List installed packages
         run: vcpkg list
 
-      # 12. Budowanie projektu
+      # 13. Budowanie projektu
       - name: Build project
         shell: cmd
         run: |
           mkdir build
           cd build
+          echo "Running cmake with vcpkg toolchain"
           cmake -G "Visual Studio 17 2022" -A x64 ^
             -DCMAKE_BUILD_TYPE=Debug ^
             -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" ^
             ..
+          echo "Building the project"
           cmake --build . --config Debug
 
-      # 13. Listowanie zawartości katalogu build
+      # 14. Listowanie zawartości katalogu build
       - name: List build directory
         run: dir build
 
-      # 14. Listowanie zawartości katalogu vcpkg
+      # 15. Listowanie zawartości katalogu vcpkg
       - name: List vcpkg directory
         run: dir "${{ github.workspace }}/vcpkg"
 
-      # 15. (Opcjonalnie) Uruchomienie testów
+      # 16. (Opcjonalnie) Uruchomienie testów
       - name: Run Tests
         shell: cmd
         run: |
           cd build
           ctest --output-on-failure --build-config Debug
 
-      # 16. Dodatkowe kroki debugowania po instalacji zależności
+      # 17. Dodatkowe kroki debugowania po instalacji zależności
       - name: Additional Debugging Steps
         shell: cmd
         run: |
-          echo "Current Directory:"
+          echo "Additional debugging steps:"
+          echo "Current directory:"
           cd
-          echo "Listing vcpkg directories:"
+          echo "Listing vcpkg directory:"
           dir "%GITHUB_WORKSPACE%\vcpkg"
-          echo "Listing build directories:"
+          echo "Listing build directory:"
           dir "%GITHUB_WORKSPACE%\build"
           echo "Verifying vcpkg manifest:"
           vcpkg manifest triplet
+          echo "Running vcpkg install dry run:"
           vcpkg install --dry-run --triplet x64-windows
   
