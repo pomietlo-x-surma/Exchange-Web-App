@@ -69,19 +69,17 @@ jobs:
 
       # 9. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
+        shell: cmd
         run: |
-          # Upewnij się, że jesteś w katalogu repozytorium
-          cd "${{ github.workspace }}"
-          vcpkg install --triplet x64-windows --manifest-root="${{ github.workspace }}" || {
+          vcpkg install --triplet x64-windows || (
             echo "vcpkg install failed. Displaying log:"
-            # Dostosuj ścieżkę do logu w zależności od rzeczywistej struktury
-            if (Test-Path "${{ github.workspace }}/build/x64-Debug/vcpkg-manifest-install.log") {
-              Get-Content "${{ github.workspace }}/build/x64-Debug/vcpkg-manifest-install.log"
-            } else {
+            if exist "build\x64-Debug\vcpkg-manifest-install.log" (
+              type "build\x64-Debug\vcpkg-manifest-install.log"
+            ) else (
               echo "Log file not found."
-            }
-            exit 1
-          }
+            )
+            exit /b 1
+          )
 
       # 10. Weryfikacja zainstalowanych pakietów
       - name: List installed packages
