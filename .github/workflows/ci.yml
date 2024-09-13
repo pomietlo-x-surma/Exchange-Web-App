@@ -71,6 +71,7 @@ jobs:
       - name: Install dependencies with vcpkg
         shell: cmd
         run: |
+          cd /d "%GITHUB_WORKSPACE%"
           vcpkg install --triplet x64-windows || (
             echo "vcpkg install failed. Displaying log:"
             if exist "build\x64-Debug\vcpkg-manifest-install.log" (
