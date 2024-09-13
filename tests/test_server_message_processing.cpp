@@ -1,4 +1,4 @@
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include "../src/modules/server_message_processing.hpp"
 
 BOOST_AUTO_TEST_CASE(TestPositiveNumber) {
