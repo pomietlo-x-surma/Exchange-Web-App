@@ -13,23 +13,46 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # 1. Checkout kodu wraz z submodułami (jeśli są)
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: Install CMake (if necessary)
+      # 2. Instalacja CMake (jeśli konieczne)
+      - name: Install CMake
         run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.25.0
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
+      # 3. Cache vcpkg repo i zainstalowanych pakietów
+      - name: Cache vcpkg
+        uses: actions/cache@v3
         with:
-          vcpkgDirectory: ${{ github.workspace }}\vcpkg
-          vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
-          runVcpkgInstall: true
-          doNotCache: false
-          cleanAfterBuild: true
+          path: |
+            ${{ github.workspace }}/vcpkg
+            ${{ github.workspace }}/vcpkg/buildtrees
+            ${{ github.workspace }}/vcpkg/packages
+            ${{ github.workspace }}/vcpkg/downloads
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-
 
+      # 4. Instalacja vcpkg (jeśli nie jest w cache)
+      - name: Install vcpkg
+        if: !steps.cache-vcpkg.outputs.cache-hit
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git $env:GITHUB_WORKSPACE\vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+
+      # 5. Dodanie vcpkg do PATH (opcjonalne, ale ułatwia używanie vcpkg)
+      - name: Add vcpkg to PATH
+        run: echo "::add-path::%GITHUB_WORKSPACE%\vcpkg"
+
+      # 6. Instalacja zależności za pomocą vcpkg
+      - name: Install dependencies with vcpkg
+        run: |
+          .\vcpkg\vcpkg.exe install boost-system boost-thread boost-coroutine boost-log boost-beast boost-asio boost-unit-test-framework sqlite3 --triplet x64-windows
+
+      # 7. Budowanie projektu
       - name: Build project
         shell: cmd
         run: |
@@ -41,8 +64,9 @@ jobs:
             ..
           cmake --build . --config Debug
 
+      # 8. (Opcjonalnie) Uruchomienie testów
       - name: Run Tests
         shell: cmd
         run: |
           cd build
-          ctest --output-on-failure --configuration Debug
+          ctest --output-on-failure --build-config Debug
