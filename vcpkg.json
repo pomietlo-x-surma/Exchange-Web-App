@@ -1,6 +1,6 @@
 {
-  "name": "exchange_web_app",
-  "version": "1.0",
+  "name": "exchange-web-app",
+  "version": "1.0.0",
   "dependencies": [
     "boost-system",
     "boost-thread",
