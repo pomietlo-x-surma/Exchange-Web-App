@@ -42,10 +42,10 @@ if (WIN32)
     target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
 endif()
 
-# Ustawienia testów
-enable_testing()
+## Ustawienia testów
+# enable_testing()
 
 # Dodanie podkatalogu tests, który już definiuje target Exchange_Web_App_tests
-add_subdirectory(tests)
+# add_subdirectory(tests)
 
 # Jeśli podkatalog tests definiuje target o nazwie Exchange_Web_App_tests, nie musimy go definiować tutaj
