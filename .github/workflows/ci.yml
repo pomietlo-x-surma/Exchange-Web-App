@@ -150,4 +150,3 @@ jobs:
           vcpkg manifest triplet
           echo "Running vcpkg install dry run:"
           vcpkg install --dry-run --triplet x64-windows
-  
