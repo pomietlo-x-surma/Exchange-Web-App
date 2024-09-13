@@ -1,5 +1,3 @@
-#pragma once
-
 #include <boost/test/included/unit_test.hpp>
 #include "../src/modules/server_message_processing.hpp"
 
