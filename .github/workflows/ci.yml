@@ -19,9 +19,15 @@ jobs:
         with:
           submodules: recursive
 
-      # 2. Instalacja CMake (jeśli konieczne)
-      - name: Install CMake
-        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.25.0
+      # 2. Ustawienie CMake do wymaganej wersji
+      - name: Setup CMake
+        uses: actions/setup-cmake@v3
+        with:
+          cmake-version: '3.29.2'  # Wymagana wersja CMake
+
+      # 2a. Weryfikacja wersji CMake
+      - name: Verify CMake version
+        run: cmake --version
 
       # 3. Cache vcpkg repo i zainstalowanych pakietów
       - name: Cache vcpkg
@@ -44,7 +50,7 @@ jobs:
           git clone https://github.com/microsoft/vcpkg.git $env:GITHUB_WORKSPACE\vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
 
-      # 5. (Opcjonalnie) Aktualizacja vcpkg do najnowszej wersji
+      # 5. (Opcjonalnie) Aktualizacja vcpkg do najnowszej wersji, jeśli cache jest przywrócony
       - name: Update vcpkg
         if: ${{ steps.cache-vcpkg.outputs.cache-hit == 'true' }}
         run: |
@@ -55,7 +61,7 @@ jobs:
       - name: Add vcpkg to PATH
         run: echo "${{ github.workspace }}/vcpkg" >> $env:GITHUB_PATH
 
-      # 7. Instalacja zależności za pomocą vcpkg
+      # 7. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         run: |
           vcpkg install --triplet x64-windows
