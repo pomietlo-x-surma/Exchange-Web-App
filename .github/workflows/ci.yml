@@ -45,26 +45,29 @@ jobs:
       - name: Install vcpkg
         if: ${{ ! steps.cache-vcpkg.outputs.cache-hit }}
         run: |
-          git clone https://github.com/microsoft/vcpkg.git $env:GITHUB_WORKSPACE\vcpkg
+          git clone https://github.com/microsoft/vcpkg.git %GITHUB_WORKSPACE%\vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
 
-      # 5. (Opcjonalnie) Aktualizacja vcpkg do najnowszej wersji, jeśli cache jest przywrócony
-      - name: Update vcpkg
-        if: ${{ steps.cache-vcpkg.outputs.cache-hit == 'true' }}
+      # 4a. Weryfikacja vcpkg
+      - name: Verify vcpkg installation
         run: |
-          .\vcpkg\vcpkg.exe update
-          .\vcpkg\vcpkg.exe upgrade --no-dry-run
+          vcpkg version
+          vcpkg list
 
-      # 6. Dodanie vcpkg do PATH
+      # 5. Dodanie vcpkg do PATH
       - name: Add vcpkg to PATH
         run: echo "${{ github.workspace }}/vcpkg" >> $env:GITHUB_PATH
 
-      # 7. Instalacja zależności za pomocą vcpkg w trybie manifestu
+      # 5a. Sprawdzenie PATH
+      - name: Check PATH
+        run: echo %PATH%
+
+      # 6. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         run: |
           vcpkg install --triplet x64-windows
 
-      # 8. Budowanie projektu
+      # 7. Budowanie projektu
       - name: Build project
         shell: cmd
         run: |
@@ -76,7 +79,7 @@ jobs:
             ..
           cmake --build . --config Debug
 
-      # 9. (Opcjonalnie) Uruchomienie testów
+      # 8. (Opcjonalnie) Uruchomienie testów
       - name: Run Tests
         shell: cmd
         run: |
