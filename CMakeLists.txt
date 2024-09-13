@@ -44,32 +44,8 @@ endif()
 
 # Ustawienia testów
 enable_testing()
+
+# Dodanie podkatalogu tests, który już definiuje target Exchange_Web_App_tests
 add_subdirectory(tests)
 
-# Tworzenie testów
-add_executable(Exchange_Web_App_tests
-    tests/test_server_message_processing.cpp
-    tests/test_money_converter.cpp
-)
-
-# Ustawienie ścieżek do plików nagłówkowych dla testów
-target_include_directories(Exchange_Web_App_tests PRIVATE
-    ${Boost_INCLUDE_DIRS}
-    ${SQLite3_INCLUDE_DIRS}
-)
-
-# Linkowanie bibliotek dla testów
-target_link_libraries(Exchange_Web_App_tests PRIVATE
-    Boost::system
-    Boost::thread
-    Boost::coroutine
-    Boost::log
-    Boost::beast
-    Boost::asio
-    SQLite::SQLite3
-)
-
-# Linkowanie Windows Sockets dla testów w systemie Windows
-if (WIN32)
-    target_link_libraries(Exchange_Web_App_tests PRIVATE ws2_32)
-endif()
+# Jeśli podkatalog tests definiuje target o nazwie Exchange_Web_App_tests, nie musimy go definiować tutaj
