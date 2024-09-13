@@ -13,49 +13,31 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Krok do pobrania kodu z repozytorium
       - name: Checkout code
         uses: actions/checkout@v3
-
-      # Cache dla zainstalowanych pakietów vcpkg
-      - name: Cache vcpkg
-        uses: actions/cache@v4
         with:
-          path: |
-            vcpkg/installed
-            vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-
+          submodules: recursive  # Jeśli używasz submodułów
 
-      # Krok do instalacji i konfiguracji vcpkg
+      - name: Install Ninja
+        run: choco install ninja
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
           vcpkgGitCommitId: 'b8a9371ae5a920b021132f443cc5658e82ac7551'
           runVcpkgInstall: true
+          doNotCache: false
+          cleanAfterBuild: true
 
-      # Instalacja zależności vcpkg
-      - name: Install vcpkg dependencies
-        shell: pwsh
-        run: |
-          & "${env:GITHUB_WORKSPACE}/vcpkg/vcpkg" install
-
-      # Instalacja narzędzia Ninja
-      - name: Install Ninja
-        run: choco install ninja
-
-      # Budowanie projektu z użyciem CMake i Ninja
       - name: Build project
         shell: pwsh
         run: |
           if (-not (Test-Path build)) { New-Item -ItemType Directory -Path build }
           Set-Location -Path build
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="${env:GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
           cmake --build .
 
-      # Uruchamianie testów po zbudowaniu projektu
       - name: Run Tests
         shell: pwsh
         run: |
