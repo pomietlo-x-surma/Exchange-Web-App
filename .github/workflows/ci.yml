@@ -27,7 +27,11 @@ jobs:
       - name: Verify CMake version
         run: cmake --version
 
-      # 3. Cache vcpkg repo i zainstalowanych pakietów
+      # 3. Sprawdzenie obecności pliku vcpkg.json
+      - name: List files in repository root
+        run: dir "${{ github.workspace }}"
+
+      # 4. Cache vcpkg repo i zainstalowanych pakietów
       - name: Cache vcpkg
         id: cache-vcpkg
         uses: actions/cache@v3
@@ -41,37 +45,46 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
-      # 4. Instalacja vcpkg (jeśli nie jest w cache)
+      # 5. Instalacja vcpkg (jeśli nie jest w cache)
       - name: Install vcpkg
         if: ${{ ! steps.cache-vcpkg.outputs.cache-hit }}
         run: |
           git clone https://github.com/microsoft/vcpkg.git %GITHUB_WORKSPACE%\vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
 
-      # 4a. Weryfikacja vcpkg
+      # 6. Weryfikacja instalacji vcpkg
       - name: Verify vcpkg installation
         run: |
           vcpkg version
           vcpkg list
 
-      # 5. Dodanie vcpkg do PATH
+      # 7. Dodanie vcpkg do PATH
       - name: Add vcpkg to PATH
         run: echo "${{ github.workspace }}/vcpkg" >> $env:GITHUB_PATH
 
-      # 5a. Sprawdzenie PATH
+      # 8. Sprawdzenie PATH
       - name: Check PATH
-        run: echo %PATH%
+        shell: pwsh
+        run: echo $env:PATH
 
-      # 6. Instalacja zależności za pomocą vcpkg w trybie manifestu
+      # 9. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         run: |
           vcpkg install --triplet x64-windows || {
             echo "vcpkg install failed. Displaying log:"
-            cat "C:/Users/Ciapat/source/repos/Exchange-Web-App1231231/out/build/x64-Debug/vcpkg-manifest-install.log"
+            if (Test-Path "${{ github.workspace }}/build/x64-Debug/vcpkg-manifest-install.log") {
+              Get-Content "${{ github.workspace }}/build/x64-Debug/vcpkg-manifest-install.log"
+            } else {
+              echo "Log file not found."
+            }
             exit 1
           }
 
-      # 7. Budowanie projektu
+      # 10. Weryfikacja zainstalowanych pakietów
+      - name: List installed packages
+        run: vcpkg list
+
+      # 11. Budowanie projektu
       - name: Build project
         shell: cmd
         run: |
@@ -83,7 +96,7 @@ jobs:
             ..
           cmake --build . --config Debug
 
-      # 8. (Opcjonalnie) Uruchomienie testów
+      # 12. (Opcjonalnie) Uruchomienie testów
       - name: Run Tests
         shell: cmd
         run: |
