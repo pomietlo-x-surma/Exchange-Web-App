@@ -31,6 +31,7 @@ add_executable(Exchange_Web_App
     src/modules/password_checker.cpp
     src/modules/server_message_processing.cpp
     src/modules/server_file.cpp
+    src/modules/sqlite3.h
 )
 
 # Ustawienie ścieżek do plików nagłówkowych i bibliotek Boost oraz SQLite
