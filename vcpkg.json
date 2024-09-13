@@ -8,8 +8,7 @@
     "boost-log",
     "boost-beast",
     "boost-asio",
-    "boost-test",
-    "boost",
+    "boost-unit-test-framework",
     "sqlite3"
   ]
 }
