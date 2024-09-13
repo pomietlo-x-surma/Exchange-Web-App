@@ -22,7 +22,9 @@ file(GLOB BOOST_INCLUDE_DIRS
     "${boost_SOURCE_DIR}/libs/*/include"
     "${boost_SOURCE_DIR}/libs/*/*/include"
 )
-
+if (WIN32)
+    target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
+endif()
 target_include_directories(Exchange_Web_App_tests PRIVATE
     ${BOOST_INCLUDE_DIRS}
 )
