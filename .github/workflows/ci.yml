@@ -70,8 +70,11 @@ jobs:
       # 9. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         run: |
-          vcpkg install --triplet x64-windows || {
+          # Upewnij się, że jesteś w katalogu repozytorium
+          cd "${{ github.workspace }}"
+          vcpkg install --triplet x64-windows --manifest-root="${{ github.workspace }}" || {
             echo "vcpkg install failed. Displaying log:"
+            # Dostosuj ścieżkę do logu w zależności od rzeczywistej struktury
             if (Test-Path "${{ github.workspace }}/build/x64-Debug/vcpkg-manifest-install.log") {
               Get-Content "${{ github.workspace }}/build/x64-Debug/vcpkg-manifest-install.log"
             } else {
@@ -96,7 +99,15 @@ jobs:
             ..
           cmake --build . --config Debug
 
-      # 12. (Opcjonalnie) Uruchomienie testów
+      # 12. Listowanie zawartości katalogu build
+      - name: List build directory
+        run: dir build
+
+      # 13. Listowanie zawartości katalogu vcpkg
+      - name: List vcpkg directory
+        run: dir "${{ github.workspace }}/vcpkg"
+
+      # 14. (Opcjonalnie) Uruchomienie testów
       - name: Run Tests
         shell: cmd
         run: |
