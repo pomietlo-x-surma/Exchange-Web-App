@@ -16,10 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          submodules: recursive  # Jeśli używasz submodułów
-
-      - name: Install Ninja
-        run: choco install ninja
+          submodules: recursive
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
@@ -31,15 +28,15 @@ jobs:
           cleanAfterBuild: true
 
       - name: Build project
-        shell: pwsh
+        shell: cmd
         run: |
-          if (-not (Test-Path build)) { New-Item -ItemType Directory -Path build }
-          Set-Location -Path build
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
-          cmake --build .
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug ..
+          cmake --build . --config Debug
 
       - name: Run Tests
-        shell: pwsh
+        shell: cmd
         run: |
-          Set-Location -Path build
-          ctest --output-on-failure
+          cd build
+          ctest --output-on-failure --configuration Debug
