@@ -58,7 +58,7 @@ jobs:
       # 7. Instalacja zależności za pomocą vcpkg
       - name: Install dependencies with vcpkg
         run: |
-          vcpkg install boost-system boost-thread boost-coroutine boost-log boost-beast boost-asio boost-unit-test-framework sqlite3 --triplet x64-windows
+          vcpkg install --triplet x64-windows
 
       # 8. Budowanie projektu
       - name: Build project
