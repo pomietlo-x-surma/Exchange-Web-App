@@ -13,29 +13,23 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 1. Checkout kodu wraz z submodułami (jeśli są)
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      # 2. Instalacja CMake w wymaganej wersji
       - name: Install CMake
         run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.29.2
 
-      # 2a. Weryfikacja wersji CMake
       - name: Verify CMake version
         run: cmake --version
 
-      # 3. Sprawdzenie obecności pliku vcpkg.json
       - name: List files in repository root
         run: dir "${{ github.workspace }}"
 
-      # 4. Wyświetlenie zawartości pliku vcpkg.json
       - name: Display vcpkg.json content
         run: type "${{ github.workspace }}/vcpkg.json"
 
-      # 5. Cache vcpkg repo i zainstalowanych pakietów
       - name: Cache vcpkg
         id: cache-vcpkg
         uses: actions/cache@v3
@@ -49,31 +43,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
-      # 6. Instalacja vcpkg (jeśli nie jest w cache)
       - name: Install vcpkg
         if: ${{ ! steps.cache-vcpkg.outputs.cache-hit }}
         run: |
           git clone https://github.com/microsoft/vcpkg.git %GITHUB_WORKSPACE%\vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
 
-      # 7. Weryfikacja instalacji vcpkg
       - name: Verify vcpkg installation
         run: |
           vcpkg version
           vcpkg list
 
-      # 8. Dodanie vcpkg do PATH
       - name: Add vcpkg to PATH
         shell: pwsh
         run: |
           echo "${{ github.workspace }}/vcpkg" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      # 9. Sprawdzenie PATH
       - name: Check PATH
         shell: pwsh
         run: echo $env:PATH
 
-      # 10. Weryfikacja bieżącego katalogu przed instalacją
       - name: Verify current directory before install
         shell: cmd
         run: |
@@ -82,7 +71,6 @@ jobs:
           echo "Contents of current directory:"
           dir
 
-      # 11. Instalacja zależności za pomocą vcpkg w trybie manifestu
       - name: Install dependencies with vcpkg
         shell: cmd
         run: |
@@ -102,11 +90,9 @@ jobs:
             exit /b 1
           )
 
-      # 12. Weryfikacja zainstalowanych pakietów
       - name: List installed packages
         run: vcpkg list
 
-      # 13. Budowanie projektu
       - name: Build project
         shell: cmd
         run: |
@@ -120,22 +106,18 @@ jobs:
           echo "Building the project"
           cmake --build . --config Debug
 
-      # 14. Listowanie zawartości katalogu build
       - name: List build directory
         run: dir build
 
-      # 15. Listowanie zawartości katalogu vcpkg
       - name: List vcpkg directory
         run: dir "${{ github.workspace }}/vcpkg"
 
-      # 16. (Opcjonalnie) Uruchomienie testów
       - name: Run Tests
         shell: cmd
         run: |
           cd build
           ctest --output-on-failure --build-config Debug
 
-      # 17. Dodatkowe kroki debugowania po instalacji zależności
       - name: Additional Debugging Steps
         shell: cmd
         run: |
