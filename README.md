@@ -31,9 +31,8 @@ The application consists of both server-side and client-side components.
     cd Exchange-Web-App
     ```
 
-4. Create a `build` directory and navigate into it:
+4. Navigate into build direcotory:
     ```bash
-    mkdir build
     cd build
     ```
 
