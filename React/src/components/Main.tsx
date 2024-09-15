@@ -19,10 +19,18 @@ const Main: React.FC<MainProps> = ({ username }) => {
   const [response, setResponse] = useState<string>("");
   const [response2, setResponse2] = useState<string>("");
   const [error, setError] = useState<string>("");
+
   useEffect(() => {
     client.onopen = () => {
       console.log("Połączono");
       setIsConnected(true);
+
+      // Wysłanie informacji o użytkowniku
+      if (username) {
+        const usernameMessage = `4,${username}`;
+        client.send(usernameMessage);
+        console.log(`Wysłano wiadomość: ${usernameMessage}`);
+      }
     };
 
     client.onclose = () => {
@@ -32,47 +40,32 @@ const Main: React.FC<MainProps> = ({ username }) => {
 
     client.onmessage = (message: IMessageEvent) => {
       console.log(message.data);
-      if (typeof message.data === "string" && message.data.slice(0, 2) == "ZZ"){
+      if (typeof message.data === "string" && message.data.slice(0, 2) === "ZZ") {
         setResponse2(message.data.substring(2));
-      }
-      else if (typeof message.data === "string" && message.data[0] == "Z") {
+      } else if (typeof message.data === "string" && message.data[0] === "Z") {
         const [money, code] = message.data.split(" ");
         const base64str = `data:image/png;base64,${code}`;
         setResponse(money.substring(1));
         if (selectedCurrency1 !== selectedCurrency2) {
           setMessage1(base64str);
         }
-      } 
-      else if (typeof message.data === "string" && message.data[0] == "Y") {
+      } else if (typeof message.data === "string" && message.data[0] === "Y") {
         setMessage2(message.data.substring(1));
-      } 
-      else if (typeof message.data === "string" && message.data[0] == "W"){
+      } else if (typeof message.data === "string" && message.data[0] === "W") {
         setState(message.data.substring(1));
         setError(" ");
-      }
-      else if (typeof message.data === "string" && message.data[0]=="E") {
+      } else if (typeof message.data === "string" && message.data[0] === "E") {
         setError(message.data.substring(1));
       }
-      else if (typeof message.data === "string") {
-        //setState(message.data);
-      }
     };
-  }, [
-    username,
-    selectedCurrency1,
-    selectedCurrency2,
-  ]);
+  }, [username]);
 
   useEffect(() => {
     if (isConnected && username) {
       const combinedMessage = `3,${selectedCurrency2} ${selectedCurrency1}`;
       client.send(combinedMessage);
       console.log(`Wysłano wiadomość: ${combinedMessage}`);
-      const usernameMessage = `4,${username}`;
-      client.send(usernameMessage);
-      console.log(`Wysłano wiadomość: ${usernameMessage}`);
     }
-  
   }, [selectedCurrency1, selectedCurrency2, isConnected, username]);
 
   useEffect(() => {
@@ -80,11 +73,7 @@ const Main: React.FC<MainProps> = ({ username }) => {
       const combinedMessage = `3,${selectedCurrency3} ${selectedCurrency4} ${message2}0`;
       client.send(combinedMessage);
     }
-  }, [selectedCurrency3, selectedCurrency4, isConnected, username]);
-
-
-
-
+  }, [selectedCurrency3, selectedCurrency4, isConnected]);
 
   const handleSelect1 = (currency: any) => {
     setSelectedCurrency1(currency);
@@ -106,7 +95,6 @@ const Main: React.FC<MainProps> = ({ username }) => {
       console.log(`Wysłano wiadomość: ${combinedMessage}`);
     }
   };
-
   return (
     <>
     
