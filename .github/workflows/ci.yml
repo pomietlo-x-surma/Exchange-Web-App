@@ -19,7 +19,7 @@ jobs:
           submodules: recursive
 
       - name: Install CMake
-        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.30.2
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.27.5
 
       - name: Verify CMake version
         run: cmake --version
