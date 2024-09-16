@@ -4,6 +4,25 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+if(NOT DEFINED ENV{VCPKG_ROOT})
+    set(VCPKG_ROOT "${CMAKE_BINARY_DIR}/vcpkg")
+    if(NOT EXISTS ${VCPKG_ROOT})
+        message(STATUS "Vcpkg not found. Cloning into ${VCPKG_ROOT}...")
+        execute_process(
+            COMMAND git clone https://github.com/microsoft/vcpkg.git ${VCPKG_ROOT}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E chdir ${VCPKG_ROOT} ./bootstrap-vcpkg.sh
+            WORKING_DIRECTORY ${VCPKG_ROOT}
+        )
+    endif()
+else()
+    set(VCPKG_ROOT $ENV{VCPKG_ROOT})
+endif()
+
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+
 find_package(SQLite3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio unit_test_framework)
 
@@ -36,5 +55,4 @@ if (WIN32)
 endif()
 
 # enable_testing()
-
 # add_subdirectory(tests)
