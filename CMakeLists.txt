@@ -4,11 +4,6 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Ustaw politykę dla CMP0167, aby wyłączyć ostrzeżenia o FindBoost
-if(POLICY CMP0167)
-    cmake_policy(SET CMP0167 NEW)
-endif()
-
 # Pobierz i zainstaluj vcpkg, jeśli nie jest zainstalowany
 if(NOT DEFINED ENV{VCPKG_ROOT})
     set(VCPKG_ROOT "${CMAKE_BINARY_DIR}/vcpkg")
@@ -28,7 +23,7 @@ else()
 endif()
 
 # Użyj vcpkg jako toolchain
-set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file" FORCE)
 
 # Znajdź pakiety Boost i SQLite3
 find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio)
