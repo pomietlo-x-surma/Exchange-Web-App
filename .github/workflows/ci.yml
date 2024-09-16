@@ -24,12 +24,6 @@ jobs:
       - name: Verify CMake version
         run: cmake --version
 
-      - name: List files in repository root
-        run: dir "${{ github.workspace }}"
-
-      - name: Display vcpkg.json content
-        run: type "${{ github.workspace }}/vcpkg.json"
-
       - name: Cache vcpkg
         id: cache-vcpkg
         uses: actions/cache@v3
@@ -43,8 +37,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vcpkg-
 
-      - name: Install vcpkg
-        if: ${{ ! steps.cache-vcpkg.outputs.cache-hit }}
+      - name: Install vcpkg (if not cached)
+        if: ${{ !steps.cache-vcpkg.outputs.cache-hit }}
         run: |
           git clone https://github.com/microsoft/vcpkg.git %GITHUB_WORKSPACE%\vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
@@ -60,37 +54,15 @@ jobs:
             echo "${{ github.workspace }}/vcpkg" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "${{ github.workspace }}/vcpkg/installed/x64-windows/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-
       - name: Check PATH
         shell: pwsh
         run: echo $env:PATH
-
-      - name: Verify current directory before install
-        shell: cmd
-        run: |
-          echo "Current directory before install:"
-          cd
-          echo "Contents of current directory:"
-          dir
 
       - name: Install dependencies with vcpkg
         shell: cmd
         run: |
           cd /d "%GITHUB_WORKSPACE%"
-          echo "Current directory for vcpkg install:"
-          cd
-          echo "Listing files before vcpkg install:"
-          dir
-          echo "Running vcpkg install with triplet x64-windows"
-          vcpkg install --triplet x64-windows --debug || (
-            echo "vcpkg install failed. Displaying log:"
-            if exist "build\x64-Debug\vcpkg-manifest-install.log" (
-              type "build\x64-Debug\vcpkg-manifest-install.log"
-            ) else (
-              echo "Log file not found."
-            )
-            exit /b 1
-          )
+          vcpkg install --triplet x64-windows --debug
 
       - name: List installed packages
         run: vcpkg list
@@ -100,37 +72,14 @@ jobs:
         run: |
           mkdir build
           cd build
-          echo "Running cmake with vcpkg toolchain"
           cmake -G "Visual Studio 17 2022" -A x64 ^
             -DCMAKE_BUILD_TYPE=Debug ^
             -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" ^
             ..
-          echo "Building the project"
           cmake --build . --config Debug
-
-      - name: List build directory
-        run: dir build
-
-      - name: List vcpkg directory
-        run: dir "${{ github.workspace }}/vcpkg"
 
       - name: Run Tests
         shell: cmd
         run: |
           cd build
           ctest --output-on-failure --build-config Debug
-
-      - name: Additional Debugging Steps
-        shell: cmd
-        run: |
-          echo "Additional debugging steps:"
-          echo "Current directory:"
-          cd
-          echo "Listing vcpkg directory:"
-          dir "%GITHUB_WORKSPACE%\vcpkg"
-          echo "Listing build directory:"
-          dir "%GITHUB_WORKSPACE%\build"
-          echo "Verifying vcpkg manifest:"
-          vcpkg manifest triplet
-          echo "Running vcpkg install dry run:"
-          vcpkg install --dry-run --triplet x64-windows
