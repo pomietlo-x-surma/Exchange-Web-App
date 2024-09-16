@@ -10,9 +10,5 @@
         "boost-beast",
         "boost-asio",
         "boost-test",
-        {
-            "name": "sqlite3",
-            "version>=": "3.46.0"
-        }
     ]
 }
