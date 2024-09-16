@@ -4,27 +4,28 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Fetch vcpkg
-include(FetchContent)
+if(NOT DEFINED ENV{VCPKG_ROOT})
+    set(VCPKG_ROOT "${CMAKE_BINARY_DIR}/vcpkg")
+    if(NOT EXISTS ${VCPKG_ROOT})
+        message(STATUS "Vcpkg not found. Cloning into ${VCPKG_ROOT}...")
+        execute_process(
+            COMMAND git clone https://github.com/microsoft/vcpkg.git ${VCPKG_ROOT}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E chdir ${VCPKG_ROOT} ./bootstrap-vcpkg.sh
+            WORKING_DIRECTORY ${VCPKG_ROOT}
+        )
+    endif()
+else()
+    set(VCPKG_ROOT $ENV{VCPKG_ROOT})
+endif()
 
-FetchContent_Declare(
-    vcpkg
-    GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-    GIT_TAG        2023.08.21 # Możesz wybrać wersję lub najnowszą gałąź
-)
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
-# Pobierz i zainstaluj vcpkg
-FetchContent_MakeAvailable(vcpkg)
-
-# Ustaw vcpkg toolchain file
-set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
-    CACHE STRING "Vcpkg toolchain file")
-
-# Znajdź paczki przy użyciu vcpkg
-find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio unit_test_framework)
 find_package(SQLite3 REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio unit_test_framework)
 
-# Dodaj pliki źródłowe do projektu
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
     src/modules/handling_CSV_file.cpp
@@ -34,13 +35,11 @@ add_executable(Exchange_Web_App
     src/modules/server_file.cpp
 )
 
-# Ustaw katalogi z plikami nagłówkowymi
 target_include_directories(Exchange_Web_App PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${SQLite3_INCLUDE_DIRS}
 )
 
-# Powiąż biblioteki
 target_link_libraries(Exchange_Web_App PRIVATE
     Boost::system
     Boost::thread
@@ -51,7 +50,6 @@ target_link_libraries(Exchange_Web_App PRIVATE
     SQLite::SQLite3
 )
 
-# Specjalne ustawienia dla Windows
 if (WIN32)
     target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
 endif()
