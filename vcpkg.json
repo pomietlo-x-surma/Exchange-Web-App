@@ -1,7 +1,7 @@
 {
     "name": "exchange-web-app",
     "version": "1.0.0",
-    "builtin-baseline": "29b2ea2d4b6197e66ef346e62ccbba35b55b7de5",
+    "builtin-baseline": "86fba13068f1e8111e7d885de2aef11378435139",
     "dependencies": [
         "boost-system",
         "boost-thread",
