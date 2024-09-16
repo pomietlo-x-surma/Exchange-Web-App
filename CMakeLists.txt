@@ -4,36 +4,8 @@ project(Exchange_Web_App)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Ustaw politykę CMP0167
-if(POLICY CMP0167)
-    cmake_policy(SET CMP0167 NEW)
-endif()
-
-# Pobierz i zainstaluj vcpkg, jeśli nie jest zainstalowany
-if(NOT DEFINED ENV{VCPKG_ROOT})
-    set(VCPKG_ROOT "${CMAKE_BINARY_DIR}/vcpkg")
-    if(NOT EXISTS ${VCPKG_ROOT})
-        message(STATUS "Vcpkg not found. Cloning into ${VCPKG_ROOT}...")
-        execute_process(
-            COMMAND git clone https://github.com/microsoft/vcpkg.git ${VCPKG_ROOT}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -E chdir ${VCPKG_ROOT} ./bootstrap-vcpkg.bat
-            WORKING_DIRECTORY ${VCPKG_ROOT}
-        )
-    endif()
-else()
-    set(VCPKG_ROOT $ENV{VCPKG_ROOT})
-endif()
-
-# Użyj vcpkg jako toolchain
-set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file" FORCE)
-
-# Znajdź pakiety Boost i SQLite3
-find_package(Boost REQUIRED COMPONENTS system thread coroutine log)
-find_package(Boost CONFIG REQUIRED beast asio)  # Dodaj header-only biblioteki w sekcji CONFIG
 find_package(SQLite3 REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system thread coroutine log beast asio unit_test_framework)
 
 add_executable(Exchange_Web_App
     src/main/Exchange_Web_App.cpp
@@ -64,4 +36,5 @@ if (WIN32)
 endif()
 
 # enable_testing()
+
 # add_subdirectory(tests)
