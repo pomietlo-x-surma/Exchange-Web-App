@@ -10,7 +10,7 @@
 #include "sqlite3.h"
 
 bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt){
-	int rc = sqlite3_open(path_to_database_db, db);
+	int rc = sqlite3_open(R"(../../database/database.db)", db);
 	if (rc != SQLITE_OK) {
 		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
 		return false;
@@ -33,8 +33,61 @@ bool is_file_empty(const std::string& path){
 }
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
-void currency_generation()
-{
+void currency_generation() {
+		const std::string csvFileName = R"(../../database/currencies.csv)";
+		sqlite3* db;
+		sqlite3_stmt* stmt;
+
+		std::string createTableSQL = "CREATE TABLE IF NOT EXISTS currencies ("
+			"curr TEXT, "
+			"value TEXT);";
+		if (!database_preparing(createTableSQL, &db, &stmt)) {
+			return;
+		}
+		sqlite3_step(stmt);
+		sqlite3_finalize(stmt);
+
+		std::ifstream file(csvFileName);
+		if (!file.is_open()) {
+			std::cerr << "Nie można otworzyć pliku " << csvFileName << std::endl;
+			sqlite3_close(db);
+			return;
+		}
+
+		std::string line;
+		while (std::getline(file, line)) {
+			std::istringstream ss(line);
+			std::string curr, value;
+
+			if (std::getline(ss, curr, ',') && std::getline(ss, value, ',')) {
+				std::string insertSQL = "INSERT INTO currencies (curr, value) VALUES (?, ?);";
+				if (!database_preparing(insertSQL, &db, &stmt)) {
+					sqlite3_close(db);
+					return;
+				}
+
+				sqlite3_bind_text(stmt, 1, curr.c_str(), -1, SQLITE_STATIC);
+				sqlite3_bind_text(stmt, 2, value.c_str(), -1, SQLITE_STATIC);
+
+				int rc = sqlite3_step(stmt);
+				if (rc != SQLITE_DONE) {
+					std::cerr << "Błąd podczas wstawiania danych: " << sqlite3_errmsg(db) << std::endl;
+				}
+
+				sqlite3_finalize(stmt);
+			}
+		}
+
+		file.close();
+		sqlite3_close(db);
+
+		std::cout << "Dane zostały zaimportowane do bazy danych." << std::endl;
+
+
+
+
+
+
 	std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
 	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
 	for (const auto& first : currencies)
