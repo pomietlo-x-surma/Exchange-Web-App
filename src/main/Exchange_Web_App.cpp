@@ -63,7 +63,6 @@ int creating_auth() {
         }
     }
 
-    // Zakończenie
     file.close();
     sqlite3_close(db);
     return 0;
@@ -134,7 +133,7 @@ int creating_balance() {
 
 
 int main() {
-    //std::thread t1(currency_update); //updating currencies in currencies.csv
+    currency_generation(); //updating currencies in currencies.csv
     server(); //turning on server
     //creating_auth(); //creating user_auth in db from csv
     //creating_balance(); //creating user_balance in db
