@@ -5,7 +5,7 @@ project(Exchange_Web_App_Tests)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-cmake_policy(SET CMP0167 NEW)
+# cmake_policy(SET CMP0167 NEW)
 
 find_package(Boost REQUIRED COMPONENTS unit_test_framework system thread coroutine log beast asio)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
