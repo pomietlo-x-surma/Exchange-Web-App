@@ -9,22 +9,6 @@
 #include <thread>
 #include "sqlite3.h"
 
-bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt){
-	int rc = sqlite3_open(R"(../../database/database.db)", db);
-	if (rc != SQLITE_OK) {
-		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
-		return false;
-	}
-	rc = sqlite3_prepare_v2(*db, sql_query.c_str(), -1, stmt, nullptr);
-	if (rc != SQLITE_OK) {
-		std::cerr << "sqlite3 error: " << sqlite3_errmsg(*db) << std::endl;
-		sqlite3_close(*db);
-		return false;
-	}
-	return true;
-}
-
-
 
 bool is_file_empty(const std::string& path){
 	std::ifstream file(path, std::ios::binary | std::ios::ate);
@@ -33,77 +17,55 @@ bool is_file_empty(const std::string& path){
 }
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
+bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt) {
+	int rc = sqlite3_open(R"(../../database/database.db)", db);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
+		return false;
+	}
+	rc = sqlite3_prepare_v2(*db, sql_query.c_str(), -1, stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "sqlite3 error: " << sqlite3_errmsg(*db) << '\n';
+		sqlite3_close(*db);
+		return false;
+	}
+	return true;
+}
+
 void currency_generation() {
-		const std::string csvFileName = R"(../../database/currencies.csv)";
-		sqlite3* db;
-		sqlite3_stmt* stmt;
+	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
 
-		std::string createTableSQL = "CREATE TABLE IF NOT EXISTS currencies ("
-			"curr TEXT, "
-			"value TEXT);";
-		if (!database_preparing(createTableSQL, &db, &stmt)) {
-			return;
-		}
-		sqlite3_step(stmt);
-		sqlite3_finalize(stmt);
+	for (const auto& first : currencies) {
+		for (const auto& second : currencies) {
+			if (first != second) {
+				std::string c1 = currency_comparison(first, second);
+				std::string c2 = currency_comparison(first, second, true);
+				std::string combinedValue = c1 + " " + c2;
 
-		std::ifstream file(csvFileName);
-		if (!file.is_open()) {
-			std::cerr << "Nie można otworzyć pliku " << csvFileName << std::endl;
-			sqlite3_close(db);
-			return;
-		}
+				std::string currKey = first + " " + second;
 
-		std::string line;
-		while (std::getline(file, line)) {
-			std::istringstream ss(line);
-			std::string curr, value;
+				std::string insertOrReplaceSQL = "INSERT OR REPLACE INTO currencies (curr, value) VALUES (?, ?);";
 
-			if (std::getline(ss, curr, ',') && std::getline(ss, value, ',')) {
-				std::string insertSQL = "INSERT INTO currencies (curr, value) VALUES (?, ?);";
-				if (!database_preparing(insertSQL, &db, &stmt)) {
-					sqlite3_close(db);
-					return;
+				sqlite3* db = nullptr;
+				sqlite3_stmt* stmt = nullptr;
+
+				if (!database_preparing(insertOrReplaceSQL, &db, &stmt)) {
+					continue;
 				}
 
-				sqlite3_bind_text(stmt, 1, curr.c_str(), -1, SQLITE_STATIC);
-				sqlite3_bind_text(stmt, 2, value.c_str(), -1, SQLITE_STATIC);
+				sqlite3_bind_text(stmt, 1, currKey.c_str(), -1, SQLITE_TRANSIENT);
+				sqlite3_bind_text(stmt, 2, combinedValue.c_str(), -1, SQLITE_TRANSIENT);
 
 				int rc = sqlite3_step(stmt);
 				if (rc != SQLITE_DONE) {
-					std::cerr << "Błąd podczas wstawiania danych: " << sqlite3_errmsg(db) << std::endl;
+					std::cerr << "Error" << currKey << ": " << sqlite3_errmsg(db) << std::endl;
 				}
 
 				sqlite3_finalize(stmt);
-			}
-		}
-
-		file.close();
-		sqlite3_close(db);
-
-		std::cout << "Dane zostały zaimportowane do bazy danych." << std::endl;
-
-
-
-
-
-
-	std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
-	std::ofstream outfile(path_to_currencies_csv, std::ios_base::app);
-	for (const auto& first : currencies)
-	{
-		for (const auto& second : currencies)
-		{
-			if (first != second)
-			{
-				std::string c1 = currency_comparison(first, second);
-				std::string c2 = currency_comparison(first, second, true);
-				outfile << first << " " << second << ',' << c1 + " " + c2 << '\n';
+				sqlite3_close(db);
 			}
 		}
 	}
-	outfile.close();
-
 }
 
 //This function updates every row without creating new file every 10s (using a thread)
