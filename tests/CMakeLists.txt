@@ -15,7 +15,7 @@ add_executable(Exchange_Web_App_tests
     test_money_converter.cpp
     test_server_message_processing.cpp
     ../src/modules/server_message_processing.cpp
-    ../src/modules/handling_CSV_file.cpp
+    ../src/modules/handling_db.cpp
     ../src/modules/money_converter.cpp
     ../src/modules/password_checker.cpp
     ../src/modules/server_file.cpp
