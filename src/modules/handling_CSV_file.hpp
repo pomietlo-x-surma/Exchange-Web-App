@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 constexpr auto path_to_user_auth_csv = R"(../database/user_auth.csv)";
 constexpr auto path_to_user_balance_csv = R"(../database/user_balance.csv)";
 constexpr auto path_to_currencies_csv = R"(../database/currencies.csv)";
