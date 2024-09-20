@@ -140,28 +140,32 @@ void updating_user_balance(const std::string& login, const std::string& dollar, 
 	sqlite3_close(db);
 }
 
+std::string read_logs_currencies(const std::string& currency) {
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+	std::string result = "";
 
-//dac do bazy danych
-std::string read_logs_currencies(const std::string& logs)
-{
+	std::string selectSQL = "SELECT value FROM currencies WHERE curr = ?;";
 
-	std::ifstream infile(path_to_currencies_csv);
-	std::string line, log;
-
-	while (std::getline(infile, line))
-	{
-		std::stringstream ss(line);
-		std::string login_infile;
-		std::getline(ss, login_infile, ',');
-		std::getline(ss, log);
-		if (login_infile == logs)
-		{
-			std::getline(ss, log);
-			return log;
-		}
+	if (!database_preparing(selectSQL, &db, &stmt)) {
+		std::cerr << "Failed to prepare the SQL statement.\n";
+		return "";
 	}
 
-	return "";
+	sqlite3_bind_text(stmt, 1, currency.c_str(), -1, SQLITE_TRANSIENT);
+
+	int rc = sqlite3_step(stmt);
+	if (rc == SQLITE_ROW) {
+		result = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)); // Read the first column (value)
+	}
+	else if (rc != SQLITE_DONE) {
+		std::cerr << "Error executing query: " << sqlite3_errmsg(db) << std::endl;
+	}
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+	return result;
 }
 
 std::string read_logs_user_balance(const std::string& logs)
