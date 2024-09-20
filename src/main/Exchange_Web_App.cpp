@@ -1,7 +1,7 @@
 #include "../modules/handling_db.hpp"
-#include <iostream>
+#include <thread>
 
 int main() {
-    //currency_generation(); //updating currencies in currencies.csv
+    std::thread t1(currency_generation); //updating currencies in currencies.csv
     //server(); //turning on server
 }
