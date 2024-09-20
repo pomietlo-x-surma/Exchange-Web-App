@@ -4,7 +4,6 @@
 #include <iostream>
 #include "handling_db.hpp"
 #include "money_converter.hpp"
-#include <vector>
 #include <array>
 #include <thread>
 #include "sqlite3.h"
@@ -18,7 +17,7 @@ bool is_file_empty(const std::string& path){
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt) {
-	int rc = sqlite3_open(R"(../../database/database.db)", db);
+	int rc = sqlite3_open(R"(../database/database.db)", db);
 	if (rc != SQLITE_OK) {
 		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
 		return false;
@@ -32,96 +31,49 @@ bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt
 	return true;
 }
 
-void currency_generation() {
+[[noreturn]] void currency_generation() {
+	
 	std::array<std::string, 3> currencies = { "USD", "EUR", "PLN" };
+	while (true) {
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+		for (const auto& first : currencies) {
+			for (const auto& second : currencies) {
+				if (first != second) {
+					std::string c1 = currency_comparison(first, second);
+					std::string c2 = currency_comparison(first, second, true);
+					std::string combinedValue = c1 + " " + c2;
 
-	for (const auto& first : currencies) {
-		for (const auto& second : currencies) {
-			if (first != second) {
-				std::string c1 = currency_comparison(first, second);
-				std::string c2 = currency_comparison(first, second, true);
-				std::string combinedValue = c1 + " " + c2;
+					std::string currKey = first + " " + second;
 
-				std::string currKey = first + " " + second;
+					std::string insertOrReplaceSQL = "INSERT OR REPLACE INTO currencies (curr, value) VALUES (?, ?);";
 
-				std::string insertOrReplaceSQL = "INSERT OR REPLACE INTO currencies (curr, value) VALUES (?, ?);";
+					sqlite3* db = nullptr;
+					sqlite3_stmt* stmt = nullptr;
 
-				sqlite3* db = nullptr;
-				sqlite3_stmt* stmt = nullptr;
-
-				if (!database_preparing(insertOrReplaceSQL, &db, &stmt)) {
-					continue;
-				}
-
-				sqlite3_bind_text(stmt, 1, currKey.c_str(), -1, SQLITE_TRANSIENT);
-				sqlite3_bind_text(stmt, 2, combinedValue.c_str(), -1, SQLITE_TRANSIENT);
-
-				int rc = sqlite3_step(stmt);
-				if (rc != SQLITE_DONE) {
-					std::cerr << "Error" << currKey << ": " << sqlite3_errmsg(db) << std::endl;
-				}
-
-				sqlite3_finalize(stmt);
-				sqlite3_close(db);
-			}
-		}
-	}
-}
-
-//This function updates every row without creating new file every 10s (using a thread)
-void currency_update()
-{
-	if (is_file_empty(path_to_currencies_csv)) {
-		currency_generation();
-	}
-	while (true)
-	{
-		std::array<std::string, 3> currencies = { "USD","EUR", "PLN" };
-		bool found = false;
-		std::ifstream infile(path_to_currencies_csv);
-		std::vector<std::string> lines;
-		std::string line;
-		for (const auto& first : currencies)
-		{
-			for (const auto& second : currencies)
-			{
-				std::this_thread::sleep_for(std::chrono::seconds(10));
-				if (first != second)
-				{
-					while (std::getline(infile, line))
-					{
-
-						std::stringstream ss(line);
-						std::string line_first, line_second;
-						ss >> line_first >> line_second;
-						if (line_first == first && line_second == second)
-						{
-							//getting currency and chart and writing it to a vector
-							std::string c1 = currency_comparison(first, second);
-							std::string c2 = currency_comparison(first, second, true);
-							std::string result = first + " " + second + c1 + " " + c2 + '\n';
-							lines.push_back(result);
-							found = true;
-						}
-						else
-						{
-							lines.push_back(line);
-						}
+					if (!database_preparing(insertOrReplaceSQL, &db, &stmt)) {
+						std::cerr << "Database preparation failed for query: " << insertOrReplaceSQL << std::endl;
+						continue;
 					}
+
+					sqlite3_bind_text(stmt, 1, currKey.c_str(), -1, SQLITE_TRANSIENT);
+					sqlite3_bind_text(stmt, 2, combinedValue.c_str(), -1, SQLITE_TRANSIENT);
+
+					int rc = sqlite3_step(stmt);
+					if (rc != SQLITE_DONE) {
+						std::cerr << "Error executing query for " << currKey << ": " << sqlite3_errmsg(db) << std::endl;
+					}
+
+					sqlite3_finalize(stmt);
+					sqlite3_close(db);
 				}
 			}
 		}
-		infile.close();
-
-		//writing vector to a file
-		std::ofstream outfile(path_to_currencies_csv, std::ios_base::trunc);
-		for (const auto& updated_line : lines)
-		{
-			outfile << updated_line << '\n';
-		}
-		outfile.close();
 	}
 }
+
+
+
+
 
 //Writing email, login and password to a new-created user
 void write_logs_to_file_user_auth(const std::string& email, const std::string& login, const std::string& password,
