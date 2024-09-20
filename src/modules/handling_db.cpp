@@ -17,7 +17,7 @@ bool is_file_empty(const std::string& path){
 
 //This function generates "currencies.csv" and writes starting currencies e.g. PLN USD, 3.9 [base64]
 bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt** stmt) {
-	int rc = sqlite3_open(R"(../database/database.db)", db);
+	int rc = sqlite3_open(path_to_database_db, db);
 	if (rc != SQLITE_OK) {
 		std::cerr << "Cannot open database: " << sqlite3_errmsg(*db) << '\n';
 		return false;
