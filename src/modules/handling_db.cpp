@@ -76,8 +76,7 @@ bool database_preparing(const std::string& sql_query, sqlite3** db, sqlite3_stmt
 
 
 //Writing email, login and password to a new-created user
-void write_logs_to_file_user_auth(const std::string& email, const std::string& login, const std::string& password,
-	const std::string& file_path)
+void write_logs_to_file_user_auth(const std::string& email, const std::string& login, const std::string& password)
 {
 	sqlite3* db;
 	sqlite3_stmt* stmt;
@@ -206,8 +205,7 @@ std::string read_logs_user_balance(const std::string& logs)
 
 
 
-std::string correct_password_check(const std::string& input_email, const std::string& input_pass,
-	const std::string& file_path)
+std::string correct_password_check(const std::string& input_email, const std::string& input_pass)
 {
 	sqlite3* db = nullptr;
 	sqlite3_stmt* stmt = nullptr;
@@ -234,7 +232,7 @@ std::string correct_password_check(const std::string& input_email, const std::st
 }
 
 //checking if a user already exists
-bool check_login_email_existence(const std::string& email, const std::string& login, const std::string& file_path)
+bool check_login_email_existence(const std::string& email, const std::string& login)
 {
 	sqlite3* db = nullptr;
 	sqlite3_stmt* stmt = nullptr;
