@@ -108,7 +108,7 @@ void appending_user_balance(const std::string& login, const std::string& dollar,
 
 	int rc = sqlite3_step(stmt);
 	if (rc != SQLITE_DONE) {
-		std::cerr << "Błąd przy wstawianiu danych: " << sqlite3_errmsg(db) << '\n';
+		std::cerr << "Data insert error " << sqlite3_errmsg(db) << '\n';
 	}
 
 	sqlite3_finalize(stmt);
