@@ -19,7 +19,7 @@ const MainWrapper: React.FC = () => {
       window.location.reload();
     }, 500);
     return () => {
-      client.onopen = null;
+      client.onopen = null as any;
     };
   }, [username]);
 
