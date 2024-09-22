@@ -1,64 +1,35 @@
 cmake_minimum_required(VERSION 3.15)
 
-set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/vcpkg")
-set(VCPKG_MANIFEST_MODE ON)
-
-if(NOT EXISTS "${VCPKG_DIR}/vcpkg")
-    message(STATUS "vcpkg not found. Installation init...")
-
-    file(MAKE_DIRECTORY ${VCPKG_DIR})
-
-    execute_process(
-        COMMAND git clone https://github.com/microsoft/vcpkg.git ${VCPKG_DIR}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    )
-
-    if(WIN32)
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -E chdir ${VCPKG_DIR} bootstrap-vcpkg.bat
-        )
-    else()
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -E chdir ${VCPKG_DIR} ./bootstrap-vcpkg.sh
-        )
-    endif()
-endif()
-
-if(EXISTS "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake")
-    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-    list(APPEND CMAKE_PROJECT_TOP_LEVEL_INCLUDES "${CMAKE_TOOLCHAIN_FILE}")
-else()
-    message(FATAL_ERROR "vcpkg toolchain file not found!")
-endif()
-
-set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "Vcpkg target triplet")
-
-project(Exchange_Web_App)
+project(Exchange_Web_App_Tests)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-if(EXISTS "${CMAKE_SOURCE_DIR}/vcpkg.json")
-    message(STATUS "Installing packages from vcpkg.json...")
-    execute_process(
-        COMMAND ${VCPKG_DIR}/vcpkg install --triplet ${VCPKG_TARGET_TRIPLET}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    )
-endif()
-
-find_package(Boost CONFIG REQUIRED system thread coroutine log beast asio unit_test_framework)
+# Znajdź paczki
+find_package(Boost REQUIRED COMPONENTS unit_test_framework system thread coroutine log beast asio)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
-add_executable(Exchange_Web_App
-    src/main/Exchange_Web_App.cpp
-    src/modules/handling_db.cpp
-    src/modules/money_converter.cpp
-    src/modules/password_checker.cpp
-    src/modules/server_message_processing.cpp
-    src/modules/server_file.cpp
+# Dodaj pliki testowe i ustaw cel o unikalnej nazwie
+add_executable(Exchange_Web_App_Test_Suite
+    test_main.cpp
+    test_money_converter.cpp
+    test_server_message_processing.cpp
+    ../src/modules/server_message_processing.cpp
+    ../src/modules/handling_db.cpp
+    ../src/modules/money_converter.cpp
+    ../src/modules/password_checker.cpp
+    ../src/modules/server_file.cpp
 )
 
-target_link_libraries(Exchange_Web_App PRIVATE
+# Dodaj katalogi do includów
+target_include_directories(Exchange_Web_App_Test_Suite PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/../src/modules
+)
+
+# Powiąż wymagane biblioteki
+target_link_libraries(Exchange_Web_App_Test_Suite PRIVATE
+    Boost::unit_test_framework
     Boost::system
     Boost::thread
     Boost::coroutine
@@ -69,8 +40,18 @@ target_link_libraries(Exchange_Web_App PRIVATE
 )
 
 if (WIN32)
-    target_link_libraries(Exchange_Web_App PRIVATE ws2_32)
+    target_link_libraries(Exchange_Web_App_Test_Suite PRIVATE ws2_32)
 endif()
-add_definitions(-D_WIN32_WINNT=0x0601)
+
+# Ustaw katalog wyjściowy dla pliku wykonywalnego na katalog `tests`
+set_target_properties(Exchange_Web_App_Test_Suite PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/tests"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/tests"
+)
+
+# Włącz testy
 enable_testing()
-add_subdirectory(tests)
+
+# Dodaj test, który uruchamia plik wykonywalny testów
+add_test(NAME Exchange_Web_App_Test_Suite COMMAND Exchange_Web_App_Test_Suite --log_level=test_suite)
