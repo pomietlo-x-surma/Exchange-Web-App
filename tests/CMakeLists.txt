@@ -48,5 +48,5 @@ set_target_properties(Exchange_Web_App_tests PROPERTIES
 )
 
 enable_testing()
-
-add_test(NAME Exchange_Web_App_tests COMMAND Exchange_Web_App_tests --log_level=test_suite)
+add_test(NAME Exchange_Web_App_tests COMMAND ${CMAKE_SOURCE_DIR}/tests/MoneyExchange.exe --log_level=test_suite)
+# add_test(NAME Exchange_Web_App_tests COMMAND Exchange_Web_App_tests --log_level=test_suite)
