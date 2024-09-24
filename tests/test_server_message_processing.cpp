@@ -1,6 +1,5 @@
 #include <boost/test/unit_test.hpp>
 #include "../src/modules/server_message_processing.hpp"
-#include "../src/modules/password_checker.hpp"
 
 struct ExistingUser {
 	std::string email = "bart11@o2.pl";
