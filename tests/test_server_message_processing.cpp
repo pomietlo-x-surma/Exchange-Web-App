@@ -27,4 +27,5 @@ BOOST_AUTO_TEST_CASE(TestPasswordEquality){
 	BOOST_REQUIRE_EQUAL(check_register(existing_user.email, existing_user.login, correct_password, correct_password), "The specified email or login already exists!");
 	BOOST_REQUIRE_EQUAL(check_register(new_user.email, new_user.login, correct_password, incorrect_password), "Passwords don't match!");
 	BOOST_REQUIRE_EQUAL(check_register(existing_user.email, new_user.login, correct_password, correct_password), "The specified email or login already exists!");
+	BOOST_REQUIRE_EQUAL(check_register(new_user.email, existing_user.login, correct_password, correct_password), "The specified email or login already exists!");
 }
